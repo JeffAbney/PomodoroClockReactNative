@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
+import window from '../constants/Layout';
+
+const width = window.width;
+const height = window.height;
+
 import {
-  Button,
   Image,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
-  Alert
+  Alert,
 } from 'react-native';
-import { WebBrowser } from 'expo';
 
-import { MonoText } from '../components/StyledText';
 
 export class Clock extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ export class Clock extends Component {
       isSession: true,
       clockHasStarted: false
     }
+
     this.intervalHandle;
 
     this._onPressButton = this._onPressButton.bind(this);
@@ -37,7 +39,7 @@ export class Clock extends Component {
     this._onPressReset = this._onPressReset.bind(this);
     this.tick = this.tick.bind(this);
     this.resetClock = this.resetClock.bind(this);
-    
+
   }
 
   _onPressButton() {
@@ -58,7 +60,7 @@ export class Clock extends Component {
   }
 
   _onPressSessionIncrease() {
-    let { sessionLength, isSession, secondsLeft  } = this.state;
+    let { sessionLength, isSession, secondsLeft } = this.state;
     if (sessionLength < 60)
       this.setState({
         sessionLength: ++sessionLength,
@@ -70,7 +72,7 @@ export class Clock extends Component {
   }
 
   _onPressBreakDecrease() {
-    let { breakLength, isSession, secondsLeft  } = this.state;
+    let { breakLength, isSession, secondsLeft } = this.state;
     if (breakLength > 1) {
       this.setState({
         breakLength: --breakLength,
@@ -120,11 +122,10 @@ export class Clock extends Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        {text: 'OK', onPress: () => this.resetClock() },
+        { text: 'OK', onPress: () => this.resetClock() },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
-  
   }
 
   resetClock() {
@@ -137,14 +138,14 @@ export class Clock extends Component {
       isSession: true,
       clockHasStarted: false
     })
-  
-  }  
+
+  }
 
   tick() {
     let { secondsLeft, isSession, breakLength, sessionLength } = this.state;
-    if (secondsLeft === 1){
+    if (secondsLeft === 1) {
       this.setState({
-        secondsLeft: isSession ? Math.floor(breakLength * 60) :Math.floor(sessionLength * 60),
+        secondsLeft: isSession ? Math.floor(breakLength * 60) : Math.floor(sessionLength * 60),
         isSession: !isSession,
       })
     } else {
@@ -152,7 +153,7 @@ export class Clock extends Component {
         secondsLeft: --secondsLeft
       })
     }
-    
+
   }
 
   render() {
@@ -191,13 +192,13 @@ export class Clock extends Component {
           <TouchableHighlight title={clockIsRunning ? "Pause" : "Start"} onPress={clockIsRunning ? this._onPressPause : this._onPressStart} style={styles.button}>
             <Text> {clockIsRunning ? "Pause" : "Start"} </Text>
           </TouchableHighlight>
-          { !clockHasStarted ?
-          <View/>
-          :
-          <TouchableHighlight title="Reset" onPress={this._onPressReset} style={styles.button}>
-            <Text>Reset</Text>
-          </TouchableHighlight>}
-          
+          {!clockHasStarted ?
+            <View />
+            :
+            <TouchableHighlight title="Reset" onPress={this._onPressReset} style={styles.button}>
+              <Text>Reset</Text>
+            </TouchableHighlight>}
+
         </View>
       </View>
     )
@@ -209,20 +210,28 @@ export default class HomeScreen extends Component {
     header: null,
   };
 
+  _onPressSignUp() {
+    Alert.alert('You tapped the button!')
+  }
+
+  _onPressLogIn() {
+    Alert.alert('You tapped the button!')
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.container}>
-          <View style={styles.signInContainer}>
-            <Text>
-              Sign Up / Log In
-            </Text>
-          </View>
-          <View style={styles.clockContainer}>
-            <Clock />
-          </View>
+          <View style={[styles.signInContainer, styles.rowContainer]}>
+            <Text onPress={this._onPressSignUp}>Sign Up</Text>
+            <Text> / </Text>
+            <Text onPress={this._onPressLogIn}>Log In</Text>
+        </View>
+        <View style={styles.clockContainer}>
+          <Clock />
         </View>
       </View>
+      </View >
     );
   }
 }
@@ -231,7 +240,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },  
+  },
   contentContainer: {
     paddingTop: 30,
     justifyContent: 'center',
@@ -246,7 +255,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   signInContainer: {
-    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
     paddingRight: 20,
     paddingTop: 30,
   },
@@ -284,7 +293,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 0.5,
     borderColor: '#000',
-    borderRadius: 4
+    borderRadius: 4,
   },
   welcomeContainer: {
     alignItems: 'center',
