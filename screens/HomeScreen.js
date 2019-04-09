@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import window from '../constants/Layout';
+import SignUpScreen from './SignUpScreen';
 
-const width = window.width;
-const height = window.height;
 
 import {
   Image,
@@ -13,6 +11,7 @@ import {
   View,
   Alert,
 } from 'react-native';
+
 
 
 export class Clock extends Component {
@@ -209,9 +208,14 @@ export default class HomeScreen extends Component {
   static navigationOptions = {
     header: null,
   };
+constructor(){
+  super();
+  this._onPressSignUp = this._onPressSignUp.bind(this);
+}
+  
 
   _onPressSignUp() {
-    Alert.alert('You tapped the button!')
+    () => this.props.navigation.navigate('SignUp')
   }
 
   _onPressLogIn() {
@@ -223,7 +227,7 @@ export default class HomeScreen extends Component {
       <View style={styles.container}>
         <View style={styles.container}>
           <View style={[styles.signInContainer, styles.rowContainer]}>
-            <Text onPress={this._onPressSignUp}>Sign Up</Text>
+            <Text onPress={() => this.props.navigation.navigate('SignUp')}>Sign Up</Text>
             <Text> / </Text>
             <Text onPress={this._onPressLogIn}>Log In</Text>
         </View>
