@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SignUpScreen from './SignUpScreen';
+
 
 
 import {
@@ -208,19 +208,7 @@ export default class HomeScreen extends Component {
   static navigationOptions = {
     header: null,
   };
-constructor(){
-  super();
-  this._onPressSignUp = this._onPressSignUp.bind(this);
-}
   
-
-  _onPressSignUp() {
-    () => this.props.navigation.navigate('SignUp')
-  }
-
-  _onPressLogIn() {
-    Alert.alert('You tapped the button!')
-  }
 
   render() {
     return (
@@ -229,7 +217,7 @@ constructor(){
           <View style={[styles.signInContainer, styles.rowContainer]}>
             <Text onPress={() => this.props.navigation.navigate('SignUp')}>Sign Up</Text>
             <Text> / </Text>
-            <Text onPress={this._onPressLogIn}>Log In</Text>
+            <Text onPress={() => this.props.navigation.navigate('LogIn')}>Log In</Text>
         </View>
         <View style={styles.clockContainer}>
           <Clock />

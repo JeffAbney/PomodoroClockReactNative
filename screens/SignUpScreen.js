@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 
 import {
-  Image,
-  Platform,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
   Alert,
 } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { TextInput, ScrollView } from 'react-native-gesture-handler';
 
 export default class SignUpScreen extends Component {
   constructor(props) {
@@ -41,12 +39,15 @@ export default class SignUpScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text>User Name</Text>
-        <TextInput style={styles.userinput} onChangeText={this._onChangeUsername} />
-        <Text>PassWord</Text>
-        <TextInput style={styles.userinput} onChangeText={this._onChangePassword} />
-      </View>
+      <ScrollView 
+        style={styles.container} 
+        contentContainerStyle={styles.contentContainer}
+        keyboardShouldPersistTaps="never">
+        <TextInput style={styles.userinput} onChangeText={this._onChangeUsername} placeholder="User Name"/>
+        <TextInput style={styles.userinput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password"/>
+        <TextInput style={styles.userinput} secureTextEntry={true} placeholder="Verfiy Password"/>
+        <Text onPress={() => this.props.navigation.navigate('LogIn')}>Already have an account? Sign In!</Text>
+      </ScrollView>
     );
   }
 }
@@ -55,11 +56,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center'
+    paddingTop: 35,
+    paddingRight: 15,
+    paddingBottom: 15,
+    paddingLeft: 15
+  },
+  contentContainer:{
+      justifyContent: 'center'
   },
   userinput: {
     padding: 20,
-    backgroundColor: 'blue'
+    marginBottom: 10,
+    backgroundColor: 'red'
   },
 
 })
