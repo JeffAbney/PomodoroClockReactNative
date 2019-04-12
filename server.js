@@ -7,21 +7,57 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://JeffAbney:warhol88@cluster0-schfu.mongodb.net/test?retryWrites=true";
 
-// Handle / route
+// Handle Sign In
 app.post('/', (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
-  if (username === "admin" && password === "admin") {
-    console.log("Correct USER")
-    res.sendStatus(200);
-  } else {
-    console.log("Bad User")
-    res.sendStatus(403);
-  }
-}
-)
 
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("connection is working");
+    collection.findOne({ username: username, password: password }, (error, doc) => {
+      if (error) return next(error);
+      if (doc == null) {
+        console.log("No Such User")
+        res.sendStatus(403)
+      } else {
+        res.sendStatus(200)
+      }
+    })
+  })
+})
+
+//Handle Create User
+app.post('/createUser', (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("connection is working");
+    collection.findOne({ username: username }, (error, doc) => {
+      if (error) return next(error);
+      if (doc == null) {
+        collection.insert({ username: username, password: password, log: [] }, (error, results) => {
+          if (error) return res.json({ "error": "something went wrong" });
+          console.log("New User Created");
+          console.log(results);
+          res.sendStatus(200);
+        })
+      } else {
+        console.log("Username taken")
+        res.sendStatus(403)
+      }
+    })
+  })
+})
 // Launch the server on port 3000
 const server = app.listen(3000, () => {
   const { address, port } = server.address();

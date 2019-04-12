@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  TouchableHighlight,
   View,
   Alert,
   Button,
@@ -57,11 +56,11 @@ export default class LogInScreen extends Component {
         if (res == "OK") {
           this.props.navigation.navigate('Home', {
             loggedIn: true,
+            username: username
           })
         } else {
-          
           Alert.alert("Error",
-            "Bad Username/Password",
+            "Username and Password do not match any registered user",
             [{ text: "OK" }])
         }
       })
