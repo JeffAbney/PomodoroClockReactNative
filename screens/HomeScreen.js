@@ -204,25 +204,47 @@ export class Clock extends Component {
   }
 }
 
+
+
+  
+
+
 export default class HomeScreen extends Component {
   static navigationOptions = {
     header: null,
   };
-  
+
 
   render() {
+    const { navigation } = this.props;
+    const loggedIn = navigation.getParam('loggedIn', false);
+
+    let signInSection = function() {
+      if (!loggedIn) {
+        return (
+          <View style={[styles.signInContainer, styles.rowContainer]}>
+            <Text onPress={() => navigation.navigate('SignUp')}>Sign Up</Text>
+            <Text> / </Text>
+            <Text onPress={() => navigation.navigate('LogIn')}>Log In</Text>
+          </View>
+        )
+      } else {
+        return (
+          <View style={[styles.signInContainer, styles.rowContainer]}>
+            <Text onPress={() => navigation.navigate('LogIn')}>Sign Out</Text>
+          </View>
+        )
+      }
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.container}>
-          <View style={[styles.signInContainer, styles.rowContainer]}>
-            <Text onPress={() => this.props.navigation.navigate('SignUp')}>Sign Up</Text>
-            <Text> / </Text>
-            <Text onPress={() => this.props.navigation.navigate('LogIn')}>Log In</Text>
+          {signInSection()}
+          <View style={styles.clockContainer}>
+            <Clock />
+          </View>
         </View>
-        <View style={styles.clockContainer}>
-          <Clock />
-        </View>
-      </View>
       </View >
     );
   }

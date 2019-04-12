@@ -55,7 +55,9 @@ export default class LogInScreen extends Component {
       .then(res => {
         console.log(res);
         if (res == "OK") {
-          this.props.navigation.navigate('Home')
+          this.props.navigation.navigate('Home', {
+            loggedIn: true,
+          })
         } else {
           
           Alert.alert("Error",
