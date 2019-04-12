@@ -8,11 +8,13 @@ import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import LogInScreen from '../screens/LogInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import SubmitActivityScreen from '../screens/SubmitActivityScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
   LogIn: LogInScreen,
-  SignUp: SignUpScreen
+  SignUp: SignUpScreen,
+  SubmitActivity: SubmitActivityScreen,
 
 });
 

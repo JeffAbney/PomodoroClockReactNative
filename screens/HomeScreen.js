@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-
-
 import {
   Image,
   Platform,
@@ -12,15 +10,19 @@ import {
   Alert,
 } from 'react-native';
 
+import { StackActions, NavigationActions } from 'react-navigation';
 
+const _sessionLength = 1;
+const _breakLength = 2;
+const _secondsLeft = 10;
 
 export class Clock extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sessionLength: 25,
-      breakLength: 5,
-      secondsLeft: 1500,
+      sessionLength: _sessionLength,
+      breakLength: _breakLength,
+      secondsLeft: _secondsLeft,
       clockIsRunning: false,
       isSession: true,
       clockHasStarted: false
@@ -130,9 +132,9 @@ export class Clock extends Component {
   resetClock() {
     clearInterval(this.intervalHandle);
     this.setState({
-      sessionLength: 25,
-      breakLength: 5,
-      secondsLeft: 1500,
+      sessionLength: _sessionLength,
+      breakLength: _breakLength,
+      secondsLeft: _secondsLeft,
       clockIsRunning: false,
       isSession: true,
       clockHasStarted: false
@@ -142,7 +144,12 @@ export class Clock extends Component {
 
   tick() {
     let { secondsLeft, isSession, breakLength, sessionLength } = this.state;
+    const { navigation } = this.props;
     if (secondsLeft === 1) {
+      if (isSession) {
+        clearInterval(this.intervalHandle);
+        this.props.onEndSession();
+        }
       this.setState({
         secondsLeft: isSession ? Math.floor(breakLength * 60) : Math.floor(sessionLength * 60),
         isSession: !isSession,
@@ -204,20 +211,20 @@ export class Clock extends Component {
   }
 }
 
-
-
-  
-
-
 export default class HomeScreen extends Component {
   static navigationOptions = {
     header: null,
   };
 
-
   render() {
-    const { navigation } = this.props;
+    const { navigation} = this.props;
     const loggedIn = navigation.getParam('loggedIn', false);
+    const username = navigation.getParam('username', "guest");
+    const resetAction = StackActions.reset({
+      index: 1,
+      actions: [NavigationActions.navigate({ routeName: 'Home' }),
+                NavigationActions.navigate({ routeName: 'LogIn' }),],
+    });
 
     let signInSection = function() {
       if (!loggedIn) {
@@ -230,8 +237,9 @@ export default class HomeScreen extends Component {
         )
       } else {
         return (
-          <View style={[styles.signInContainer, styles.rowContainer]}>
-            <Text onPress={() => navigation.navigate('LogIn')}>Sign Out</Text>
+          <View style={[styles.signInContainer, styles.rowContainer, styles.spaceBetween]}>
+          <Text style={styles.welcomeText}>Welcome, {username}</Text>
+            <Text style={styles.signOutText} onPress={() => navigation.dispatch(resetAction)}>(Sign Out)</Text>
           </View>
         )
       }
@@ -242,7 +250,7 @@ export default class HomeScreen extends Component {
         <View style={styles.container}>
           {signInSection()}
           <View style={styles.clockContainer}>
-            <Clock />
+            <Clock onEndSession={() => navigation.navigate('SubmitActivity')}/>
           </View>
         </View>
       </View >
@@ -272,6 +280,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingRight: 20,
     paddingTop: 30,
+  },
+  spaceBetween: {
+    justifyContent: 'space-between'
+  },
+  welcomeText: {
+    paddingLeft: 15,
+  },
+  signOutText: {
+    color: 'grey',
   },
   clockContainer: {
     flex: 1,
@@ -321,8 +338,6 @@ const styles = StyleSheet.create({
     marginTop: 3,
     marginLeft: -10,
   },
-
-
   tabBarInfoContainer: {
     position: 'absolute',
     bottom: 0,
