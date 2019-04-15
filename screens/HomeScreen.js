@@ -14,7 +14,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 
 const _sessionLength = 1;
 const _breakLength = 2;
-const _secondsLeft = 10;
+const _secondsLeft = 5;
 
 export class Clock extends Component {
   constructor(props) {
@@ -250,7 +250,10 @@ export default class HomeScreen extends Component {
         <View style={styles.container}>
           {signInSection()}
           <View style={styles.clockContainer}>
-            <Clock onEndSession={() => navigation.navigate('SubmitActivity')}/>
+            <Clock onEndSession={() => navigation.navigate('SubmitActivity', {
+            loggedIn: true,
+            username: username
+          })}/>
           </View>
         </View>
       </View >
