@@ -41,12 +41,15 @@ export default class LogInScreen extends Component {
 
   _onLogInSubmit() {
     let { username, password } = this.state;
+    const { navigation } = this.props;
+    const fromSession = navigation.getParam('fromSession', false);
+    const activityTime = navigation.getParam('activityTime', 10);
     fetch('http://localhost:3000', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({username: username, password: password })
+      body: JSON.stringify({ username: username, password: password })
     })
       .then(res => {
         return res.text()
@@ -54,10 +57,19 @@ export default class LogInScreen extends Component {
       .then(res => {
         console.log(res);
         if (res == "OK") {
-          this.props.navigation.navigate('Home', {
-            loggedIn: true,
-            username: username
-          })
+          if (fromSession) {
+            console.log("LogIn", activityTime)
+            this.props.navigation.navigate('SubmitActivity', {
+              loggedIn: true,
+              username: username,
+              activityTime: activityTime
+            })
+          } else {
+            this.props.navigation.navigate('Home', {
+              loggedIn: true,
+              username: username
+            })
+          }
         } else {
           Alert.alert("Error",
             "Username and Password do not match any registered user",
@@ -67,6 +79,7 @@ export default class LogInScreen extends Component {
   }
 
   render() {
+
     return (
       <View style={styles.container}>
         <TextInput style={styles.userinput} onChangeText={this._onChangeUsername} placeholder="User Name" />

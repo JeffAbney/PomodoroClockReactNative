@@ -25,7 +25,8 @@ export class Clock extends Component {
       secondsLeft: _secondsLeft,
       clockIsRunning: false,
       isSession: true,
-      clockHasStarted: false
+      clockHasStarted: false,
+      isLoggedIn: this.props.loggedIn
     }
 
     this.intervalHandle;
@@ -144,12 +145,14 @@ export class Clock extends Component {
 
   tick() {
     let { secondsLeft, isSession, breakLength, sessionLength } = this.state;
-    const { navigation } = this.props;
     if (secondsLeft === 1) {
       if (isSession) {
         clearInterval(this.intervalHandle);
-        this.props.onEndSession();
-        }
+        this.setState({
+          clockIsRunning: false,
+        })
+        this.props.onEndSession(this.state.sessionLength);
+      }
       this.setState({
         secondsLeft: isSession ? Math.floor(breakLength * 60) : Math.floor(sessionLength * 60),
         isSession: !isSession,
@@ -217,13 +220,13 @@ export default class HomeScreen extends Component {
   };
 
   render() {
-    const { navigation} = this.props;
+    const { navigation } = this.props;
     const loggedIn = navigation.getParam('loggedIn', false);
     const username = navigation.getParam('username', "guest");
     const resetAction = StackActions.reset({
       index: 1,
       actions: [NavigationActions.navigate({ routeName: 'Home' }),
-                NavigationActions.navigate({ routeName: 'LogIn' }),],
+      NavigationActions.navigate({ routeName: 'LogIn' }),],
     });
 
     let signInSection = function() {
@@ -238,22 +241,30 @@ export default class HomeScreen extends Component {
       } else {
         return (
           <View style={[styles.signInContainer, styles.rowContainer, styles.spaceBetween]}>
-          <Text style={styles.welcomeText}>Welcome, {username}</Text>
+            <Text style={styles.welcomeText}>Welcome, {username}</Text>
             <Text style={styles.signOutText} onPress={() => navigation.dispatch(resetAction)}>(Sign Out)</Text>
           </View>
         )
       }
     }
 
+   let goToLogIn = (time) => navigation.navigate('LogIn',{
+     fromSession: true,
+     activityTime: time
+   }); 
+
+    let goToLogSession = (time) => navigation.navigate('SubmitActivity', {
+      loggedIn: true,
+      username: username,
+      activityTime: time
+    })
+
     return (
       <View style={styles.container}>
         <View style={styles.container}>
           {signInSection()}
           <View style={styles.clockContainer}>
-            <Clock onEndSession={() => navigation.navigate('SubmitActivity', {
-            loggedIn: true,
-            username: username
-          })}/>
+            <Clock isLoggedIn={loggedIn} onEndSession={loggedIn ? goToLogSession : goToLogIn} />
           </View>
         </View>
       </View >

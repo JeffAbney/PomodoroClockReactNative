@@ -15,7 +15,7 @@ export default class SubmitActivityScreen extends Component {
     header: null,
   };
 
-  
+
 
   constructor(props) {
     super(props);
@@ -29,7 +29,7 @@ export default class SubmitActivityScreen extends Component {
     this._onSubmitActivity = this._onSubmitActivity.bind(this);
   }
 
-  
+
 
   _onChangeActivityCategory(itemValue) {
     this.setState({ activityCategory: itemValue })
@@ -40,17 +40,24 @@ export default class SubmitActivityScreen extends Component {
   }
 
   _onSubmitActivity() {
-    const { navigation} = this.props;
-const loggedIn = navigation.getParam('loggedIn', false);
-const username = navigation.getParam('username', "guest");
+    const { navigation } = this.props;
+    const loggedIn = navigation.getParam('loggedIn', false);
+    const username = navigation.getParam('username', "guest");
+    const activityTime = navigation.getParam('activityTime', 15);
 
-    let { activityCategory, activityName} = this.state;
+    let { activityCategory, activityName } = this.state;
     fetch('http://localhost:3000/log', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({username: username, activityCategory: activityCategory, activityName: activityName, date: new Date()})
+      body: JSON.stringify({
+        username: username,
+        activityCategory: activityCategory,
+        activityName: activityName,
+        activityTime: activityTime,
+        date: new Date()
+      })
     })
       .then(res => {
         return res.text()
@@ -66,18 +73,15 @@ const username = navigation.getParam('username', "guest");
           Alert.alert("Error",
             "There was a problem saving your activity",
             [{ text: "OK" }]);
-            this.props.navigation.navigate('Home', {
-              loggedIn: true,
-              username: username
-            })
+          this.props.navigation.navigate('Home', {
+            loggedIn: true,
+            username: username
+          })
         }
       })
   }
 
   render() {
-
-
-
     return (
       <View style={[styles.container, styles.center]}>
         <Text>Activity Category</Text>
@@ -91,7 +95,7 @@ const username = navigation.getParam('username', "guest");
         </Picker>
         <Text>Activity Name</Text>
         <TextInput
-          style={styles.userinput} 
+          style={styles.userinput}
           onChangeText={this._onChangeActivityName}
         />
         <Button title="Submit" onPress={this._onSubmitActivity} />

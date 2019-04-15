@@ -66,13 +66,15 @@ app.post('/log', (req, res) => {
   let activityCategory = req.body.activityCategory;
   let activityName = req.body.activityName;
   let date = req.body.date;
+  let activityTime = req.body.activityTime;
 
   MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
     if (error) return process.exit(1);
     var db = client.db('Pomodoro');
     var collection = db.collection('Users');
     console.log("connection is working");
-    collection.updateOne({ username: username }, {$push: { log: [activityCategory, activityName, date] }}, (error, doc) => {
+    collection.updateOne({ username: username },
+       {$push: { log: {activityCategory: activityCategory, activityName: activityName, activityTime: activityTime, date: date} }}, (error, doc) => {
       if (error) return next(error);
       if (doc == null) {
         console.log("Can't find user to log.")
