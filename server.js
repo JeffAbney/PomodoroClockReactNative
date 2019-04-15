@@ -58,6 +58,32 @@ app.post('/createUser', (req, res) => {
     })
   })
 })
+
+//Handle Log activity
+
+app.post('/log', (req, res) => {
+  let username = req.body.username;
+  let activityCategory = req.body.activityCategory;
+  let activityName = req.body.activityName;
+  let date = req.body.date;
+
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("connection is working");
+    collection.updateOne({ username: username }, {$push: { log: [activityCategory, activityName, date] }}, (error, doc) => {
+      if (error) return next(error);
+      if (doc == null) {
+        console.log("Can't find user to log.")
+        res.sendStatus(404);
+      } else {
+        console.log("Found user to update");
+        res.sendStatus(200);
+      }
+    })
+  })
+})
 // Launch the server on port 3000
 const server = app.listen(3000, () => {
   const { address, port } = server.address();
