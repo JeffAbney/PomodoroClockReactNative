@@ -1,54 +1,58 @@
 import React, { Component } from 'react';
-import SignIn from '../components/SignIn'
 
 import {
-  Image,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-  Alert,
+	Image,
+	Text,
+	TouchableHighlight,
+	View,
+	Alert,
+	StyleSheet,
+	Platform
 } from 'react-native';
-
 import { StackActions, NavigationActions } from 'react-navigation';
-import { Clock } from '../components/Clock'
 
-export default class HomeScreen extends Component {
-  static navigationOptions = {
-    header: null,
-  };
+export default class SignIn extends Component {
+	constructor(props) {
+		super(props);
 
-  render() {
-    const { navigation } = this.props;
-    const loggedIn = navigation.getParam('loggedIn', false);
-    const username = navigation.getParam('username', "guest");
-    
+		this.signOut = this.signOut.bind(this);
+	}
+	
 
-    let goToLogIn = (time) => navigation.navigate('LogIn', {
-      fromSession: true,
-      activityTime: time
-    });
+	signOut() {
+		const resetAction = StackActions.reset({
+      index: 1,
+      actions: [NavigationActions.navigate({ routeName: 'Home' }),
+      NavigationActions.navigate({ routeName: 'LogIn' }),],
+		});
+		
+		console.log("Props", this.props);
+		this.props.screenProps.onLogOut();
+		this.props.navigation.dispatch(resetAction);
+	}
 
-    let goToLogSession = (time) => navigation.navigate('SubmitActivity', {
-      loggedIn: true,
-      username: username,
-      activityTime: time
-    })
+	render() {
+		const { navigation, loggedIn, username } = this.props;
+		
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.container}>
-          <SignIn loggedIn={loggedIn} navigation={navigation} username={username} screenProps={this.props.screenProps}/>
-          <View style={styles.clockContainer}>
-            <Clock isLoggedIn={loggedIn} onEndSession={loggedIn ? goToLogSession : goToLogIn} />
-          </View>
-        </View>
-      </View >
-    );
-  }
+		if (!loggedIn) {
+			return (
+				<View style={[styles.signInContainer, styles.rowContainer]}>
+					<Text onPress={() => navigation.navigate('SignUp')}>Sign Up</Text>
+					<Text> / </Text>
+					<Text onPress={() => navigation.navigate('LogIn')}>Log In</Text>
+				</View>
+			)
+		} else {
+			return (
+				<View style={[styles.signInContainer, styles.rowContainer, styles.spaceBetween]}>
+					<Text style={styles.welcomeText}>Welcome, {username}</Text>
+					<Text style={styles.signOutText} onPress={this.signOut}>(Sign Out)</Text>
+				</View>
+			)
+		}
+	}
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

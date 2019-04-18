@@ -11,7 +11,7 @@ class activityLogScreen extends React.Component {
   render() {
     return (
       <ScrollView style={styles.container}>
-        <Text style={styles.text}>Logged in : {this.props.navigation.loggedIn ? "True" : "False"}</Text>
+        <Text style={styles.text}>Logged in : {this.props.screenProps.isLoggedIn ? "True" : "False"}</Text>
       </ScrollView>
     );
   }

@@ -3,11 +3,33 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 
-
 export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoadingComplete: false,
+      isLoggedIn: false,
+      username: "Guest"
+    };
+
+    this.logIn = this.logIn.bind(this);
+    this.logOut = this.logOut.bind(this);
+
+  }
+
+  logIn(username) {
+    console.log("Loggin in");
+    this.setState({
+      isLoggedIn: true,
+      username: username
+    });
+  }
+
+  logOut() {
+    this.setState({
+      isLoggedIn: false
+    });
+  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -22,7 +44,7 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
+          <AppNavigator screenProps={{ isLoggedIn: this.state.isLoggedIn, onLogOut: this.logOut, onLogIn: this.logIn }} />
         </View>
       );
     }

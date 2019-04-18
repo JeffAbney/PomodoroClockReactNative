@@ -63,12 +63,13 @@ export default class LogInScreen extends Component {
               loggedIn: true,
               username: username,
               activityTime: activityTime
-            })
+            });
           } else {
             this.props.navigation.navigate('Home', {
               loggedIn: true,
               username: username
-            })
+            });
+            this.props.screenProps.onLogIn(username);
           }
         } else {
           Alert.alert("Error",

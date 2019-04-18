@@ -168,6 +168,7 @@ export class Clock extends Component {
       let { isSession, clockIsRunning, clockHasStarted } = this.state;
       return (
         <View style={[styles.container, styles.centeredContainer]}>
+          <Text style={styles.clock}>{isSession ? "Session" : "Break"}</Text>
           <Text style={styles.clock}>{fmtMSS(this.state.secondsLeft)}</Text>
           <View style={styles.rowContainer}>
             <View style={styles.centeredContainer}>
