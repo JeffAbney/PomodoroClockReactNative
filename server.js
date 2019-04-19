@@ -74,14 +74,38 @@ app.post('/log', (req, res) => {
     var collection = db.collection('Users');
     console.log("connection is working");
     collection.updateOne({ username: username },
-       {$push: { log: {activityCategory: activityCategory, activityName: activityName, activityTime: activityTime, date: date} }}, (error, doc) => {
-      if (error) return next(error);
+      { $push: { log: { activityCategory: activityCategory, activityName: activityName, activityTime: activityTime, date: date } } }, (error, doc) => {
+        if (error) return next(error);
+        if (doc == null) {
+          console.log("Can't find user to log.")
+          res.sendStatus(404);
+        } else {
+          console.log("Found user to update");
+          res.sendStatus(200);
+        }
+      })
+  })
+})
+
+//Handle Get Actvitiy Log
+
+app.post("/showLog", (req, res, next) => {
+  let username = req.body.username;
+
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("connection is working");
+
+    collection.findOne({ username: username }, (error, doc) => {
+      console.log("Getting user data...");
+      if (error) res.send(error);
       if (doc == null) {
-        console.log("Can't find user to log.")
-        res.sendStatus(404);
+        next("Can't find user");
       } else {
-        console.log("Found user to update");
-        res.sendStatus(200);
+        console.log("Here's the data");
+        res.json({ username: doc.username, log: doc.log });
       }
     })
   })

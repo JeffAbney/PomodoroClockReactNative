@@ -44,7 +44,12 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator screenProps={{ isLoggedIn: this.state.isLoggedIn, onLogOut: this.logOut, onLogIn: this.logIn }} />
+          <AppNavigator 
+            screenProps={{ 
+              isLoggedIn: this.state.isLoggedIn, 
+              onLogOut: this.logOut, 
+              onLogIn: this.logIn,
+              username: this.state.username }} />
         </View>
       );
     }
