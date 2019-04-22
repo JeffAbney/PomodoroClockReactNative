@@ -4,7 +4,7 @@ import { withNavigation } from 'react-navigation';
 
 class activityLogScreen extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -12,10 +12,11 @@ class activityLogScreen extends React.Component {
       log: []
     };
 
-    this.logDisplay=this.logDisplay.bind(this);
+    this.logDisplay = this.logDisplay.bind(this);
+    this.getLog = this.getLog.bind(this);
   }
 
-  componentDidMount() {
+  getLog() {
     let username = this.props.screenProps.username
     fetch('http://localhost:3000/showLog', {
       method: 'POST',
@@ -57,7 +58,9 @@ class activityLogScreen extends React.Component {
   render() {
     let loggedIn = this.props.screenProps.isLoggedIn;
     if (loggedIn) {
-      this.logDisplay();
+      if (this.props.screenProps.username != this.state.username) {
+        this.getLog();
+      }
       return (
         <ScrollView style={styles.container}>
           <Text style={styles.text}>Logged in as: {this.state.username}</Text>
@@ -69,7 +72,7 @@ class activityLogScreen extends React.Component {
         <Text>Please Log In to view Activity Log</Text>
       )
     }
-    
+
   }
 }
 

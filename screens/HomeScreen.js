@@ -36,6 +36,8 @@ export default class HomeScreen extends Component {
       activityTime: time
     })
 
+    //After a user is logged in and checks log, switching user to chekc logs doesnt refresh log array.
+
     return (
       <View style={styles.container}>
         <View style={styles.container}>
