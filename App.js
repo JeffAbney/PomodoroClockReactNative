@@ -2,6 +2,7 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
+import styles from './constants/Styles'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -27,7 +28,8 @@ export default class App extends React.Component {
 
   logOut() {
     this.setState({
-      isLoggedIn: false
+      isLoggedIn: false,
+      username: "Guest"
     });
   }
 
@@ -85,10 +87,3 @@ export default class App extends React.Component {
     this.setState({ isLoadingComplete: true });
   };
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});

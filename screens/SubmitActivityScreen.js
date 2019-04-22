@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import styles from '../constants/Styles'
 import {
   StyleSheet,
   Text,
@@ -20,6 +20,7 @@ export default class SubmitActivityScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      activityCategoryList: ["Planning", "Coding", "Running"],
       activityCategory: "Planning",
       activityName: ""
     }
@@ -27,7 +28,37 @@ export default class SubmitActivityScreen extends Component {
     this._onChangeActivityCategory = this._onChangeActivityCategory.bind(this);
     this._onChangeActivityName = this._onChangeActivityName.bind(this);
     this._onSubmitActivity = this._onSubmitActivity.bind(this);
+    this.activityCategoryList = this.activityCategoryList.bind(this);
+    this.fetchCategoryList = this.fetchCategoryList.bind(this);
   }
+
+  componentDidMount(){
+    this.fetchCategoryList()
+  };
+
+  fetchCategoryList() {
+    let username = this.props.screenProps.username
+    fetch('http://localhost:3000/showLog', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+      })
+    })
+      .then(res => {
+        return res.json()
+      })
+      .then(res => {
+        if (res.activityCategoryList != null) {
+          this.setState({
+            activityCategoryList: res.activityCategoryList
+          })
+        }
+        
+      })
+  } 
 
 
 
@@ -81,6 +112,15 @@ export default class SubmitActivityScreen extends Component {
       })
   }
 
+  activityCategoryList() {
+    return this.state.activityCategoryList.map((cat) => {
+      return (
+        <Picker.Item key={cat} label={cat} value={cat} />
+      )
+    }
+
+    )}
+
   render() {
     return (
       <View style={[styles.container, styles.center]}>
@@ -90,8 +130,7 @@ export default class SubmitActivityScreen extends Component {
           style={{ height: 50, width: 300 }}
           onValueChange={this._onChangeActivityCategory}
         >
-          <Picker.Item label="Planning" value="Planning" />
-          <Picker.Item label="Coding" value="Coding" />
+          {this.activityCategoryList()}
         </Picker>
         <Text>Activity Name</Text>
         <TextInput
@@ -105,17 +144,3 @@ export default class SubmitActivityScreen extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  center: {
-    justifyContent: 'center',
-  },
-  userinput: {
-    padding: 20,
-    marginBottom: 10,
-    backgroundColor: 'blue'
-  },
-})

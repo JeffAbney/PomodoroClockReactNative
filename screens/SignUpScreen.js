@@ -6,6 +6,7 @@ import {
   Alert,
   Button
 } from 'react-native';
+import styles from '../constants/Styles';
 import { TextInput, ScrollView } from 'react-native-gesture-handler';
 
 export default class SignUpScreen extends Component {
@@ -80,8 +81,8 @@ export default class SignUpScreen extends Component {
 render() {
   return (
     <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
+      style={styles.SignUpScreenContainer}
+      contentContainerStyle={styles.center}
       keyboardShouldPersistTaps="never">
       <TextInput style={styles.userinput} onChangeText={this._onChangeUsername} placeholder="User Name" />
       <TextInput style={styles.userinput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
@@ -92,23 +93,3 @@ render() {
   );
 }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 35,
-    paddingRight: 15,
-    paddingBottom: 15,
-    paddingLeft: 15
-  },
-  contentContainer: {
-    justifyContent: 'center'
-  },
-  userinput: {
-    padding: 20,
-    marginBottom: 10,
-    backgroundColor: 'red'
-  },
-
-})

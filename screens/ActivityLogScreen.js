@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import styles from '../constants/Styles'
 
 class activityLogScreen extends React.Component {
 
@@ -62,7 +63,7 @@ class activityLogScreen extends React.Component {
         this.getLog();
       }
       return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, styles.paddingTop]}>
           <Text style={styles.text}>Logged in as: {this.state.username}</Text>
           {this.logDisplay()}
         </ScrollView>
@@ -72,29 +73,7 @@ class activityLogScreen extends React.Component {
         <Text>Please Log In to view Activity Log</Text>
       )
     }
-
   }
 }
 
 export default withNavigation(activityLogScreen);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 15,
-    backgroundColor: '#fff',
-  },
-  text: {
-    backgroundColor: 'red'
-  },
-  activityCard: {
-    flex: 1,
-    marginTop: 1,
-    paddingTop: 5,
-    backgroundColor: 'grey',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'black',
-    elevation: 2
-  },
-});

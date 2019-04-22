@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import styles from '../constants/Styles';
 import {
   Image,
   Text,
@@ -167,13 +167,13 @@ export class Clock extends Component {
       let fmtMSS = (s) => (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
       let { isSession, clockIsRunning, clockHasStarted } = this.state;
       return (
-        <View style={[styles.container, styles.centeredContainer]}>
+        <View style={[styles.container, styles.center, styles.align]}>
           <Text style={styles.clock}>{isSession ? "Session" : "Break"}</Text>
           <Text style={styles.clock}>{fmtMSS(this.state.secondsLeft)}</Text>
           <View style={styles.rowContainer}>
-            <View style={styles.centeredContainer}>
+            <View style={[styles.container, styles.center, styles.align]}>
               <Text style={styles.timeAdjusterLabel}>Session</Text>
-              <View style={[styles.rowContainer, styles.centeredContainer]}>
+              <View style={[styles.container, styles.rowContainer, styles.center, styles.align]}>
                 <TouchableHighlight style={styles.touchableArrow} onPress={this._onPressSessionDecrease}>
                   <Image source={require('../assets/images/back.png')} />
                 </TouchableHighlight>
@@ -183,9 +183,9 @@ export class Clock extends Component {
                 </TouchableHighlight>
               </View>
             </View>
-            <View style={styles.centeredContainer}>
+            <View style={[styles.container, styles.center, styles.align]}>
               <Text style={styles.timeAdjusterLabel}>Break</Text>
-              <View style={[styles.rowContainer, styles.centeredContainer]}>
+              <View style={[styles.container, styles.rowContainer, styles.center, styles.align]}>
                 <TouchableHighlight style={styles.touchableArrow} onPress={this._onPressBreakDecrease}>
                   <Image source={require('../assets/images/back.png')} />
                 </TouchableHighlight>
@@ -212,114 +212,4 @@ export class Clock extends Component {
       )
     }
   }
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-    },
-    contentContainer: {
-      paddingTop: 30,
-      justifyContent: 'center',
-      backgroundColor: 'brown',
-    },
-    rowContainer: {
-      flexDirection: 'row',
-    },
-    centeredContainer: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-    signInContainer: {
-      justifyContent: 'flex-end',
-      paddingRight: 20,
-      paddingTop: 30,
-    },
-    spaceBetween: {
-      justifyContent: 'space-between'
-    },
-    welcomeText: {
-      paddingLeft: 15,
-    },
-    signOutText: {
-      color: 'grey',
-    },
-    clockContainer: {
-      flex: 1,
-      backgroundColor: 'blue',
-    },
-    clock: {
-      fontSize: 60,
-    },
-    timeAdjusterLabel: {
-      fontSize: 24,
-      paddingBottom: 15,
-    },
-    touchableArrow: {
-      width: 25,
-      alignItems: 'center'
-    },
-    setTimeText: {
-      paddingRight: 8,
-      paddingLeft: 8,
-      fontSize: 32,
-    },
-    buttonContainer: {
-      alignItems: 'center',
-      justifyContent: 'space-evenly',
-      marginTop: 50,
-      width: 300,
-      height: 50,
-    },
-    button: {
-      flex: 1,
-      padding: 10,
-      margin: 5,
-      alignItems: 'center',
-      borderWidth: 0.5,
-      borderColor: '#000',
-      borderRadius: 4,
-    },
-    welcomeContainer: {
-      alignItems: 'center',
-      marginTop: 10,
-      marginBottom: 20,
-    },
-    welcomeImage: {
-      width: 100,
-      height: 80,
-      resizeMode: 'contain',
-      marginTop: 3,
-      marginLeft: -10,
-    },
-    tabBarInfoContainer: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      ...Platform.select({
-        ios: {
-          shadowColor: 'red',
-          shadowOffset: { height: -3 },
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-        },
-        android: {
-          elevation: 20,
-        },
-      }),
-      alignItems: 'center',
-      backgroundColor: '#fbfbfb',
-      paddingVertical: 20,
-    },
-    tabBarInfoText: {
-      fontSize: 17,
-      color: 'rgba(96,100,109, 1)',
-      textAlign: 'center',
-    },
-    navigationFilename: {
-      marginTop: 5,
-    },
-  });
   

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
 import {
-  StyleSheet,
   Text,
   View,
   Alert,
   Button,
 } from 'react-native';
+import styles from '../constants/Styles';
 import { TextInput } from 'react-native-gesture-handler';
 
 
@@ -82,7 +82,7 @@ export default class LogInScreen extends Component {
   render() {
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.padding, styles.center]}>
         <TextInput style={styles.userinput} onChangeText={this._onChangeUsername} placeholder="User Name" />
         <TextInput style={styles.userinput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
         <Button title="Log In" onPress={this._onLogInSubmit} />
@@ -91,18 +91,3 @@ export default class LogInScreen extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    padding: 15
-  },
-  userinput: {
-    padding: 20,
-    marginBottom: 10,
-    backgroundColor: 'blue'
-  },
-
-})
