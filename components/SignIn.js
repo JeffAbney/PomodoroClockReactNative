@@ -10,7 +10,6 @@ import {
 	Platform
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
-import styles from '../constants/Styles';
 
 export default class SignIn extends Component {
 	constructor(props) {
@@ -26,22 +25,20 @@ export default class SignIn extends Component {
       actions: [NavigationActions.navigate({ routeName: 'Home' }),
       NavigationActions.navigate({ routeName: 'LogIn' }),],
 		});
-		
-		console.log("Props", this.props);
 		this.props.screenProps.onLogOut();
 		this.props.navigation.dispatch(resetAction);
 	}
 
 	render() {
 		const { navigation, loggedIn, username } = this.props;
-		
+		let styles = this.props.styles;
 
 		if (!loggedIn) {
 			return (
 				<View style={[styles.signInContainer, styles.rowContainer]}>
-					<Text onPress={() => navigation.navigate('SignUp')}>Sign Up</Text>
-					<Text> / </Text>
-					<Text onPress={() => navigation.navigate('LogIn')}>Log In</Text>
+					<Text style={styles.signInText} onPress={() => navigation.navigate('SignUp')}>Sign Up</Text>
+					<Text style={styles.signInText}> / </Text>
+					<Text style={styles.signInText} onPress={() => navigation.navigate('LogIn')}>Log In</Text>
 				</View>
 			)
 		} else {

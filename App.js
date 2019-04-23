@@ -2,7 +2,10 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
-import styles from './constants/Styles'
+import lightStyles from './constants/LightStyles';
+import darkStyles from './constants/DarkStyles';
+
+
 
 export default class App extends React.Component {
   constructor(props) {
@@ -10,7 +13,8 @@ export default class App extends React.Component {
     this.state = {
       isLoadingComplete: false,
       isLoggedIn: false,
-      username: "Guest"
+      username: "Guest",
+      styles: darkStyles,
     };
 
     this.logIn = this.logIn.bind(this);
@@ -34,6 +38,7 @@ export default class App extends React.Component {
   }
 
   render() {
+    let styles = this.state.styles;
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <AppLoading
@@ -51,7 +56,8 @@ export default class App extends React.Component {
               isLoggedIn: this.state.isLoggedIn, 
               onLogOut: this.logOut, 
               onLogIn: this.logIn,
-              username: this.state.username }} />
+              username: this.state.username,
+              styles: this.state.styles }} />
         </View>
       );
     }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import styles from '../constants/Styles';
 import {
   Image,
   Text,
@@ -166,6 +165,7 @@ export class Clock extends Component {
     render() {
       let fmtMSS = (s) => (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
       let { isSession, clockIsRunning, clockHasStarted } = this.state;
+      let styles = this.props.styles;
       return (
         <View style={[styles.container, styles.center, styles.align]}>
           <Text style={styles.clock}>{isSession ? "Session" : "Break"}</Text>
@@ -198,7 +198,7 @@ export class Clock extends Component {
           </View>
           <View style={[styles.rowContainer, styles.buttonContainer]}>
             <TouchableHighlight title={clockIsRunning ? "Pause" : "Start"} onPress={clockIsRunning ? this._onPressPause : this._onPressStart} style={styles.button}>
-              <Text> {clockIsRunning ? "Pause" : "Start"} </Text>
+              <Text style={styles.buttonText}> {clockIsRunning ? "Pause" : "Start"} </Text>
             </TouchableHighlight>
             {!clockHasStarted ?
               <View />

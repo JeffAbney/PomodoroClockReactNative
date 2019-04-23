@@ -8,7 +8,6 @@ import {
   Picker
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
-import styles from '../constants/Styles';
 
 
 export default class SettingsScreen extends React.Component {
@@ -17,6 +16,7 @@ export default class SettingsScreen extends React.Component {
   };
 
   render() {
+    let styles = this.props.screenProps.styles;
     let username = this.props.screenProps.username;
     return (
       <View style={styles.container}>

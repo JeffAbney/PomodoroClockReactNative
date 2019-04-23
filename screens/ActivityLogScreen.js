@@ -1,7 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import styles from '../constants/Styles'
 
 class activityLogScreen extends React.Component {
 
@@ -40,6 +39,7 @@ class activityLogScreen extends React.Component {
   }
 
   logDisplay() {
+    let styles = this.props.screenProps.styles;
     return this.state.log.map((act, index) => {
       return (
         <View style={styles.activityCard} key={index}>
@@ -58,6 +58,7 @@ class activityLogScreen extends React.Component {
 
   render() {
     let loggedIn = this.props.screenProps.isLoggedIn;
+    let styles = this.props.screenProps.styles;
     if (loggedIn) {
       if (this.props.screenProps.username != this.state.username) {
         this.getLog();
@@ -70,7 +71,9 @@ class activityLogScreen extends React.Component {
       );
     } else {
       return (
-        <Text>Please Log In to view Activity Log</Text>
+        <View style={styles.container}>
+          <Text style={styles.welcomeText}>Please Log In to view Activity Log</Text>
+        </View>
       )
     }
   }

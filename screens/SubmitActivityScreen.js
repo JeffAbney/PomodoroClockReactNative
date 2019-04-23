@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from '../constants/Styles'
+import styles from '../constants/LightStyles'
 import {
   StyleSheet,
   Text,

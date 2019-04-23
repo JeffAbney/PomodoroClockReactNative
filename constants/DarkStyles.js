@@ -2,10 +2,20 @@ import {
     StyleSheet
 } from 'react-native';
 
-export default styles = StyleSheet.create({
+import colors from './Colors';
+const {
+    backgroundDark,
+    mainTextDark,
+    secondaryTextDark,
+    userInputDark,
+    submitBackgroundDark,
+    buttonOutlineDark
+} = colors;
+
+export default darkStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: backgroundDark,
     },
     center: {
         justifyContent: 'center',
@@ -16,23 +26,29 @@ export default styles = StyleSheet.create({
     userinput: {
         padding: 20,
         marginBottom: 10,
-        backgroundColor: 'blue'
+        backgroundColor: userInputDark,
     },
     settingsWelcomeText: {
         fontSize: 36,
+        color: mainTextDark
     },
     welcomeText: {
         paddingLeft: 15,
+        color: mainTextDark
+    },
+    signInText: {
+        color: mainTextDark
     },
     activityCard: {
         flex: 1,
         marginTop: 1,
         paddingTop: 5,
-        backgroundColor: 'grey',
+        backgroundColor: submitBackgroundDark,
         justifyContent: 'center',
         borderWidth: 2,
-        borderColor: 'black',
-        elevation: 2
+        borderColor: buttonOutlineDark,
+        elevation: 2,
+        color: mainTextDark
     },
     paddingTop: {
         paddingTop: 15,
@@ -41,24 +57,26 @@ export default styles = StyleSheet.create({
         padding: 15
     },
     clockContainer: {
-        flex: 1,
-        backgroundColor: 'blue',
+        flex: 1
     },
     SignUpScreenContainer: {
         paddingTop: 35,
         paddingRight: 15,
         paddingBottom: 15,
-        paddingLeft: 15
+        paddingLeft: 15,
+        backgroundColor: backgroundDark
     },
     rowContainer: {
         flexDirection: 'row',
     },
     clock: {
         fontSize: 60,
+        color: mainTextDark
     },
     timeAdjusterLabel: {
         fontSize: 24,
         paddingBottom: 15,
+        color: mainTextDark,
     },
     touchableArrow: {
         width: 25,
@@ -68,6 +86,7 @@ export default styles = StyleSheet.create({
         paddingRight: 8,
         paddingLeft: 8,
         fontSize: 32,
+        color: mainTextDark
     },
     buttonContainer: {
         alignItems: 'center',
@@ -82,18 +101,26 @@ export default styles = StyleSheet.create({
         margin: 5,
         alignItems: 'center',
         borderWidth: 0.5,
-        borderColor: '#000',
+        borderColor: buttonOutlineDark,
         borderRadius: 4,
+    },
+    buttonText: {
+        color: mainTextDark
     },
     signInContainer: {
         justifyContent: 'flex-end',
         paddingRight: 20,
         paddingTop: 30,
+        color: mainTextDark
     },
     spaceBetween: {
         justifyContent: 'space-between'
     },
     signOutText: {
-        color: 'grey',
-      },
+        color: secondaryTextDark,
+    },
+    redirectText: {
+        paddingTop: 10,
+        color: secondaryTextDark,
+    },
 })
