@@ -16,6 +16,8 @@ export default class SignIn extends Component {
 		super(props);
 
 		this.signOut = this.signOut.bind(this);
+		this.goToSignUp = this.goToSignUp.bind(this);
+		this.goToLogIn = this.goToLogIn.bind(this);
 	}
 	
 
@@ -29,6 +31,16 @@ export default class SignIn extends Component {
 		this.props.navigation.dispatch(resetAction);
 	}
 
+	goToSignUp() {
+		const { navigation } = this.props;
+		navigation.navigate('SignUp');
+	}
+
+	goToLogIn() {
+		const { navigation } = this.props;
+		navigation.navigate('LogIn');
+	}
+
 	render() {
 		const { navigation, loggedIn, username } = this.props;
 		let styles = this.props.styles;
@@ -36,9 +48,9 @@ export default class SignIn extends Component {
 		if (!loggedIn) {
 			return (
 				<View style={[styles.signInContainer, styles.rowContainer]}>
-					<Text style={styles.signInText} onPress={() => navigation.navigate('SignUp')}>Sign Up</Text>
+					<Text style={styles.signInText} onPress={this.goToSignUp}>Sign Up</Text>
 					<Text style={styles.signInText}> / </Text>
-					<Text style={styles.signInText} onPress={() => navigation.navigate('LogIn')}>Log In</Text>
+					<Text style={styles.signInText} onPress={this.goToLogIn}>Log In</Text>
 				</View>
 			)
 		} else {

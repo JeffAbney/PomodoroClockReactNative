@@ -5,8 +5,6 @@ import AppNavigator from './navigation/AppNavigator';
 import lightStyles from './constants/LightStyles';
 import darkStyles from './constants/DarkStyles';
 
-
-
 export default class App extends React.Component {
   constructor(props) {
     super(props);
