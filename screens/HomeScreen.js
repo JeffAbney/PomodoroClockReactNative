@@ -23,7 +23,7 @@ export default class HomeScreen extends Component {
     const { navigation } = this.props;
     const loggedIn = navigation.getParam('loggedIn', false);
     const username = navigation.getParam('username', "guest");
-    let styles = this.props.screenProps.styles;
+    let { styles, sessionTime, shortBreakTime, longBreakTime } = this.props.screenProps;
 
     let goToLogIn = (time) => navigation.navigate('LogIn', {
       fromSession: true,
@@ -44,14 +44,17 @@ export default class HomeScreen extends Component {
           <SignIn
             loggedIn={loggedIn}
             navigation={navigation}
-            username={username} 
+            username={username}
             screenProps={this.props.screenProps}
             styles={styles} />
           <View style={styles.clockContainer}>
             <Clock
               isLoggedIn={loggedIn}
               onEndSession={loggedIn ? goToLogSession : goToLogIn}
-              styles={styles} />
+              styles={styles}
+              sessionTime={sessionTime}
+              shortBreakTime={shortBreakTime}
+              longBreakTime={longBreakTime} />
           </View>
         </View>
       </View >

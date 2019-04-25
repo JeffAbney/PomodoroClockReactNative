@@ -7,17 +7,17 @@ import {
   Alert,
 } from 'react-native';
 
-const _sessionLength = 1;
-const _breakLength = 2;
-const _secondsLeft = 5;
 
 export class Clock extends Component {
   constructor(props) {
     super(props);
+    let { sessionTime, shortBreakTime, longBreakTime } = this.props;
+
     this.state = {
-      sessionLength: _sessionLength,
-      breakLength: _breakLength,
-      secondsLeft: _secondsLeft,
+      sessionLength: sessionTime,
+      shortBreakLength: shortBreakTime,
+      longBreakLength: longBreakTime,
+      secondsLeft: sessionTime * 60,
       clockIsRunning: false,
       isSession: true,
       clockHasStarted: false,
@@ -38,7 +38,6 @@ export class Clock extends Component {
 
   _onPressSessionDecrease() {
     let { sessionLength, isSession, secondsLeft } = this.state;
-    console.log("Decrease session");
     if (sessionLength > 1) {
       this.setState({
         sessionLength: --sessionLength,
@@ -66,7 +65,7 @@ export class Clock extends Component {
     let { breakLength, isSession, secondsLeft } = this.state;
     if (breakLength > 1) {
       this.setState({
-        breakLength: --breakLength,
+        shortBreakLength: --shortBreakLength,
         secondsLeft: !isSession ? secondsLeft - 60 : secondsLeft
       })
     } else {
@@ -79,7 +78,7 @@ export class Clock extends Component {
     let { breakLength, isSession, secondsLeft } = this.state;
     if (breakLength < 60) {
       this.setState({
-        breakLength: ++breakLength,
+        shortBreakLength: ++shortBreakLength,
         secondsLeft: !isSession ? secondsLeft + 60 : secondsLeft
       })
     } else {
@@ -120,11 +119,12 @@ export class Clock extends Component {
   }
 
   resetClock() {
+    let { sessionLength, shortBreakLength, longBreakLength } = this.props;
     clearInterval(this.intervalHandle);
     this.setState({
-      sessionLength: _sessionLength,
-      breakLength: _breakLength,
-      secondsLeft: _secondsLeft,
+      sessionLength: sessionLength,
+      shortBreakLength: shortBreakLength,
+      secondsLeft: sessionLength * 60,
       clockIsRunning: false,
       isSession: true,
       clockHasStarted: false
@@ -133,7 +133,7 @@ export class Clock extends Component {
   }
 
   tick() {
-    let { secondsLeft, isSession, breakLength, sessionLength } = this.state;
+    let { secondsLeft, isSession, shortBreakLength, sessionLength } = this.state;
     if (secondsLeft === 1) {
       if (isSession) {
         clearInterval(this.intervalHandle);
@@ -145,7 +145,7 @@ export class Clock extends Component {
       this.setState({
         secondsLeft:
           isSession ?
-            Math.floor(breakLength * 60)
+            Math.floor(shortBreakLength * 60)
             :
             Math.floor(sessionLength * 60),
         isSession: !isSession,
@@ -201,7 +201,7 @@ export class Clock extends Component {
                 onPress={this._onPressBreakDecrease}>
                 <Image source={require('../assets/images/back.png')} />
               </TouchableHighlight>
-              <Text style={styles.setTimeText}>{this.state.breakLength}</Text>
+              <Text style={styles.setTimeText}>{this.state.shortBreakLength}</Text>
               <TouchableHighlight
                 style={styles.touchableArrow}
                 onPress={this._onPressBreakIncrease}>

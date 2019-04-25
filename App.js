@@ -12,12 +12,19 @@ export default class App extends React.Component {
       isLoadingComplete: false,
       isLoggedIn: false,
       username: "Guest",
-      styles: lightStyles,
+      styles: darkStyles,
+      sessionTime: 25,
+      shortBreakTime: 5,
+      longBreakTime: 15,
     };
 
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.changeTheme = this.changeTheme.bind(this);
+    this.setSessionTime = this.setSessionTime.bind(this);
+    this.setShortBreakTime = this.setShortBreakTime.bind(this);
+    this.setLongBreakTime = this.setLongBreakTime.bind(this);
+    this.saveSettings = this.saveSettings.bind(this);
   }
 
   logIn(username) {
@@ -41,6 +48,34 @@ export default class App extends React.Component {
     })
   }
 
+  setSessionTime(min) {
+    this.setState({
+      sessionTime: min
+    })
+  }
+
+  setShortBreakTime(min) {
+    this.setState({
+      shortBreakTime: min
+    })
+  }
+
+  setLongBreakTime(min) {
+    this.setState({
+      longBreakTime: min
+    })
+  }
+
+  saveSettings(set) {
+    console.log(set);
+    this.setState({
+      styles: set.switchValue === false ? lightStyles : darkStyles,
+      sessionTime: set.sessionValue,
+      shortBreakTime: set.shortBreakValue,
+      longBreakTime: set.longBreakValue,
+    })
+  }
+
   render() {
     let styles = this.state.styles;
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -55,14 +90,19 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator 
-            screenProps={{ 
+          <AppNavigator
+            screenProps={{
               isLoggedIn: this.state.isLoggedIn,
-              changeTheme: this.changeTheme, 
-              onLogOut: this.logOut, 
+              changeTheme: this.changeTheme,
+              onLogOut: this.logOut,
               onLogIn: this.logIn,
               username: this.state.username,
-              styles: this.state.styles }} />
+              sessionTime: this.state.sessionTime,
+              shortBreakTime: this.state.shortBreakTime,
+              longBreakTime: this.state.longBreakTime,
+              saveSettings: this.saveSettings,
+              styles: this.state.styles
+            }} />
         </View>
       );
     }
