@@ -82,8 +82,8 @@ export default class LogInScreen extends Component {
     let styles = this.props.screenProps.styles;
     return (
       <View style={[styles.container, styles.padding, styles.center]}>
-        <TextInput style={styles.userinput} onChangeText={this._onChangeUsername} placeholder="User Name" />
-        <TextInput style={styles.userinput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
+        <TextInput style={styles.userInput} onChangeText={this._onChangeUsername} placeholder="User Name" />
+        <TextInput style={styles.userInput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
         <Button title="Log In" onPress={this._onLogInSubmit} />
         <Text style={styles.redirectText} onPress={() => this.props.navigation.navigate('SignUp')}>Don't have an account? Sign Up!</Text>
       </View>

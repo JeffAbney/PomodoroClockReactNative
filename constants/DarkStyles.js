@@ -23,13 +23,18 @@ export default darkStyles = StyleSheet.create({
     align: {
         alignItems: 'center'
     },
-    userinput: {
+    userInput: {
         padding: 20,
         marginBottom: 10,
         backgroundColor: userInputDark,
     },
     settingsWelcomeText: {
         fontSize: 36,
+        color: mainTextDark
+    },
+    settingsText: {
+        fontSize: 24,
+        padding: 20,
         color: mainTextDark
     },
     welcomeText: {
@@ -123,9 +128,5 @@ export default darkStyles = StyleSheet.create({
         paddingTop: 10,
         color: secondaryTextDark,
     },
-    settingsText: {
-        fontSize: 24,
-        padding: 20,
-        color: mainTextDark
-    },
+    
 })

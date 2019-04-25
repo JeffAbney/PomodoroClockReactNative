@@ -84,9 +84,9 @@ render() {
       style={styles.SignUpScreenContainer}
       contentContainerStyle={styles.center}
       keyboardShouldPersistTaps="never">
-      <TextInput style={styles.userinput} onChangeText={this._onChangeUsername} placeholder="User Name" />
-      <TextInput style={styles.userinput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
-      <TextInput style={styles.userinput} secureTextEntry={true} onChangeText={this._onChangeVerifyPassword} placeholder="Verfiy Password" />
+      <TextInput style={styles.userInput} onChangeText={this._onChangeUsername} placeholder="User Name" />
+      <TextInput style={styles.userInput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
+      <TextInput style={styles.userInput} secureTextEntry={true} onChangeText={this._onChangeVerifyPassword} placeholder="Verfiy Password" />
       <Button title="Sign Up" onPress={this._onSignUpSubmit} />
       <Text style={styles.redirectText} onPress={() => this.props.navigation.navigate('LogIn')}>Already have an account? Sign In!</Text>
     </ScrollView>

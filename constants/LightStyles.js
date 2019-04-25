@@ -23,13 +23,18 @@ export default lightStyles = StyleSheet.create({
     align: {
         alignItems: 'center'
     },
-    userinput: {
+    userInput: {
         padding: 20,
         marginBottom: 10,
         backgroundColor: userInputLight,
     },
     settingsWelcomeText: {
         fontSize: 36,
+        color: mainTextLight
+    },
+    settingsText: {
+        fontSize: 24,
+        padding: 20,
         color: mainTextLight
     },
     welcomeText: {

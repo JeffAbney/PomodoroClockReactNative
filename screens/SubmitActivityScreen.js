@@ -134,7 +134,7 @@ export default class SubmitActivityScreen extends Component {
         </Picker>
         <Text>Activity Name</Text>
         <TextInput
-          style={styles.userinput}
+          style={styles.userInput}
           onChangeText={this._onChangeActivityName}
         />
         <Button title="Submit" onPress={this._onSubmitActivity} />
