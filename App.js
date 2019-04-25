@@ -12,12 +12,12 @@ export default class App extends React.Component {
       isLoadingComplete: false,
       isLoggedIn: false,
       username: "Guest",
-      styles: darkStyles,
+      styles: lightStyles,
     };
 
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
-
+    this.changeTheme = this.changeTheme.bind(this);
   }
 
   logIn(username) {
@@ -33,6 +33,12 @@ export default class App extends React.Component {
       isLoggedIn: false,
       username: "Guest"
     });
+  }
+
+  changeTheme() {
+    this.setState({
+      styles: this.state.styles === lightStyles ? darkStyles : lightStyles
+    })
   }
 
   render() {
@@ -51,7 +57,8 @@ export default class App extends React.Component {
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <AppNavigator 
             screenProps={{ 
-              isLoggedIn: this.state.isLoggedIn, 
+              isLoggedIn: this.state.isLoggedIn,
+              changeTheme: this.changeTheme, 
               onLogOut: this.logOut, 
               onLogIn: this.logIn,
               username: this.state.username,

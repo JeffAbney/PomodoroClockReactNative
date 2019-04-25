@@ -123,4 +123,9 @@ export default darkStyles = StyleSheet.create({
         paddingTop: 10,
         color: secondaryTextDark,
     },
+    settingsText: {
+        fontSize: 24,
+        padding: 20,
+        color: mainTextDark
+    },
 })
