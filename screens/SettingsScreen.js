@@ -23,8 +23,8 @@ export default class SettingsScreen extends React.Component {
 
     this.onFlipSwitch = this.onFlipSwitch.bind(this);
     this.onSessionValueChange = this.onSessionValueChange.bind(this);
-    this.onShortBreakValueChange = this.onSessionValueChange.bind(this);
-    this.onLongValueChange = this.onSessionValueChange.bind(this);
+    this.onShortBreakValueChange = this.onShortBreakValueChange.bind(this);
+    this.onLongBreakValueChange = this.onLongBreakValueChange.bind(this);
     this.onSaveSettings = this.onSaveSettings.bind(this);
   }
 
@@ -41,19 +41,21 @@ export default class SettingsScreen extends React.Component {
   }
 
   onSessionValueChange(val) {
-    console.log(val);
+    console.log("SESS", val);
     this.setState({
       sessionValue: val
     })
   }
 
   onShortBreakValueChange(val) {
+    console.log("SB", val);
     this.setState({
       shortBreakValue: val
     })
   }
 
   onLongBreakValueChange(val) {
+    console.log("LB", val);
     this.setState({
       longBreakValue: val
     })
@@ -80,10 +82,6 @@ export default class SettingsScreen extends React.Component {
     let {
       styles,
       username,
-      setSessionTime,
-      setShortBreakTime,
-      setLongBreakTime,
-      saveSettings,
     } = this.props.screenProps;
 
     let { sessionValue, shortBreakValue, longBreakValue } = this.state;
@@ -99,32 +97,38 @@ export default class SettingsScreen extends React.Component {
             thumbColor={this.state.thumbColor}>
           </Switch>
         </View>
-        <View style={styles.rowContainer}>
+        <View style={[styles.rowContainer, styles.spaceBetween, styles.align]}>
           <Text style={styles.settingsText}>Session Minutes</Text>
           <Picker
-            selectedValue={this.state.sessionValue}
-            style={{ height: 50, width: 50 }}
+            selectedValue={sessionValue}
+            style={styles.settingsPicker}
             onValueChange={this.onSessionValueChange}
             mode='dropdown'
           >
             {this.numList()}
           </Picker>
         </View>
-        <View style={styles.rowContainer}>
+        <View style={[styles.rowContainer, styles.spaceBetween, styles.align]}>
           <Text style={styles.settingsText}>Short Break Minutes</Text>
-          <TextInput
-            style={styles.userInput}
-            onChange={this.onShortBreakValueChange}>
-            {shortBreakValue}
-          </TextInput>
+          <Picker
+            selectedValue={shortBreakValue}
+            style={styles.settingsPicker}
+            onValueChange={this.onShortBreakValueChange}
+            mode='dropdown'
+          >
+            {this.numList()}
+          </Picker>
         </View>
-        <View style={styles.rowContainer}>
+        <View style={[styles.rowContainer, styles.spaceBetween, styles.align]}>
           <Text style={styles.settingsText}>Long Break Minutes</Text>
-          <TextInput
-            style={styles.userInput}
-            onChange={this.onLongBreakValueChange}>
-            {longBreakValue}
-          </TextInput>
+          <Picker
+            selectedValue={longBreakValue}
+            style={styles.settingsPicker}
+            onValueChange={this.onLongBreakValueChange}
+            mode='dropdown'
+          >
+            {this.numList()}
+          </Picker>
         </View>
         <Button title="Save" onPress={this.onSaveSettings} />
 
