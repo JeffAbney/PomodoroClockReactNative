@@ -11,20 +11,7 @@ import {
 export class Clock extends Component {
   constructor(props) {
     super(props);
-    let { sessionTime, shortBreakTime, longBreakTime } = this.props;
 
-    this.state = {
-      sessionLength: sessionTime,
-      shortBreakLength: shortBreakTime,
-      longBreakLength: longBreakTime,
-      secondsLeft: sessionTime * 60,
-      clockIsRunning: false,
-      isSession: true,
-      clockHasStarted: false,
-      isLoggedIn: this.props.loggedIn
-    }
-
-    this.intervalHandle;
     this._onPressSessionDecrease = this._onPressSessionDecrease.bind(this);
     this._onPressSessionIncrease = this._onPressSessionIncrease.bind(this);
     this._onPressBreakDecrease = this._onPressBreakDecrease.bind(this);
@@ -32,17 +19,12 @@ export class Clock extends Component {
     this._onPressStart = this._onPressStart.bind(this);
     this._onPressPause = this._onPressPause.bind(this);
     this._onPressReset = this._onPressReset.bind(this);
-    this.tick = this.tick.bind(this);
-    this.resetClock = this.resetClock.bind(this);
   }
 
   _onPressSessionDecrease() {
-    let { sessionLength, isSession, secondsLeft } = this.state;
-    if (sessionLength > 1) {
-      this.setState({
-        sessionLength: --sessionLength,
-        secondsLeft: isSession ? secondsLeft - 60 : secondsLeft
-      })
+    let { sessionTime, setSessionTime } = this.props.screenProps;
+    if (sessionTime > 1) {
+      setSessionTime(sessionTime - 1)
     }
     else {
       Alert.alert("That's as low as it goes!")
@@ -50,24 +32,18 @@ export class Clock extends Component {
   }
 
   _onPressSessionIncrease() {
-    let { sessionLength, isSession, secondsLeft } = this.state;
-    if (sessionLength < 60)
-      this.setState({
-        sessionLength: ++sessionLength,
-        secondsLeft: isSession ? secondsLeft + 60 : secondsLeft
-      })
+    let { sessionTime, setSessionTime } = this.props.screenProps;
+    if (sessionTime < 60)
+      setSessionTime(sessionTime + 1)
     else {
       Alert.alert("That's as high as it goes!")
     }
   }
 
   _onPressBreakDecrease() {
-    let { breakLength, isSession, secondsLeft } = this.state;
-    if (breakLength > 1) {
-      this.setState({
-        shortBreakLength: --shortBreakLength,
-        secondsLeft: !isSession ? secondsLeft - 60 : secondsLeft
-      })
+    let { shortBreakTime, setShortBreakTime } = this.props.screenProps;
+    if (shortBreakTime > 1) {
+      setShortBreakTime(shortBreakTime - 1)
     } else {
       Alert.alert("That's as low as it goes!")
     }
@@ -75,12 +51,9 @@ export class Clock extends Component {
   }
 
   _onPressBreakIncrease() {
-    let { breakLength, isSession, secondsLeft } = this.state;
-    if (breakLength < 60) {
-      this.setState({
-        shortBreakLength: ++shortBreakLength,
-        secondsLeft: !isSession ? secondsLeft + 60 : secondsLeft
-      })
+    let { shortBreakTime, setShortBreakTime } = this.props.screenProps;
+    if (shortBreakTime < 60) {
+      setShortBreakTime(shortBreakTime + 1)
     } else {
       Alert.alert("That's as high as it goes!")
     }
@@ -88,84 +61,33 @@ export class Clock extends Component {
   }
 
   _onPressStart() {
-    this.intervalHandle = setInterval(this.tick, 1000);
-    this.setState({
-      clockHasStarted: true,
-      clockIsRunning: true,
-    })
+    this.props.screenProps.startTimer();
   }
 
   _onPressPause() {
-    clearInterval(this.intervalHandle);
-    this.setState({
-      clockIsRunning: false,
-    })
+ this.props.screenProps.pauseTimer();
   }
 
   _onPressReset() {
-    Alert.alert(
-      'Reset Clock',
-      'Are you sure you want to reset the clock?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'OK', onPress: () => this.resetClock() },
-      ],
-      { cancelable: false },
-    );
-  }
-
-  resetClock() {
-    let { sessionLength, shortBreakLength, longBreakLength } = this.props;
-    clearInterval(this.intervalHandle);
-    this.setState({
-      sessionLength: sessionLength,
-      shortBreakLength: shortBreakLength,
-      secondsLeft: sessionLength * 60,
-      clockIsRunning: false,
-      isSession: true,
-      clockHasStarted: false
-    })
-
-  }
-
-  tick() {
-    let { secondsLeft, isSession, shortBreakLength, sessionLength } = this.state;
-    if (secondsLeft === 1) {
-      if (isSession) {
-        clearInterval(this.intervalHandle);
-        this.setState({
-          clockIsRunning: false,
-        })
-        this.props.onEndSession(this.state.sessionLength);
-      }
-      this.setState({
-        secondsLeft:
-          isSession ?
-            Math.floor(shortBreakLength * 60)
-            :
-            Math.floor(sessionLength * 60),
-        isSession: !isSession,
-      })
-    } else {
-      this.setState({
-        secondsLeft: --secondsLeft
-      })
-    }
-
+    this.props.screenProps.resetTimer();
   }
 
   render() {
     let fmtMSS = (s) => (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
-    let { isSession, clockIsRunning, clockHasStarted } = this.state;
-    let styles = this.props.styles;
+
+    let {
+      isSession, 
+      clockIsRunning, 
+      clockHasStarted,
+      secondsLeft, 
+      styles, 
+      sessionTime, 
+      shortBreakTime, 
+      longBreakTime} = this.props.screenProps;
     return (
       <View style={[styles.container, styles.center, styles.align]}>
         <Text style={styles.clock}>{isSession ? "Session" : "Break"}</Text>
-        <Text style={styles.clock}>{fmtMSS(this.state.secondsLeft)}</Text>
+        <Text style={styles.clock}>{fmtMSS(secondsLeft)}</Text>
         <View style={styles.rowContainer}>
           <View style={[styles.container, styles.center, styles.align]}>
             <Text style={styles.timeAdjusterLabel}>Session</Text>
@@ -180,7 +102,7 @@ export class Clock extends Component {
                 onPress={this._onPressSessionDecrease}>
                 <Image source={require('../assets/images/back.png')} />
               </TouchableHighlight>
-              <Text style={styles.setTimeText}>{this.state.sessionLength}</Text>
+              <Text style={styles.setTimeText}>{sessionTime}</Text>
               <TouchableHighlight
                 style={styles.touchableArrow}
                 onPress={this._onPressSessionIncrease}>
@@ -201,7 +123,7 @@ export class Clock extends Component {
                 onPress={this._onPressBreakDecrease}>
                 <Image source={require('../assets/images/back.png')} />
               </TouchableHighlight>
-              <Text style={styles.setTimeText}>{this.state.shortBreakLength}</Text>
+              <Text style={styles.setTimeText}>{shortBreakTime}</Text>
               <TouchableHighlight
                 style={styles.touchableArrow}
                 onPress={this._onPressBreakIncrease}>

@@ -41,28 +41,24 @@ export default class SettingsScreen extends React.Component {
   }
 
   onSessionValueChange(val) {
-    console.log("SESS", val);
     this.setState({
       sessionValue: val
     })
   }
 
   onShortBreakValueChange(val) {
-    console.log("SB", val);
     this.setState({
       shortBreakValue: val
     })
   }
 
   onLongBreakValueChange(val) {
-    console.log("LB", val);
     this.setState({
       longBreakValue: val
     })
   }
 
   onSaveSettings() {
-    console.log("Saving Settings");
     this.props.screenProps.saveSettings(this.state);
   }
 
