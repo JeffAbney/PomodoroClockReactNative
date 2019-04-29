@@ -78,12 +78,12 @@ export default class App extends React.Component {
     this.setState({
       shortBreakTime: min,
       secondsLeft: this.state.isSession ?
-      this.state.secondsLeft
-      :
-      min > this.state.shortBreakTime ?
-        this.state.secondsLeft + 60
+        this.state.secondsLeft
         :
-        this.state.secondsLeft - 60
+        min > this.state.shortBreakTime ?
+          this.state.secondsLeft + 60
+          :
+          this.state.secondsLeft - 60
     })
   }
 
@@ -96,12 +96,28 @@ export default class App extends React.Component {
   saveSettings(settings) {
     console.log("From App", settings);
     console.log("App State", this.state);
-    this.setState({
+    let setState = this.setState({
       styles: settings.switchValue === false ? lightStyles : darkStyles,
       sessionTime: settings.sessionValue,
       shortBreakTime: settings.shortBreakValue,
       longBreakTime: settings.longBreakValue,
+      secondsLeft: this.state.isSession ? settings.sessionValue * 60 : settings.shortBreakValue * 60
     })
+    !this.state.clockHasStarted ?
+      setState()
+      :
+      Alert.alert(
+        'Saving Settings while clock is running will reset clock.',
+        'Are you sure you want to reset the clock?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: () => setState },
+        ],
+        { cancelable: false },
+      );
   }
 
   startTimer() {
@@ -126,7 +142,6 @@ export default class App extends React.Component {
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
         { text: 'OK', onPress: () => this.resetClockState() },
