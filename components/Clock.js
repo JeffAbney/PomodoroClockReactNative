@@ -87,7 +87,7 @@ export class Clock extends Component {
     return (
       <View style={[styles.container, styles.center, styles.align]}>
         <Text style={styles.clock}>{isSession ? "Session" : "Break"}</Text>
-        <Text style={styles.clock}>{fmtMSS(secondsLeft)}</Text>
+        <Text style={styles.clock}>{fmtMSS(secondsLeft)}</Text> 
         <View style={styles.rowContainer}>
           <View style={[styles.container, styles.center, styles.align]}>
             <Text style={styles.timeAdjusterLabel}>Session</Text>

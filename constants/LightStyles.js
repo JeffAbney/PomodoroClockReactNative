@@ -37,8 +37,13 @@ export default lightStyles = StyleSheet.create({
         padding: 20,
         color: mainTextLight
     },
+    settingsPicker: {
+        width: 90,
+        height: 50
+    },
     welcomeText: {
         paddingLeft: 15,
+        paddingRight: 10,
         color: mainTextLight
     },
     activityCard: {
@@ -120,4 +125,10 @@ export default lightStyles = StyleSheet.create({
     signOutText: {
         color: secondaryTextLight,
     },
+    drawerIcon: {
+        marginTop: 30,
+        marginLeft: 15,
+        height: 36,
+        width: 36,
+    }
 })

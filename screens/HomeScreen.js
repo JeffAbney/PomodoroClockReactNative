@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SignIn from '../components/SignIn';
+import DrawerMenu from '../components/DrawerMenu';
 
 import {
   Image,
@@ -7,6 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   View,
   Alert,
 } from 'react-native';
@@ -15,7 +17,8 @@ import { Clock } from '../components/Clock'
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
-    header: null,
+    drawerLabel: 'Home',
+    header: null
   };
 
   render() {
@@ -24,19 +27,18 @@ export default class HomeScreen extends Component {
     const username = navigation.getParam('username', "guest");
     let { styles } = this.props.screenProps;
 
-
-
-    //After a user is logged in and checks log, switching user to chekc logs doesnt refresh log array.
-
     return (
       <View style={styles.container}>
         <View style={styles.container}>
-          <SignIn
-            loggedIn={loggedIn}
-            navigation={navigation}
-            username={username}
-            screenProps={this.props.screenProps}
-            styles={styles} />
+          <View style={[styles.rowContainer, styles.spaceBetween]}>
+            <DrawerMenu navigation={navigation} styles={styles}/>
+            <SignIn
+              loggedIn={loggedIn}
+              navigation={navigation}
+              username={username}
+              screenProps={this.props.screenProps}
+              styles={styles} />
+          </View>
           <View style={styles.clockContainer}>
             <Clock
               screenProps={this.props.screenProps}

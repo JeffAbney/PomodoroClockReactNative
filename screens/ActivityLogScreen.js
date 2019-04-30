@@ -1,8 +1,13 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import DrawerMenu from '../components/DrawerMenu';
 
 class activityLogScreen extends React.Component {
+
+  static navigationOptions = {
+    title: 'Activity Log'
+  };
 
   constructor(props) {
     super(props);
@@ -52,19 +57,17 @@ class activityLogScreen extends React.Component {
     })
   }
 
-  static navigationOptions = {
-    title: 'Activity Log'
-  };
-
   render() {
     let loggedIn = this.props.screenProps.isLoggedIn;
     let styles = this.props.screenProps.styles;
+    const { navigation } = this.props;
     if (loggedIn) {
       if (this.props.screenProps.username != this.state.username) {
         this.getLog();
       }
       return (
         <ScrollView style={[styles.container, styles.paddingTop]}>
+        <DrawerMenu navigation={navigation} styles={styles}/>
           <Text style={styles.text}>Logged in as: {this.state.username}</Text>
           {this.logDisplay()}
         </ScrollView>
@@ -72,6 +75,7 @@ class activityLogScreen extends React.Component {
     } else {
       return (
         <View style={styles.container}>
+        <DrawerMenu navigation={navigation} styles={styles}/>
           <Text style={styles.welcomeText}>Please Log In to view Activity Log</Text>
         </View>
       )

@@ -7,7 +7,7 @@ import {
   View,
   Picker
 } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import DrawerMenu from '../components/DrawerMenu';
 
 export default class SettingsScreen extends React.Component {
   constructor(props) {
@@ -75,14 +75,15 @@ export default class SettingsScreen extends React.Component {
   }
 
   render() {
-    let {
-      styles,
-      username,
-    } = this.props.screenProps;
 
+    let { styles, username } = this.props.screenProps;
+    const { navigation } = this.props;
     let { sessionValue, shortBreakValue, longBreakValue } = this.state;
+    
+
     return (
       <View style={styles.container}>
+      <DrawerMenu navigation={navigation} styles={styles}/>
         <Text style={styles.settingsWelcomeText}>Welcome, {username}</Text>
         <View style={styles.rowContainer}>
           <Text style={styles.settingsText}>Night Mode: </Text>

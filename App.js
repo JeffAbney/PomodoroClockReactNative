@@ -20,7 +20,7 @@ export default class App extends React.Component {
       sessionTime: sessionTime,
       shortBreakTime: shortBreakTime,
       longBreakTime: longBreakTime,
-      secondsLeft: sessionTime * 60,
+      secondsLeft: 5,
       clockIsRunning: false,
       isSession: true,
       clockHasStarted: false,
@@ -104,7 +104,7 @@ export default class App extends React.Component {
       secondsLeft: this.state.isSession ? settings.sessionValue * 60 : settings.shortBreakValue * 60
     })
     !this.state.clockHasStarted ?
-      setState()
+      setState
       :
       Alert.alert(
         'Saving Settings while clock is running will reset clock.',
@@ -166,11 +166,11 @@ export default class App extends React.Component {
 
   tick() {
     let { secondsLeft, isSession, sessionTime, shortBreakTime, longBreakTime, isLoggedIn } = this.state;
-
     let goToLogIn = (time) => navigation.navigate('LogIn', {
       fromSession: true,
       activityTime: time
     });
+
 
     let goToLogSession = (time) => navigation.navigate('SubmitActivity', {
       loggedIn: true,
@@ -184,7 +184,7 @@ export default class App extends React.Component {
         this.setState({
           clockIsRunning: false,
         })
-        isLoggedIn ? goToLogSession : goToLogIn;
+        isLoggedIn ? goToLogSession() : goToLogIn();
       }
       this.setState({
         secondsLeft:
@@ -199,7 +199,6 @@ export default class App extends React.Component {
         secondsLeft: --secondsLeft
       })
     }
-
   }
 
   render() {
@@ -215,8 +214,6 @@ export default class App extends React.Component {
       styles,
       username
     } = this.state;
-
-
 
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
@@ -251,7 +248,6 @@ export default class App extends React.Component {
               pauseTimer: this.pauseTimer,
               resetTimer: this.resetTimer,
               styles: styles,
-              tick: this.tick,
               username: username,
 
             }} />
