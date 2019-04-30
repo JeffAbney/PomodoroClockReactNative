@@ -63,9 +63,8 @@ export default class SignUpScreen extends Component {
         .then(res => {
           console.log(res);
           if (res == "OK") {
-            this.props.navigation.navigate('Home', {
-              loggedIn: true,
-            })
+            this.props.screenProps.onLogIn(username);
+            this.props.navigation.navigate('Home')
           } else {
 
             Alert.alert("Error",

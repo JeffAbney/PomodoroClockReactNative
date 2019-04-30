@@ -23,9 +23,7 @@ export default class HomeScreen extends Component {
 
   render() {
     const { navigation } = this.props;
-    const loggedIn = navigation.getParam('loggedIn', false);
-    const username = navigation.getParam('username', "guest");
-    let { styles } = this.props.screenProps;
+    let { styles, isLoggedIn, username } = this.props.screenProps;
 
     return (
       <View style={styles.container}>
@@ -33,7 +31,7 @@ export default class HomeScreen extends Component {
           <View style={[styles.rowContainer, styles.spaceBetween]}>
             <DrawerMenu navigation={navigation} styles={styles}/>
             <SignIn
-              loggedIn={loggedIn}
+              loggedIn={isLoggedIn}
               navigation={navigation}
               username={username}
               screenProps={this.props.screenProps}
