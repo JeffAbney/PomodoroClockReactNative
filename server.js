@@ -45,7 +45,7 @@ app.post('/createUser', (req, res) => {
     collection.findOne({ username: username }, (error, doc) => {
       if (error) return next(error);
       if (doc == null) {
-        collection.insert({ username: username, password: password, log: [] }, (error, results) => {
+        collection.insertOne({ username: username, password: password, log: [] }, (error, results) => {
           if (error) return res.json({ "error": "something went wrong" });
           console.log("New User Created");
           console.log(results);
