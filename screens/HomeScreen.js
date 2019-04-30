@@ -42,6 +42,7 @@ export default class HomeScreen extends Component {
           <View style={styles.clockContainer}>
             <Clock
               screenProps={this.props.screenProps}
+              navigation={navigation}
             />
           </View>
         </View>

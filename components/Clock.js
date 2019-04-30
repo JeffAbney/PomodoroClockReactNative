@@ -65,7 +65,7 @@ export class Clock extends Component {
   }
 
   _onPressPause() {
- this.props.screenProps.pauseTimer();
+    this.props.screenProps.pauseTimer();
   }
 
   _onPressReset() {
@@ -76,18 +76,30 @@ export class Clock extends Component {
     let fmtMSS = (s) => (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
 
     let {
-      isSession, 
-      clockIsRunning, 
+      isSession,
+      clockIsRunning,
       clockHasStarted,
-      secondsLeft, 
-      styles, 
-      sessionTime, 
-      shortBreakTime, 
-      longBreakTime} = this.props.screenProps;
+      secondsLeft,
+      styles,
+      sessionTime,
+      shortBreakTime,
+      longBreakTime,
+    username } = this.props.screenProps;
+
+    let goToLogSession = (time) => this.props.navigation.navigate('SubmitActivity', {
+      loggedIn: true,
+      username: username,
+      activityTime: time
+    })
+    //Find a better way to do this! ------------
+    if (secondsLeft === 1) {
+      console.log("Here's 0");
+      goToLogSession(sessionTime);
+    }
     return (
       <View style={[styles.container, styles.center, styles.align]}>
         <Text style={styles.clock}>{isSession ? "Session" : "Break"}</Text>
-        <Text style={styles.clock}>{fmtMSS(secondsLeft)}</Text> 
+        <Text style={styles.clock}>{fmtMSS(secondsLeft)}</Text>
         <View style={styles.rowContainer}>
           <View style={[styles.container, styles.center, styles.align]}>
             <Text style={styles.timeAdjusterLabel}>Session</Text>
