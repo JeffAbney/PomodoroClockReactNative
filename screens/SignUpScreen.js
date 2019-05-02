@@ -76,19 +76,43 @@ export default class SignUpScreen extends Component {
   }
 
 
-render() {
-  let styles = this.props.screenProps.styles;
-  return (
-    <ScrollView
-      style={styles.SignUpScreenContainer}
-      contentContainerStyle={styles.center}
-      keyboardShouldPersistTaps="never">
-      <TextInput style={styles.userInput} onChangeText={this._onChangeUsername} placeholder="User Name" />
-      <TextInput style={styles.userInput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
-      <TextInput style={styles.userInput} secureTextEntry={true} onChangeText={this._onChangeVerifyPassword} placeholder="Verfiy Password" />
-      <Button title="Sign Up" onPress={this._onSignUpSubmit} />
-      <Text style={styles.redirectText} onPress={() => this.props.navigation.navigate('LogIn')}>Already have an account? Sign In!</Text>
-    </ScrollView>
-  );
-}
+  render() {
+    let styles = this.props.screenProps.styles;
+    return (
+      <ScrollView
+        style={styles.SignUpScreenContainer}
+        contentContainerStyle={styles.center}
+        keyboardShouldPersistTaps="never">
+        <TextInput
+          style={styles.userInput}
+          onChangeText={this._onChangeUsername}
+          placeholder="User Name"
+        />
+        <TextInput
+          style={styles.userInput}
+          secureTextEntry={true}
+          onChangeText={this._onChangePassword}
+          placeholder="Password"
+        />
+        <TextInput
+          style={styles.userInput}
+          secureTextEntry={true}
+          onChangeText={this._onChangeVerifyPassword}
+          placeholder="Verfiy Password" />
+        <Button title="Sign Up" onPress={this._onSignUpSubmit} />
+        <Text
+          style={styles.redirectText}
+          onPress={() => this.props.navigation.navigate('LogIn')}
+        >
+          Already have an account? Sign In!
+        </Text>
+        <Text
+          style={styles.redirectText}
+          onPress={() => this.props.navigation.navigate('Home')}
+        >
+          Use diddit without Log In
+        </Text>
+      </ScrollView>
+    );
+  }
 }

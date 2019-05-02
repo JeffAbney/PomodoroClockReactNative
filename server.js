@@ -74,7 +74,17 @@ app.post('/log', (req, res) => {
     var collection = db.collection('Users');
     console.log("connection is working");
     collection.updateOne({ username: username },
-      { $push: { log: { activityCategory: activityCategory, activityName: activityName, activityTime: activityTime, date: date } } }, (error, doc) => {
+      {
+        $push: {
+          log: {
+            activityCategory: activityCategory,
+            activityName: activityName,
+            activityTime: activityTime,
+            date: date
+          }
+        }
+      },
+      (error, doc) => {
         if (error) return next(error);
         if (doc == null) {
           console.log("Can't find user to log.")
@@ -110,6 +120,79 @@ app.post("/showLog", (req, res, next) => {
     })
   })
 })
+
+// Handle Save User Settings
+app.post('/saveSettings', (req, res) => {
+  let username = req.body.username;
+  let {
+    switchValue,
+    thumbColor,
+    sessionValue,
+    shortBreakValue,
+    longBreakValue
+  } = req.body.settings;
+
+  console.log(req.body);
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("Settings - connection is working");
+    collection.updateOne({ username: username },
+      {
+        $set: {
+          settings: {
+            styles: !switchValue ? "lightStyles" : "darkStyles",
+            thumbColor: thumbColor,
+            sessionValue: sessionValue,
+            shortBreakValue: shortBreakValue,
+            longBreakValue: longBreakValue
+          }
+        }
+      },
+      (error, doc) => {
+        if (error) return next(error);
+        if (doc == null) {
+          console.log("Can't find user to save settings.")
+          res.sendStatus(404);
+        } else {
+          console.log("Found user to update settings", doc);
+          res.sendStatus(200);
+        }
+      })
+  })
+})
+
+//Handle Loading of user settings on Log In
+app.post("/getSettings", (req, res, next) => {
+  let username = req.body.username;
+
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("Get Settings - connection is working");
+
+    collection.findOne({ username: username }, (error, doc) => {
+      console.log("Getting user settings...");
+      if (error) res.send(error);
+      if (doc == null) {
+        next("Can't find user");
+      } else if (!doc.settings) {
+        res.json({settings: null});
+      } else {        
+        res.json({
+          styles: doc.settings.styles,
+          sessionValue: doc.settings.sessionValue,
+          shortBreakValue: doc.settings.shortBreakValue,
+          longBreakValue: doc.settings.longBreakValue,
+        });
+      }
+    })
+  })
+})
+
+
 // Launch the server on port 3000
 const server = app.listen(3000, () => {
   const { address, port } = server.address();
