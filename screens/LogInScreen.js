@@ -86,6 +86,7 @@ export default class LogInScreen extends Component {
         <TextInput style={styles.userInput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
         <Button title="Log In" onPress={this._onLogInSubmit} />
         <Text style={styles.redirectText} onPress={() => this.props.navigation.navigate('SignUp')}>Don't have an account? Sign Up!</Text>
+        <Text style={styles.redirectText} onPress={() => this.props.navigation.navigate('Home')}>Use diddit without Log In</Text>
       </View>
     );
   }

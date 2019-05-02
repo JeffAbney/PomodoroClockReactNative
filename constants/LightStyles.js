@@ -130,5 +130,9 @@ export default lightStyles = StyleSheet.create({
         marginLeft: 15,
         height: 36,
         width: 36,
-    }
+    },
+    redirectText: {
+        paddingTop: 10,
+        color: secondaryTextLight,
+    },
 })
