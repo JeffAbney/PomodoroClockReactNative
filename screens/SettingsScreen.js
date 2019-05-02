@@ -12,10 +12,10 @@ import DrawerMenu from '../components/DrawerMenu';
 export default class SettingsScreen extends React.Component {
   constructor(props) {
     super(props)
-    let { sessionTime, shortBreakTime, longBreakTime } = this.props.screenProps;
+    let { sessionTime, shortBreakTime, longBreakTime, styles } = this.props.screenProps;
     this.state = {
-      switchValue: false,
-      thumbColor: '#ecedea',
+      switchValue: styles === lightStyles ? false : trues,
+      thumbColor: styles === lightStyles ? '#ecedea' : '#138216',
       sessionValue: sessionTime,
       shortBreakValue: shortBreakTime,
       longBreakValue: longBreakTime,
@@ -26,6 +26,7 @@ export default class SettingsScreen extends React.Component {
     this.onShortBreakValueChange = this.onShortBreakValueChange.bind(this);
     this.onLongBreakValueChange = this.onLongBreakValueChange.bind(this);
     this.onSaveSettings = this.onSaveSettings.bind(this);
+    this.saveSettingsToDatabase = this.saveSettingsToDatabase.bind(this);
   }
 
   static navigationOptions = {
@@ -58,8 +59,35 @@ export default class SettingsScreen extends React.Component {
     })
   }
 
+  saveSettingsToDatabase() {
+    let { username } = this.props.screenProps;
+    fetch('http://localhost:3000/saveSettings', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username: username, settings: this.state })
+    })
+      .then(res => {
+        return res.text()
+      })
+      .then(res => {
+        if (res == "OK") {
+        console.log("Settings have been saved");
+        this.props.screenProps.saveSettings(this.state);
+        } else {
+          Alert.alert("Error",
+            "Error saving your settings",
+            [{ text: "OK" }])
+        }
+      })
+  }
+
   onSaveSettings() {
-    this.props.screenProps.saveSettings(this.state);
+    this.props.screenProps.isLoggedIn ?
+    this.saveSettingsToDatabase()
+    :
+    Alert.alert("Please Log In to save your settings.");
   }
 
   numList() {
