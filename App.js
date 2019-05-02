@@ -38,20 +38,58 @@ export default class App extends React.Component {
     this.resetTimer = this.resetTimer.bind(this);
     this.resetClockState = this.resetClockState.bind(this);
     this.tick = this.tick.bind(this);
+
   }
 
   logIn(username) {
     console.log("Loggin in");
-    this.setState({
-      isLoggedIn: true,
-      username: username
-    });
+    fetch('http://localhost:3000/getSettings', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+      })
+    })
+      .then(res => {
+        return res.json()
+      })
+      .then(res => {
+        if (res.settings === null) {
+          this.setState({
+            username: username,
+            isLoggedIn: true,
+          })
+        } else {
+          console.log("Response", res);
+          this.setState({
+            username: username,
+            isLoggedIn: true,
+            styles: res.styles === "lightStyles" ? lightStyles : darkStyles,
+            sessionTime: res.sessionValue,
+            shortBreakTime: res.shortBreakValue,
+            longBreakTime: res.longBreakValue,
+            secondsLeft: this.state.isSession ? res.sessionValue * 60 : res.shortBreakValue * 60
+          })
+        }
+      })
+
   }
+
 
   logOut() {
     this.setState({
       isLoggedIn: false,
-      username: "Guest"
+      username: "Guest",
+      styles: lightStyles,
+      sessionTime: sessionTime,
+      shortBreakTime: shortBreakTime,
+      longBreakTime: longBreakTime,
+      secondsLeft: 5,
+      clockIsRunning: false,
+      isSession: true,
+      clockHasStarted: false,
     });
   }
 
@@ -94,8 +132,6 @@ export default class App extends React.Component {
   }
 
   saveSettings(settings) {
-    console.log("From App", settings);
-    console.log("App State", this.state);
     let setState = this.setState({
       styles: settings.switchValue === false ? lightStyles : darkStyles,
       sessionTime: settings.sessionValue,
@@ -184,7 +220,6 @@ export default class App extends React.Component {
         this.setState({
           clockIsRunning: false,
         })
-        isLoggedIn ? goToLogSession() : goToLogIn();
       }
       this.setState({
         secondsLeft:
@@ -249,7 +284,6 @@ export default class App extends React.Component {
               resetTimer: this.resetTimer,
               styles: styles,
               username: username,
-
             }} />
         </View>
       );
