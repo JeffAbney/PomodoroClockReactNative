@@ -113,6 +113,16 @@ export default lightStyles = StyleSheet.create({
     buttonText: {
         color: mainTextLight
     },
+    rowButton: {
+        width: 75,
+        height: 35,
+        padding: 10,
+        margin: 5,
+        alignItems: 'center',
+        borderWidth: 0.5,
+        borderColor: buttonOutlineLight,
+        borderRadius: 4,
+    },
     signInContainer: {
         justifyContent: 'flex-end',
         paddingRight: 20,

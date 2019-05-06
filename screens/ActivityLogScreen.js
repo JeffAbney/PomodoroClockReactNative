@@ -1,9 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, TouchableHighlight, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import DrawerMenu from '../components/DrawerMenu';
 import PieChart from '../components/PieChart';
-
 
 class activityLogScreen extends React.Component {
 
@@ -111,6 +110,14 @@ class activityLogScreen extends React.Component {
           <ScrollView style={[styles.container, styles.paddingTop]}>
             <DrawerMenu navigation={navigation} styles={styles} />
             <Text style={styles.text}>Logged in as: {this.state.username}</Text>
+            <View style={styles.rowContainer}>
+              <TouchableHighlight style={styles.button} onPress={() => console.log("PIE")}>
+                <Text>Pie</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.button} onPress={() => console.log("LIST")}>
+                <Text>List</Text>
+              </TouchableHighlight>
+            </View>
             <PieChart
               data={this.getChartData("Planning")}
               pieWidth={150}
