@@ -47,7 +47,6 @@ export default class App extends React.Component {
   logIn(username) {
     console.log("Loggin in");
 
-    this._storeData(username);
     fetch('http://localhost:3000/getSettings', {
       method: 'POST',
       headers: {
@@ -76,7 +75,8 @@ export default class App extends React.Component {
             shortBreakTime: res.shortBreakValue,
             longBreakTime: res.longBreakValue,
             secondsLeft: this.state.isSession ? res.sessionValue * 60 : res.shortBreakValue * 60
-          })
+          });
+          this._storeData(username, JSON.stringify(res));
         }
       })
 
@@ -300,24 +300,50 @@ export default class App extends React.Component {
     }
   }
 
-  _storeData = async (username) => {
+  _storeData = async (username, settings) => {
     try {
-      console.log("Trying to save")
-      await AsyncStorage.setItem('username', username)
+      console.log("Trying to save");
+      await AsyncStorage.multiSet([['username', username], ['settings', settings]], function (error) {
+        if (error) { console.log("Storage error", error); }
+      })
     } catch (e) {
       console.log("Error trying to save in Async")
     }
   }
 
   _retrieveData = async () => {
+    let username = "Guest"
+    let settings = {};
     try {
-      const value = await AsyncStorage.getItem('username');
+      const value = await AsyncStorage.multiGet(['username', 'settings']).then(response => {
+        username = response[0][1];
+        settings = JSON.parse(response[1][1]);
+      })
       if (value !== null) {
         // We have data!!
-        this.logIn(value);
-        console.log("User info found!", value);
+        if(settings.settings !== null) {
+          console.log("Got the settings", username, settings)
+          this.setState({
+            username: username,
+            isLoggedIn: true,
+            styles: settings.styles === "lightStyles" ? lightStyles : darkStyles,
+            sessionTime: settings.sessionValue,
+            shortBreakTime: settings.shortBreakValue,
+            longBreakTime: settings.longBreakValue,
+            secondsLeft: this.state.isSession ? settings.sessionValue * 60 : settings.shortBreakValue * 60
+  
+          });
+          console.log("User info found!", username);
+        } else {
+          console.log("User has no saved settings");
+          this.setState({
+            username: username,
+            isLoggedIn: true,
+          })
+        }
+        
       } else {
-        console.log("No user saved", value)
+        console.log("No user saved", username);
       }
     } catch (error) {
       console.log("Error Retrieving Data")
