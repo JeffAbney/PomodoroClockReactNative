@@ -9,7 +9,7 @@ const AuthStack = createStackNavigator({ LogIn: LogInScreen, SignUp: SignUpScree
 
 export default createAppContainer(createSwitchNavigator(
   {
-    Auth: AuthStack,
     Main: MainDrawerNavigator,
-  },
+    Auth: AuthStack,
+  }
 ));
