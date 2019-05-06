@@ -14,7 +14,7 @@ export default class SettingsScreen extends React.Component {
     super(props)
     let { sessionTime, shortBreakTime, longBreakTime, styles } = this.props.screenProps;
     this.state = {
-      switchValue: styles === lightStyles ? false : trues,
+      switchValue: styles === lightStyles ? false : true,
       thumbColor: styles === lightStyles ? '#ecedea' : '#138216',
       sessionValue: sessionTime,
       shortBreakValue: shortBreakTime,

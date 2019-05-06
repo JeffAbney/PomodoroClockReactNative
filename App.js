@@ -1,10 +1,11 @@
 import React from 'react';
 import { Platform, StatusBar, View, Alert } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
+import { AsyncStorage } from "react-native"
 import AppNavigator from './navigation/AppNavigator';
 import lightStyles from './constants/LightStyles';
 import darkStyles from './constants/DarkStyles';
-
+import AppNavigatorLogged from './navigation/AppNavigatorLogged';
 let sessionTime = 1;
 let shortBreakTime = 5;
 let longBreakTime = 15;
@@ -38,11 +39,15 @@ export default class App extends React.Component {
     this.resetTimer = this.resetTimer.bind(this);
     this.resetClockState = this.resetClockState.bind(this);
     this.tick = this.tick.bind(this);
+    this._storeData = this._storeData.bind(this);
+    this._retrieveData = this._retrieveData.bind(this);
 
   }
 
   logIn(username) {
     console.log("Loggin in");
+
+    this._storeData(username);
     fetch('http://localhost:3000/getSettings', {
       method: 'POST',
       headers: {
@@ -79,6 +84,7 @@ export default class App extends React.Component {
 
 
   logOut() {
+    this._clearData();
     this.setState({
       isLoggedIn: false,
       username: "Guest",
@@ -250,6 +256,29 @@ export default class App extends React.Component {
       username
     } = this.state;
 
+    let screenProps = {
+      changeTheme: this.changeTheme,
+      clockHasStarted: clockHasStarted,
+      clockIsRunning: clockIsRunning,
+      isSession: isSession,
+      isLoggedIn: isLoggedIn,
+      onLogOut: this.logOut,
+      onLogIn: this.logIn,
+      sessionTime: sessionTime,
+      shortBreakTime: shortBreakTime,
+      longBreakTime: longBreakTime,
+      saveSettings: this.saveSettings,
+      secondsLeft: secondsLeft,
+      setSessionTime: this.setSessionTime,
+      setShortBreakTime: this.setShortBreakTime,
+      setLongBreakTime: this.setLongBreakTime,
+      startTimer: this.startTimer,
+      pauseTimer: this.pauseTimer,
+      resetTimer: this.resetTimer,
+      styles: styles,
+      username: username,
+    }
+
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <AppLoading
@@ -262,31 +291,45 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator
-            screenProps={{
-              changeTheme: this.changeTheme,
-              clockHasStarted: clockHasStarted,
-              clockIsRunning: clockIsRunning,
-              isSession: isSession,
-              isLoggedIn: isLoggedIn,
-              onLogOut: this.logOut,
-              onLogIn: this.logIn,
-              sessionTime: sessionTime,
-              shortBreakTime: shortBreakTime,
-              longBreakTime: longBreakTime,
-              saveSettings: this.saveSettings,
-              secondsLeft: secondsLeft,
-              setSessionTime: this.setSessionTime,
-              setShortBreakTime: this.setShortBreakTime,
-              setLongBreakTime: this.setLongBreakTime,
-              startTimer: this.startTimer,
-              pauseTimer: this.pauseTimer,
-              resetTimer: this.resetTimer,
-              styles: styles,
-              username: username,
-            }} />
+          {isLoggedIn ?
+            <AppNavigatorLogged screenProps={screenProps} />
+            :
+            <AppNavigator screenProps={screenProps} />}
         </View>
       );
+    }
+  }
+
+  _storeData = async (username) => {
+    try {
+      console.log("Trying to save")
+      await AsyncStorage.setItem('username', username)
+    } catch (e) {
+      console.log("Error trying to save in Async")
+    }
+  }
+
+  _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('username');
+      if (value !== null) {
+        // We have data!!
+        this.logIn(value);
+        console.log("User info found!", value);
+      } else {
+        console.log("No user saved", value)
+      }
+    } catch (error) {
+      console.log("Error Retrieving Data")
+    }
+  }
+
+  _clearData = async () => {
+    try {
+      console.log("Clearing User data");
+      await AsyncStorage.removeItem('username');
+    } catch (e) {
+      console.log("Error trying clear Data")
     }
   }
 
@@ -307,6 +350,7 @@ export default class App extends React.Component {
         // to remove this if you are not using it in your app
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       }),
+      this._retrieveData(),
     ]);
   };
 

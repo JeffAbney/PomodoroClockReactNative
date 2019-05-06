@@ -156,7 +156,7 @@ app.post('/saveSettings', (req, res) => {
           console.log("Can't find user to save settings.")
           res.sendStatus(404);
         } else {
-          console.log("Found user to update settings", doc);
+          console.log("Found user to update settings");
           res.sendStatus(200);
         }
       })
