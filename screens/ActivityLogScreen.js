@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import DrawerMenu from '../components/DrawerMenu';
+import PieChart from '../components/PieChart';
 
 
 class activityLogScreen extends React.Component {
@@ -15,12 +16,13 @@ class activityLogScreen extends React.Component {
 
     this.state = {
       username: "Guest",
-      log: []
+      log: [],
+      loadingFinished: false
     };
 
     this.logDisplay = this.logDisplay.bind(this);
     this.getLog = this.getLog.bind(this);
-    this.categoryTime = this.categoryTime.bind(this);
+    this.getChartData = this.getChartData.bind(this);
   }
 
   getLog() {
@@ -40,7 +42,8 @@ class activityLogScreen extends React.Component {
       .then(res => {
         this.setState({
           username: res.username,
-          log: res.log
+          log: res.log,
+          loadingFinished: true
         })
       })
   }
@@ -59,14 +62,13 @@ class activityLogScreen extends React.Component {
     })
   }
 
-  categoryTime(cat) {
+  getChartData(cat) {
     let arr = this.state.log;
     let category = arr.filter((act) => act.activityCategory === cat
     )
     let catTime = 0;
     let getCatTime = function () {
       category.forEach((act) => catTime += act.activityTime);
-      console.log(catTime);
       return catTime;
     }
     let getTasksWithTimes = function () {
@@ -76,28 +78,26 @@ class activityLogScreen extends React.Component {
           taskNames.push(act.activityName);
         };
       })
-      console.log(taskNames);
-      let tasksWithTimes =[];
+      let tasksWithTimes = [];
       let getTimes = function () {
-      if (taskNames.length !== 0) {
-        let taskTime = 0;
-        for (i=0; i<taskNames.length; i++) {
-          let taskName = taskNames[i];
-          for (j=0; j<category.length; j++) {
-            category[j].activityName === taskName ? taskTime += category[j].activityTime : ""
+        if (taskNames.length !== 0) {
+          let taskTime = 0;
+          getCatTime();
+          for (i = 0; i < taskNames.length; i++) {
+            let taskName = taskNames[i];
+            for (j = 0; j < category.length; j++) {
+              category[j].activityName === taskName ? taskTime += Math.floor(category[j].activityTime / catTime * 100) : ""
+            }
+            tasksWithTimes.push({ taskName: taskName, taskTime: taskTime });
+            taskTime = 0;
           }
-          tasksWithTimes.push([taskName, taskTime]);
-          taskTime = 0;
+          return tasksWithTimes;
         }
-        console.log("Tasks with times", tasksWithTimes)
-      } 
-    }
-    getTimes()
+      }
+      return getTimes()
     };
-    
-    return `categoryTime: ${getCatTime()}, tasks: ${getTasksWithTimes()}`  
+    return getTasksWithTimes();
   }
-
 
   render() {
     let { isLoggedIn, styles, username } = this.props.screenProps;
@@ -106,14 +106,31 @@ class activityLogScreen extends React.Component {
       if (username != this.state.username) {
         this.getLog();
       }
-      return (
-        <ScrollView style={[styles.container, styles.paddingTop]}>
-          <DrawerMenu navigation={navigation} styles={styles} />
-          <Text style={styles.text}>Logged in as: {this.state.username}</Text>
-          <Text style={styles.text}>Data {this.categoryTime("Planning")}</Text>
-          {this.logDisplay()}
-        </ScrollView>
-      );
+      if (this.state.loadingFinished) {
+        return (
+          <ScrollView style={[styles.container, styles.paddingTop]}>
+            <DrawerMenu navigation={navigation} styles={styles} />
+            <Text style={styles.text}>Logged in as: {this.state.username}</Text>
+            <PieChart
+              data={this.getChartData("Planning")}
+              pieWidth={150}
+              pieHeight={150}
+              onItemSelected={this._onPieItemSelected}
+              width={500}
+              height={200} />
+          </ScrollView>
+        );
+      } else {
+        return (
+          <ScrollView style={[styles.container, styles.paddingTop]}>
+            <DrawerMenu navigation={navigation} styles={styles} />
+            <Text style={styles.text}>Logged in as: {this.state.username}</Text>
+            <Text>...Loading</Text>
+            {this.logDisplay()}
+          </ScrollView>
+        );
+      }
+
     } else {
       return (
         <View style={styles.container}>
