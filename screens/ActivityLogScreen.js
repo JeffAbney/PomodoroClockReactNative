@@ -16,12 +16,15 @@ class activityLogScreen extends React.Component {
     this.state = {
       username: "Guest",
       log: [],
+      pieDisplay: true,
       loadingFinished: false
     };
 
     this.logDisplay = this.logDisplay.bind(this);
     this.getLog = this.getLog.bind(this);
     this.getChartData = this.getChartData.bind(this);
+    this.setPie = this.setPie.bind(this);
+    this.setList = this.setList.bind(this);
   }
 
   getLog() {
@@ -98,9 +101,24 @@ class activityLogScreen extends React.Component {
     return getTasksWithTimes();
   }
 
+
+  setPie() {
+    this.setState({
+      pieDisplay: true
+    })
+  }
+
+  setList() {
+    this.setState({
+      pieDisplay: false
+    })
+  }
+
+
   render() {
     let { isLoggedIn, styles, username } = this.props.screenProps;
     const { navigation } = this.props;
+    let category = this.props.navigation.getParam('category', 'Planning')
     if (isLoggedIn) {
       if (username != this.state.username) {
         this.getLog();
@@ -111,20 +129,22 @@ class activityLogScreen extends React.Component {
             <DrawerMenu navigation={navigation} styles={styles} />
             <Text style={styles.text}>Logged in as: {this.state.username}</Text>
             <View style={styles.rowContainer}>
-              <TouchableHighlight style={styles.button} onPress={() => console.log("PIE")}>
+              <TouchableHighlight style={styles.button} onPress={this.setPie}>
                 <Text>Pie</Text>
               </TouchableHighlight>
-              <TouchableHighlight style={styles.button} onPress={() => console.log("LIST")}>
+              <TouchableHighlight style={styles.button} onPress={this.setList}>
                 <Text>List</Text>
               </TouchableHighlight>
             </View>
-            <PieChart
-              data={this.getChartData("Planning")}
+            { this.state.pieDisplay ? <PieChart
+              data={this.getChartData(category)}
               pieWidth={150}
               pieHeight={150}
               onItemSelected={this._onPieItemSelected}
               width={500}
               height={200} />
+            :
+            this.logDisplay()}
           </ScrollView>
         );
       } else {
