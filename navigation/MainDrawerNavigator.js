@@ -10,6 +10,7 @@ import ShareScreen from '../screens/ShareScreen';
 import LogInScreen from '../screens/LogInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import SubmitActivityScreen from '../screens/SubmitActivityScreen';
+import TaskCategoiesScreen from '../screens/TaskCategoriesScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -18,11 +19,14 @@ const HomeStack = createStackNavigator({
   SubmitActivity: SubmitActivityScreen,
 });
 
+const TaskLogStack = createStackNavigator({
+  TaskCategoies: TaskCategoiesScreen,
+  TaskNames: ActivityLogScreen,
+});
+
 const MainDrawerNavigator = createDrawerNavigator({
   HomeStack,
-  MyActvities: {
-    screen: ActivityLogScreen,
-  },
+  TaskLogStack,
   Settings: {
     screen: SettingsScreen,
   },
