@@ -52,7 +52,9 @@ class activityLogScreen extends React.Component {
 
   logDisplay() {
     let styles = this.props.screenProps.styles;
-    return this.state.log.map((act, index) => {
+    let category = this.props.navigation.getParam('category', 'Planning');
+
+    return this.state.log.filter((el)=>( el.activityCategory === category)).map((act, index) => {
       return (
         <View style={styles.activityCard} key={index}>
           <Text>{act.activityCategory}</Text>
