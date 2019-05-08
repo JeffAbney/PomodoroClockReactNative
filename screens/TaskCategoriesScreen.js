@@ -7,7 +7,8 @@ import PieChart from '../components/PieChart';
 class TaskCategoriesScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'My Projects'
+    title: 'My Projects',
+    header: null
   };
 
   constructor(props) {
@@ -80,7 +81,10 @@ class TaskCategoriesScreen extends React.Component {
   }
 
   navigateToTaskName(cat) {
-    this.props.navigation.navigate('TaskNames', { category: cat} );
+    this.props.navigation.navigate(
+      'TaskNames',
+      { category: cat.activityCategory, categoryTime: cat.categoryTime }
+    );
   }
 
   categoryDisplay() {
@@ -91,7 +95,7 @@ class TaskCategoriesScreen extends React.Component {
       return (
         <TouchableHighlight
           key={`category ${index}`}
-          onPress={() => this.navigateToTaskName(cat[1].activityCategory)}
+          onPress={() => this.navigateToTaskName(cat[1])}
         >
           <View style={styles.activityCard} >
             <Text>{cat[1].activityCategory}</Text>

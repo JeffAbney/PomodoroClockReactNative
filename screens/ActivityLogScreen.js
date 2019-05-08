@@ -7,7 +7,8 @@ import PieChart from '../components/PieChart';
 class activityLogScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Activity Log'
+    title: 'Activity Log',
+    header: null
   };
 
   constructor(props) {
@@ -54,7 +55,7 @@ class activityLogScreen extends React.Component {
     let styles = this.props.screenProps.styles;
     let category = this.props.navigation.getParam('category', 'Planning');
 
-    return this.state.log.filter((el)=>( el.activityCategory === category)).map((act, index) => {
+    return this.state.log.filter((el) => (el.activityCategory === category)).map((act, index) => {
       return (
         <View style={styles.activityCard} key={index}>
           <Text>{act.activityCategory}</Text>
@@ -70,11 +71,7 @@ class activityLogScreen extends React.Component {
     let arr = this.state.log;
     let category = arr.filter((act) => act.activityCategory === cat
     )
-    let catTime = 0;
-    let getCatTime = function () {
-      category.forEach((act) => catTime += act.activityTime);
-      return catTime;
-    }
+    let categoryTime = this.props.navigation.getParam('categoryTime', 0);
     let getTasksWithTimes = function () {
       let taskNames = [];
       category.forEach((act) => {
@@ -86,11 +83,14 @@ class activityLogScreen extends React.Component {
       let getTimes = function () {
         if (taskNames.length !== 0) {
           let taskTime = 0;
-          getCatTime();
+
           for (i = 0; i < taskNames.length; i++) {
             let taskName = taskNames[i];
             for (j = 0; j < category.length; j++) {
-              category[j].activityName === taskName ? taskTime += Math.floor(category[j].activityTime / catTime * 100) : ""
+              category[j].activityName === taskName ?
+                taskTime += Math.floor(category[j].activityTime / categoryTime * 100)
+                :
+                ""
             }
             tasksWithTimes.push({ taskName: taskName, taskTime: taskTime });
             taskTime = 0;
@@ -121,6 +121,7 @@ class activityLogScreen extends React.Component {
     let { isLoggedIn, styles, username } = this.props.screenProps;
     const { navigation } = this.props;
     let category = this.props.navigation.getParam('category', 'Planning')
+    let categoryTime = this.props.navigation.getParam('categoryTime', 0);
     if (isLoggedIn) {
       if (username != this.state.username) {
         this.getLog();
@@ -138,15 +139,16 @@ class activityLogScreen extends React.Component {
                 <Text>List</Text>
               </TouchableHighlight>
             </View>
-            { this.state.pieDisplay ? <PieChart
+            {this.state.pieDisplay ? <PieChart
+              categoryTime={categoryTime}
               data={this.getChartData(category)}
               pieWidth={150}
               pieHeight={150}
               onItemSelected={this._onPieItemSelected}
               width={500}
               height={200} />
-            :
-            this.logDisplay()}
+              :
+              this.logDisplay()}
           </ScrollView>
         );
       } else {

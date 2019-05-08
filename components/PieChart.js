@@ -134,6 +134,7 @@ export default class PieChart extends React.Component {
               );
             })
           }
+          <Text>Total Time: {this.props.categoryTime}</Text>
         </View>
       </View>
     );
