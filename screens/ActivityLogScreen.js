@@ -61,7 +61,7 @@ class activityLogScreen extends React.Component {
           <Text>{act.activityCategory}</Text>
           <Text>{act.activityName}</Text>
           <Text>{act.activityTime}</Text>
-          <Text>{act.date}</Text>
+          <Text>{new Date(act.date).toLocaleDateString("en-US")}</Text>
         </View>
       )
     })
