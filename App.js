@@ -40,8 +40,8 @@ export default class App extends React.Component {
     this.resetTimer = this.resetTimer.bind(this);
     this.resetClockState = this.resetClockState.bind(this);
     this.tick = this.tick.bind(this);
-    this._storeData = this._storeData.bind(this);
-    this._retrieveData = this._retrieveData.bind(this);
+    this._storeDataLocal = this._storeDataLocal.bind(this);
+    this._retrieveDataLocal = this._retrieveDataLocal.bind(this);
     this.clockStartedOver = this.clockStartedOver.bind(this);
   }
 
@@ -69,7 +69,7 @@ export default class App extends React.Component {
           })
           let appState = JSON.stringify(res);
           console.log("Saving data", appState)
-          this._storeData(appState);
+          this._storeDataLocal(appState);
         } else {
           console.log("Response - with settings", res);
           this.setState({
@@ -83,7 +83,7 @@ export default class App extends React.Component {
           });
           let appState = JSON.stringify(res);
           console.log("Saving data", appState)
-          this._storeData(appState);
+          this._storeDataLocal(appState);
         }
       })
 
@@ -91,7 +91,7 @@ export default class App extends React.Component {
 
 
   logOut() {
-    this._clearData();
+    this._clearDataLocal();
     this.setState({
       isLoggedIn: false,
       username: "Guest",
@@ -144,14 +144,15 @@ export default class App extends React.Component {
     })
   }
 
-  saveSettings(settings) {
-    let setState = this.setState({
-      styles: settings.switchValue === false ? lightStyles : darkStyles,
-      sessionTime: settings.sessionValue,
-      shortBreakTime: settings.shortBreakValue,
-      longBreakTime: settings.longBreakValue,
-      secondsLeft: this.state.isSession ? settings.sessionValue * 60 : settings.shortBreakValue * 60
-    })
+  saveSettings(appState) {
+    let newState = {
+      styles: appState.settings.switchValue === false ? lightStyles : darkStyles,
+      sessionTime: appState.settings.sessionValue,
+      shortBreakTime: appState.settings.shortBreakValue,
+      longBreakTime: appState.settings.longBreakValue,
+      secondsLeft: this.state.isSession ? appState.settings.sessionValue * 60 : appState.settings.shortBreakValue * 60
+    }
+    let setState = this.setState(newState)
     !this.state.clockHasStarted ?
       setState
       :
@@ -167,6 +168,8 @@ export default class App extends React.Component {
         ],
         { cancelable: false },
       );
+    console.log("settings to be saved", appState)
+    this._storeDataLocal(JSON.stringify(appState));
   }
 
   startTimer() {
@@ -284,7 +287,6 @@ export default class App extends React.Component {
       setShortBreakTime: this.setShortBreakTime,
       setLongBreakTime: this.setLongBreakTime,
       startTimer: this.startTimer,
-      localStoreData: this._storeData,
       pauseTimer: this.pauseTimer,
       resetTimer: this.resetTimer,
       styles: styles,
@@ -312,8 +314,8 @@ export default class App extends React.Component {
     }
   }
 
-  _storeData = async (appState) => {
-    
+  _storeDataLocal = async (appState) => {
+
     try {
       console.log("Trying to save", appState);
       await AsyncStorage.setItem("appState", appState, function (error) {
@@ -324,8 +326,8 @@ export default class App extends React.Component {
     }
   }
 
-  _retrieveData = async () => {
-    let appState = {blank: true};
+  _retrieveDataLocal = async () => {
+    let appState = { blank: true };
     try {
       const value = await AsyncStorage.getItem('appState');
       if (value !== null) {
@@ -333,12 +335,12 @@ export default class App extends React.Component {
         console.log("Got state", appState);
         // We have data!!
         if (appState.settings !== null) {
-          console.log("appState is object?", typeof(appState));
+          console.log("appState is object?", typeof (appState));
           console.log("Got the settings", appState)
           this.setState({
             username: appState.username,
             isLoggedIn: true,
-            styles: appState.settings.styles === "lightStyles" ? lightStyles : darkStyles,
+            styles: appState.settings.switchValue === false ? lightStyles : darkStyles,
             sessionTime: appState.settings.sessionValue,
             shortBreakTime: appState.settings.shortBreakValue,
             longBreakTime: appState.settings.longBreakValue,
@@ -359,18 +361,18 @@ export default class App extends React.Component {
     }
   }
 
-  _clearData = async () => {
+  _clearDataLocal = async () => {
     try {
       const value = await AsyncStorage.getAllKeys((err) => console.log("Error getting keys", err));
       console.log("Clearing User data");
       let keys = value;
       await AsyncStorage.multiRemove(keys, (err) => {
-        if(err) {
+        if (err) {
           console.log("Clearing Error", err);
         } else {
           console.log("Cleared keys", keys)
         }
-        
+
       });
     } catch (e) {
       console.log("Error trying clear Data")
@@ -394,7 +396,7 @@ export default class App extends React.Component {
         // to remove this if you are not using it in your app
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       }),
-      this._retrieveData(),
+      this._retrieveDataLocal(),
     ]);
   };
 

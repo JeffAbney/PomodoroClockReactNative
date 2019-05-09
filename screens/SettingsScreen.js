@@ -74,7 +74,7 @@ export default class SettingsScreen extends React.Component {
       .then(res => {
         if (res == "OK") {
         console.log("Settings have been saved");
-        this.props.screenProps.saveSettings(this.state);
+        this.props.screenProps.saveSettings({username: username, settings: this.state});
         } else {
           Alert.alert("Error",
             "Error saving your settings",
