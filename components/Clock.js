@@ -19,6 +19,7 @@ export class Clock extends Component {
     this._onPressStart = this._onPressStart.bind(this);
     this._onPressPause = this._onPressPause.bind(this);
     this._onPressReset = this._onPressReset.bind(this);
+    this.goToLogSessionAlert = this.goToLogSessionAlert.bind(this);
   }
 
   _onPressSessionDecrease() {
@@ -72,6 +73,28 @@ export class Clock extends Component {
     this.props.screenProps.resetTimer();
   }
 
+  goToLogSessionAlert(time) {
+    let { username, clockStartedOver } = this.props.screenProps;
+    Alert.alert(
+      'Session Over',
+      'Save this session',
+      [
+        {
+          text: 'No thanks',
+          style: 'cancel',
+        },
+        { text: 'OK', onPress: () => {
+        clockStartedOver();
+        this.props.navigation.navigate('SubmitActivity', {
+          loggedIn: true,
+          username: username,
+          activityTime: time
+        }) }},
+      ],
+      { cancelable: false },
+    )
+  }
+
   render() {
     let fmtMSS = (s) => (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
 
@@ -84,18 +107,13 @@ export class Clock extends Component {
       sessionTime,
       shortBreakTime,
       longBreakTime,
-    username } = this.props.screenProps;
+      timeIsUp,
+      username } = this.props.screenProps;
 
-    let goToLogSession = (time) => this.props.navigation.navigate('SubmitActivity', {
-      loggedIn: true,
-      username: username,
-      activityTime: time
-    })
-    //Find a better way to do this! ------------
-    if (secondsLeft === 1) {
-      console.log("Here's 0");
-      goToLogSession(sessionTime);
-    }
+
+if (isSession && secondsLeft === 1) {
+  this.goToLogSessionAlert(sessionTime);
+}
     return (
       <View style={[styles.container, styles.center, styles.align]}>
         <Text style={styles.clock}>{isSession ? "Session" : "Break"}</Text>
@@ -168,3 +186,4 @@ export class Clock extends Component {
     )
   }
 }
+
