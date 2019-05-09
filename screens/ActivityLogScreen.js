@@ -60,7 +60,7 @@ class activityLogScreen extends React.Component {
         <View style={styles.activityCard} key={index}>
           <Text>{act.activityCategory}</Text>
           <Text>{act.activityName}</Text>
-          <Text>{act.activityTime}</Text>
+          <Text>{act.activityTime} minute(s)</Text>
           <Text>{new Date(act.date).toLocaleDateString("en-US")}</Text>
         </View>
       )

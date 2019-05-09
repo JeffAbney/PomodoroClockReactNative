@@ -117,24 +117,24 @@ export default class PieChart extends React.Component {
                 >
                   <View>
                     <Text
-                      style={
-                        [styles.label,
+                      style={[
+                        styles.label,
                         {
                           color: this._color(index),
                           fontWeight: fontWeight
-                        }
-                        ]}>
+                        },
+                      ]}>
                       {this._label(item)}
-                      :
+                      :&nbsp;
                         {this._value(item)}
-                      %
+                         %
                         </Text>
                   </View>
                 </TouchableWithoutFeedback>
               );
             })
           }
-          <Text>Total Time: {this.props.categoryTime}</Text>
+          <Text>Total Time: {this.props.categoryTime} Minutes</Text>
         </View>
       </View>
     );

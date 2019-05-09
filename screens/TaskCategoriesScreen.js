@@ -89,8 +89,6 @@ class TaskCategoriesScreen extends React.Component {
 
   categoryDisplay() {
     let styles = this.props.screenProps.styles;
-    var dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-    console.log("Displaying cats", this.state.categories);
     return this.state.categories.map((cat, index) => {
       return (
         <TouchableHighlight
@@ -99,7 +97,7 @@ class TaskCategoriesScreen extends React.Component {
         >
           <View style={styles.activityCard} >
             <Text>{cat[1].activityCategory}</Text>
-            <Text>Total Time: {cat[1].categoryTime}</Text>
+            <Text>Total Time: {cat[1].categoryTime} minutes</Text>
             <Text>Started on {new Date(cat[1].startDate).toLocaleDateString("en-US")}</Text>
           </View>
         </TouchableHighlight >
