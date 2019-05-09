@@ -25,6 +25,7 @@ export default class App extends React.Component {
       clockIsRunning: false,
       isSession: true,
       clockHasStarted: false,
+      timeIsUp: false,
     };
 
     this.logIn = this.logIn.bind(this);
@@ -41,7 +42,7 @@ export default class App extends React.Component {
     this.tick = this.tick.bind(this);
     this._storeData = this._storeData.bind(this);
     this._retrieveData = this._retrieveData.bind(this);
-
+    this.clockStartedOver = this.clockStartedOver.bind(this);
   }
 
   logIn(username) {
@@ -61,22 +62,28 @@ export default class App extends React.Component {
       })
       .then(res => {
         if (res.settings === null) {
+          console.log("Response - no settings", res);
           this.setState({
             username: username,
             isLoggedIn: true,
           })
+          let appState = JSON.stringify(res);
+          console.log("Saving data", appState)
+          this._storeData(appState);
         } else {
-          console.log("Response", res);
+          console.log("Response - with settings", res);
           this.setState({
             username: username,
             isLoggedIn: true,
-            styles: res.styles === "lightStyles" ? lightStyles : darkStyles,
-            sessionTime: res.sessionValue,
-            shortBreakTime: res.shortBreakValue,
-            longBreakTime: res.longBreakValue,
-            secondsLeft: this.state.isSession ? res.sessionValue * 60 : res.shortBreakValue * 60
+            styles: res.settings.styles === "lightStyles" ? lightStyles : darkStyles,
+            sessionTime: res.settings.sessionValue,
+            shortBreakTime: res.settings.shortBreakValue,
+            longBreakTime: res.settings.longBreakValue,
+            secondsLeft: this.state.isSession ? res.settings.sessionValue * 60 : res.settings.shortBreakValue * 60
           });
-          this._storeData(username, JSON.stringify(res));
+          let appState = JSON.stringify(res);
+          console.log("Saving data", appState)
+          this._storeData(appState);
         }
       })
 
@@ -167,6 +174,7 @@ export default class App extends React.Component {
     this.setState({
       clockHasStarted: true,
       clockIsRunning: true,
+      timeIsUp: false,
     })
   }
 
@@ -202,8 +210,14 @@ export default class App extends React.Component {
       clockIsRunning: false,
       isSession: true,
       clockHasStarted: false,
+      timeIsUp: false,
     })
+  }
 
+  clockStartedOver() {
+    this.setState({
+      timeIsUp: false,
+    })
   }
 
   tick() {
@@ -213,7 +227,6 @@ export default class App extends React.Component {
       activityTime: time
     });
 
-
     let goToLogSession = (time) => navigation.navigate('SubmitActivity', {
       loggedIn: true,
       username: username,
@@ -221,19 +234,16 @@ export default class App extends React.Component {
     })
 
     if (secondsLeft === 1) {
-      if (isSession) {
-        clearInterval(this.intervalHandle);
-        this.setState({
-          clockIsRunning: false,
-        })
-      }
+      clearInterval(this.intervalHandle);
       this.setState({
+        clockIsRunning: false,
         secondsLeft:
           isSession ?
             Math.floor(shortBreakTime * 60)
             :
             Math.floor(sessionTime * 60),
         isSession: !isSession,
+        timeIsUp: true,
       })
     } else {
       this.setState({
@@ -260,6 +270,7 @@ export default class App extends React.Component {
       changeTheme: this.changeTheme,
       clockHasStarted: clockHasStarted,
       clockIsRunning: clockIsRunning,
+      clockStartedOver: this.clockStartedOver,
       isSession: isSession,
       isLoggedIn: isLoggedIn,
       onLogOut: this.logOut,
@@ -273,6 +284,7 @@ export default class App extends React.Component {
       setShortBreakTime: this.setShortBreakTime,
       setLongBreakTime: this.setLongBreakTime,
       startTimer: this.startTimer,
+      localStoreData: this._storeData,
       pauseTimer: this.pauseTimer,
       resetTimer: this.resetTimer,
       styles: styles,
@@ -300,10 +312,11 @@ export default class App extends React.Component {
     }
   }
 
-  _storeData = async (username, settings) => {
+  _storeData = async (appState) => {
+    
     try {
-      console.log("Trying to save");
-      await AsyncStorage.multiSet([['username', username], ['settings', settings]], function (error) {
+      console.log("Trying to save", appState);
+      await AsyncStorage.setItem("appState", appState, function (error) {
         if (error) { console.log("Storage error", error); }
       })
     } catch (e) {
@@ -312,48 +325,53 @@ export default class App extends React.Component {
   }
 
   _retrieveData = async () => {
-    let username = "Guest"
-    let settings = {};
+    let appState = {blank: true};
     try {
-      const value = await AsyncStorage.multiGet(['username', 'settings']).then(response => {
-        username = response[0][1];
-        settings = JSON.parse(response[1][1]);
-      })
+      const value = await AsyncStorage.getItem('appState');
       if (value !== null) {
+        appState = JSON.parse(value);
+        console.log("Got state", appState);
         // We have data!!
-        if(settings.settings !== null) {
-          console.log("Got the settings", username, settings)
+        if (appState.settings !== null) {
+          console.log("appState is object?", typeof(appState));
+          console.log("Got the settings", appState)
           this.setState({
-            username: username,
+            username: appState.username,
             isLoggedIn: true,
-            styles: settings.styles === "lightStyles" ? lightStyles : darkStyles,
-            sessionTime: settings.sessionValue,
-            shortBreakTime: settings.shortBreakValue,
-            longBreakTime: settings.longBreakValue,
-            secondsLeft: this.state.isSession ? settings.sessionValue * 60 : settings.shortBreakValue * 60
-  
+            styles: appState.settings.styles === "lightStyles" ? lightStyles : darkStyles,
+            sessionTime: appState.settings.sessionValue,
+            shortBreakTime: appState.settings.shortBreakValue,
+            longBreakTime: appState.settings.longBreakValue,
+            secondsLeft: this.state.isSession ? appState.settings.sessionValue * 60 : appState.settings.shortBreakValue * 60,
           });
-          console.log("User info found!", username);
         } else {
-          console.log("User has no saved settings");
+          console.log("User has no saved settings", appState.username);
           this.setState({
-            username: username,
+            username: appState.username,
             isLoggedIn: true,
           })
         }
-        
       } else {
         console.log("No user saved", username);
       }
     } catch (error) {
-      console.log("Error Retrieving Data")
+      console.log("Error Retrieving Data", error)
     }
   }
 
   _clearData = async () => {
     try {
+      const value = await AsyncStorage.getAllKeys((err) => console.log("Error getting keys", err));
       console.log("Clearing User data");
-      await AsyncStorage.removeItem('username');
+      let keys = value;
+      await AsyncStorage.multiRemove(keys, (err) => {
+        if(err) {
+          console.log("Clearing Error", err);
+        } else {
+          console.log("Cleared keys", keys)
+        }
+        
+      });
     } catch (e) {
       console.log("Error trying clear Data")
     }

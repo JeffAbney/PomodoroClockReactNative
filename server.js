@@ -179,19 +179,22 @@ app.post("/getSettings", (req, res, next) => {
       if (doc == null) {
         next("Can't find user");
       } else if (!doc.settings) {
-        res.json({settings: null});
-      } else {        
+        console.log("server didnt find any settings")
+        res.json({username:username, settings: null });
+      } else {
         res.json({
-          styles: doc.settings.styles,
-          sessionValue: doc.settings.sessionValue,
-          shortBreakValue: doc.settings.shortBreakValue,
-          longBreakValue: doc.settings.longBreakValue,
+          username: username,
+          settings: {
+            styles: doc.settings.styles,
+            sessionValue: doc.settings.sessionValue,
+            shortBreakValue: doc.settings.shortBreakValue,
+            longBreakValue: doc.settings.longBreakValue,
+          }
         });
       }
     })
   })
 })
-
 
 // Launch the server on port 3000
 const server = app.listen(3000, () => {
