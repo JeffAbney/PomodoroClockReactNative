@@ -16,6 +16,7 @@ export default class SettingsScreen extends React.Component {
     this.state = {
       switchValue: styles === lightStyles ? false : true,
       thumbColor: styles === lightStyles ? '#ecedea' : '#138216',
+      styles: styles === lightStyles ? 'lightStyles' : 'darkStyles',
       sessionValue: sessionTime,
       shortBreakValue: shortBreakTime,
       longBreakValue: longBreakTime,
@@ -60,13 +61,13 @@ export default class SettingsScreen extends React.Component {
   }
 
   saveSettingsToDatabase() {
-    let { username } = this.props.screenProps;
+    let { userID, username } = this.props.screenProps;
     fetch('http://localhost:3000/saveSettings', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username: username, settings: this.state })
+      body: JSON.stringify({ userID: userID, settings: this.state })
     })
       .then(res => {
         return res.text()

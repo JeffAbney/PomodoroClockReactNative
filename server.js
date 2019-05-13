@@ -12,52 +12,47 @@ const uri = "mongodb+srv://JeffAbney:warhol88@cluster0-schfu.mongodb.net/test?re
 
 // Handle Sign In
 app.post('/', (req, res) => {
-  let username = req.body.username;
-  let password = req.body.password;
+  let userID = req.body.userID;
+  let username = req.body.username
 
   MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
     if (error) return process.exit(1);
     var db = client.db('Pomodoro');
     var collection = db.collection('Users');
     console.log("connection is working");
-    collection.findOne({ username: username, password: password }, (error, doc) => {
+    collection.findOne({ userID: userID }, (error, doc) => {
       if (error) return next(error);
       if (doc == null) {
-        console.log("No Such User")
-        res.sendStatus(403)
-      } else {
-        res.sendStatus(200)
-      }
-    })
-  })
-})
-
-//Handle Create User
-app.post('/createUser', (req, res) => {
-  let username = req.body.username;
-  let password = req.body.password;
-
-  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
-    if (error) return process.exit(1);
-    var db = client.db('Pomodoro');
-    var collection = db.collection('Users');
-    console.log("connection is working");
-    collection.findOne({ username: username }, (error, doc) => {
-      if (error) return next(error);
-      if (doc == null) {
-        collection.insertOne({ username: username, password: password, log: [] }, (error, results) => {
-          if (error) return res.json({ "error": "something went wrong" });
-          console.log("New User Created");
-          console.log(results);
-          res.sendStatus(200);
+        console.log("No Such User, Creating new one");
+        collection.insertOne({ userID: userID, username: username, log: [] }, (error, results) => {
+          if (error) {
+            return res.json({ "error": "something went wrong creating new user" });
+          } else {
+            console.log("New User Created");
+            console.log(results);
+            res.json({ username: null, settings: null });
+          }
         })
       } else {
-        console.log("Username taken")
-        res.sendStatus(403)
+        if (!doc.settings) {
+          console.log("server didnt find any settings")
+          res.json({ username: username, settings: null });
+        } else {
+          res.json({
+            username: username,
+            settings: {
+              styles: doc.settings.styles,
+              sessionValue: doc.settings.sessionValue,
+              shortBreakValue: doc.settings.shortBreakValue,
+              longBreakValue: doc.settings.longBreakValue,
+            }
+          });
+        }
       }
     })
   })
 })
+
 
 //Handle Log activity
 
@@ -123,7 +118,7 @@ app.post("/showLog", (req, res, next) => {
 
 // Handle Save User Settings
 app.post('/saveSettings', (req, res) => {
-  let username = req.body.username;
+  let userID = req.body.userID;
   let {
     switchValue,
     thumbColor,
@@ -138,7 +133,7 @@ app.post('/saveSettings', (req, res) => {
     var db = client.db('Pomodoro');
     var collection = db.collection('Users');
     console.log("Settings - connection is working");
-    collection.updateOne({ username: username },
+    collection.updateOne({ userID: userID },
       {
         $set: {
           settings: {
@@ -180,7 +175,7 @@ app.post("/getSettings", (req, res, next) => {
         next("Can't find user");
       } else if (!doc.settings) {
         console.log("server didnt find any settings")
-        res.json({username:username, settings: null });
+        res.json({ username: username, settings: null });
       } else {
         res.json({
           username: username,

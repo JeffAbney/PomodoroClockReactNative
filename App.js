@@ -14,9 +14,12 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      photoUrl: "",
       isLoadingComplete: false,
       isLoggedIn: false,
       username: "Guest",
+      userID: undefined,
+      email: undefined,
       styles: lightStyles,
       sessionTime: sessionTime,
       shortBreakTime: shortBreakTime,
@@ -28,7 +31,6 @@ export default class App extends React.Component {
       timeIsUp: false,
     };
 
-    this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.changeTheme = this.changeTheme.bind(this);
     this.setSessionTime = this.setSessionTime.bind(this);
@@ -43,51 +45,14 @@ export default class App extends React.Component {
     this._storeDataLocal = this._storeDataLocal.bind(this);
     this._retrieveDataLocal = this._retrieveDataLocal.bind(this);
     this.clockStartedOver = this.clockStartedOver.bind(this);
+    this.handleSetState = this.handleSetState.bind(this);
   }
 
-  logIn(username) {
-    console.log("Loggin in");
-
-    fetch('http://localhost:3000/getSettings', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-      })
-    })
-      .then(res => {
-        return res.json()
-      })
-      .then(res => {
-        if (res.settings === null) {
-          console.log("Response - no settings", res);
-          this.setState({
-            username: username,
-            isLoggedIn: true,
-          })
-          let appState = JSON.stringify(res);
-          console.log("Saving data", appState)
-          this._storeDataLocal(appState);
-        } else {
-          console.log("Response - with settings", res);
-          this.setState({
-            username: username,
-            isLoggedIn: true,
-            styles: res.settings.styles === "lightStyles" ? lightStyles : darkStyles,
-            sessionTime: res.settings.sessionValue,
-            shortBreakTime: res.settings.shortBreakValue,
-            longBreakTime: res.settings.longBreakValue,
-            secondsLeft: this.state.isSession ? res.settings.sessionValue * 60 : res.settings.shortBreakValue * 60
-          });
-          let appState = JSON.stringify(res);
-          console.log("Saving data", appState)
-          this._storeDataLocal(appState);
-        }
-      })
-
+  handleSetState(newState) {
+    this.setState(newState);
   }
+
+
 
 
   logOut() {
@@ -225,16 +190,6 @@ export default class App extends React.Component {
 
   tick() {
     let { secondsLeft, isSession, sessionTime, shortBreakTime, longBreakTime, isLoggedIn } = this.state;
-    let goToLogIn = (time) => navigation.navigate('LogIn', {
-      fromSession: true,
-      activityTime: time
-    });
-
-    let goToLogSession = (time) => navigation.navigate('SubmitActivity', {
-      loggedIn: true,
-      username: username,
-      activityTime: time
-    })
 
     if (secondsLeft === 1) {
       clearInterval(this.intervalHandle);
@@ -266,7 +221,9 @@ export default class App extends React.Component {
       shortBreakTime,
       longBreakTime,
       styles,
-      username
+      username,
+      userID,
+      photoUrl
     } = this.state;
 
     let screenProps = {
@@ -277,7 +234,7 @@ export default class App extends React.Component {
       isSession: isSession,
       isLoggedIn: isLoggedIn,
       onLogOut: this.logOut,
-      onLogIn: this.logIn,
+      getSettings: this.getSettings,
       sessionTime: sessionTime,
       shortBreakTime: shortBreakTime,
       longBreakTime: longBreakTime,
@@ -287,10 +244,14 @@ export default class App extends React.Component {
       setShortBreakTime: this.setShortBreakTime,
       setLongBreakTime: this.setLongBreakTime,
       startTimer: this.startTimer,
+      _storeDataLocal: this._storeDataLocal,
       pauseTimer: this.pauseTimer,
       resetTimer: this.resetTimer,
       styles: styles,
       username: username,
+      userID: userID,
+      photoUrl: photoUrl,
+      handleSetState: this.handleSetState,
     }
 
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -317,9 +278,13 @@ export default class App extends React.Component {
   _storeDataLocal = async (appState) => {
 
     try {
-      console.log("Trying to save", appState);
+      console.log("Trying to save in _storeDataLocal", appState);
       await AsyncStorage.setItem("appState", appState, function (error) {
-        if (error) { console.log("Storage error", error); }
+        if (error) {
+          console.log("Storage error", error);
+        } else {
+          console.log("Stored locally", appState)
+        }
       })
     } catch (e) {
       console.log("Error trying to save in Async")
@@ -335,12 +300,11 @@ export default class App extends React.Component {
         console.log("Got state", appState);
         // We have data!!
         if (appState.settings !== null) {
-          console.log("appState is object?", typeof (appState));
           console.log("Got the settings", appState)
           this.setState({
             username: appState.username,
             isLoggedIn: true,
-            styles: appState.settings.switchValue === false ? lightStyles : darkStyles,
+            styles: appState.settings.styles === 'lightStyles' ? lightStyles : darkStyles,
             sessionTime: appState.settings.sessionValue,
             shortBreakTime: appState.settings.shortBreakValue,
             longBreakTime: appState.settings.longBreakValue,
@@ -354,7 +318,7 @@ export default class App extends React.Component {
           })
         }
       } else {
-        console.log("No user saved", username);
+        console.log("No user saved", appState.username);
       }
     } catch (error) {
       console.log("Error Retrieving Data", error)
@@ -394,7 +358,7 @@ export default class App extends React.Component {
         ...Icon.Ionicons.font,
         // We include SpaceMono because we use it in HomeScreen.js. Feel free
         // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+        'Lato': require('./assets/fonts/Lato-Regular.ttf'),
       }),
       this._retrieveDataLocal(),
     ]);

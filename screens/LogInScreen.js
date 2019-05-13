@@ -5,6 +5,7 @@ import {
   View,
   Alert,
   Button,
+  TouchableHighlight,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -13,80 +14,114 @@ export default class LogInScreen extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      username: "",
-      password: "",
-    }
 
-    this._onChangeUsername = this._onChangeUsername.bind(this);
-    this._onChangePassword = this._onChangePassword.bind(this);
-    this._onLogInSubmit = this._onLogInSubmit.bind(this);
+    this.signInGoogle = this.signInGoogle.bind(this);
+    this.getSettings = this.getSettings.bind(this);
   }
   static navigationOptions = {
     header: null,
   };
 
-  _onChangeUsername(name) {
-    this.setState({
-      username: name
-    })
+  signInGoogle = async () => {
+    let androidClientId =
+      '524273864505-drdo8v3rdegsfi9jtqo469llhssg2euv.apps.googleusercontent.com'
+
+    try {
+      const result = await Expo.Google.logInAsync({
+        androidClientId: androidClientId,
+        scopes: ["profile", "email"]
+      })
+      if (result.type === "success") {
+        console.log("Google reply", result);
+        let { givenName, photoUrl, id, email } = result.user;
+        this.props.screenProps.handleSetState({
+          isLoggedIn: true,
+          username: givenName,
+          photoUrl: photoUrl,
+          userID: id,
+          email: email,
+        })
+        this.getSettings(id, givenName);
+      } else {
+        console.log("cancelled")
+      }
+    } catch (e) {
+      console.log("error", e)
+    }
   }
 
-  _onChangePassword(password) {
-    this.setState({
-      password: password
-    })
-  }
-
-  _onLogInSubmit() {
-    let { username, password } = this.state;
-    const { navigation } = this.props;
-    const fromSession = navigation.getParam('fromSession', false);
-    const activityTime = navigation.getParam('activityTime', 10);
+  getSettings(userID, username) {
+    console.log("Loggin in");
     fetch('http://localhost:3000', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username: username, password: password })
-    })
-      .then(res => {
-        return res.text()
+      body: JSON.stringify({
+        userID: userID,
+        username: username,
       })
+    }).then(res =>
+      res.json()
+    )
       .then(res => {
-        console.log(res);
-        if (res == "OK") {
-          if (fromSession) {
-            console.log("LogIn", activityTime)
-            this.props.navigation.navigate('SubmitActivity', {
-              loggedIn: true,
-              username: username,
-              activityTime: activityTime
-            });
-          } else {
-            this.props.navigation.navigate('Home', {
-              loggedIn: true,
-              username: username
-            });
-            this.props.screenProps.onLogIn(username);
-          }
+        console.log('login 66', res)
+        if (!res.username) {
+          console.log("68 - new user");
         } else {
-          Alert.alert("Error",
-            "Username and Password do not match any registered user",
-            [{ text: "OK" }])
+          if (res.settings === null) {
+            console.log("Response - no settings", res);
+            let appState = JSON.stringify(res);
+            console.log("Saving data locally - no settings", appState)
+            this.props.screenProps._storeDataLocal(appState);
+          } else {
+            console.log("Response - with settings", res);
+            this.props.screenProps.handleSetState({
+              styles: res.settings.styles === "lightStyles" ? lightStyles : darkStyles,
+              sessionTime: res.settings.sessionValue,
+              shortBreakTime: res.settings.shortBreakValue,
+              longBreakTime: res.settings.longBreakValue,
+              secondsLeft: this.props.screenProps.isSession ?
+                res.settings.sessionValue * 60 :
+                res.settings.shortBreakValue * 60
+            });
+            let appState = JSON.stringify(res);
+            console.log("Saving data locally - with settings", appState)
+            this.props.screenProps._storeDataLocal(appState);
+          }
         }
       })
   }
 
+
   render() {
-    let styles = this.props.screenProps.styles;
+    let { styles, signInGoogle } = this.props.screenProps;
     return (
-      <View style={[styles.container, styles.padding, styles.center]}>
-        <TextInput style={styles.userInput} onChangeText={this._onChangeUsername} placeholder="User Name" />
-        <TextInput style={styles.userInput} secureTextEntry={true} onChangeText={this._onChangePassword} placeholder="Password" />
-        <Button title="Log In" onPress={this._onLogInSubmit} />
-        <Text style={styles.redirectText} onPress={() => this.props.navigation.navigate('SignUp')}>Don't have an account? Sign Up!</Text>
-        <Text style={styles.redirectText} onPress={() => this.props.navigation.navigate('Home')}>Use diddit without Log In</Text>
+      <View style={[styles.container, styles.center, styles.align]}>
+        <View style={[styles.buttonContainer]}>
+          <TouchableHighlight
+            onPress={() => this.signInGoogle()}
+            style={[styles.logInButton,
+            styles.button,
+            styles.padding,
+            styles.center,
+            styles.margin
+            ]}
+          >
+            <Text style={styles.buttonText}>Log In With Google</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={() => this.props.navigation.navigate('Home')}
+            style={[styles.logInButton,
+            styles.button,
+            styles.padding,
+            styles.center,
+            styles.margin
+            ]}
+          >
+            <Text style={styles.buttonText}>Use diddit without Log In</Text>
+          </TouchableHighlight>
+        </View>
       </View>
     );
   }
