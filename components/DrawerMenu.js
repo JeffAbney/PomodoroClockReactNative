@@ -16,14 +16,13 @@ export default class DrawerMenu extends Component {
   }
 
   render() {
-    const { navigation, loggedIn, username } = this.props;
-    let styles = this.props.styles;
+    const { navigation, loggedIn, username, styles } = this.props;
 
     return (
       <TouchableWithoutFeedback onPress={navigation.openDrawer}>
         <Image
           style={styles.drawerIcon}
-          source={require('../assets/images/hamburgerIcon.png')}
+          source={require('../assets/images/Group.png')}
         />
       </TouchableWithoutFeedback>
     )

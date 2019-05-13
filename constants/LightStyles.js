@@ -27,24 +27,28 @@ export default lightStyles = StyleSheet.create({
         padding: 20,
         marginBottom: 10,
         backgroundColor: userInputLight,
+        fontFamily: 'Lato',
     },
     settingsWelcomeText: {
         fontSize: 36,
-        color: mainTextLight
+        color: mainTextLight,
+        fontFamily: 'Lato',
     },
     settingsText: {
         fontSize: 24,
         padding: 20,
-        color: mainTextLight
+        color: mainTextLight,
+        fontFamily: 'Lato',
     },
     settingsPicker: {
         width: 90,
-        height: 50
+        height: 50,
     },
     welcomeText: {
         paddingLeft: 15,
         paddingRight: 10,
-        color: mainTextLight
+        color: mainTextLight,
+        fontFamily: 'Lato',
     },
     activityCard: {
         flex: 1,
@@ -55,13 +59,17 @@ export default lightStyles = StyleSheet.create({
         borderWidth: 2,
         borderColor: buttonOutlineLight,
         elevation: 2,
-        color: mainTextLight
+        color: mainTextLight,
+        fontFamily: 'Lato',
     },
     paddingTop: {
         paddingTop: 15,
     },
     padding: {
-        padding: 15
+        padding: 25
+    },
+    margin: {
+        margin: 35,
     },
     clockContainer: {
         flex: 1
@@ -77,12 +85,14 @@ export default lightStyles = StyleSheet.create({
     },
     clock: {
         fontSize: 60,
-        color: mainTextLight
+        color: mainTextLight,
+        fontFamily: 'Lato',
     },
     timeAdjusterLabel: {
         fontSize: 24,
         paddingBottom: 15,
         color: mainTextLight,
+        fontFamily: 'Lato',
     },
     touchableArrow: {
         width: 25,
@@ -92,7 +102,8 @@ export default lightStyles = StyleSheet.create({
         paddingRight: 8,
         paddingLeft: 8,
         fontSize: 32,
-        color: mainTextLight
+        color: mainTextLight,
+        fontFamily: 'Lato',
     },
     buttonContainer: {
         alignItems: 'center',
@@ -106,22 +117,13 @@ export default lightStyles = StyleSheet.create({
         padding: 10,
         margin: 5,
         alignItems: 'center',
-        borderWidth: 0.5,
-        borderColor: buttonOutlineLight,
-        borderRadius: 4,
+        backgroundColor: mainTextLight,
+        borderRadius: 7,
+        height: 48,
     },
     buttonText: {
-        color: mainTextLight
-    },
-    rowButton: {
-        width: 75,
-        height: 35,
-        padding: 10,
-        margin: 5,
-        alignItems: 'center',
-        borderWidth: 0.5,
-        borderColor: buttonOutlineLight,
-        borderRadius: 4,
+        color: backgroundLight,
+        fontFamily: 'Lato',
     },
     signInContainer: {
         justifyContent: 'flex-end',
@@ -134,15 +136,20 @@ export default lightStyles = StyleSheet.create({
     },
     signOutText: {
         color: secondaryTextLight,
+        fontFamily: 'Lato',
     },
     drawerIcon: {
         marginTop: 30,
         marginLeft: 15,
-        height: 36,
-        width: 36,
+        height: 18,
+        width: 19,
     },
     redirectText: {
         paddingTop: 10,
         color: secondaryTextLight,
+        fontFamily: 'Lato',
+    },
+    logInButton: {
+width: 300,
     },
 })
