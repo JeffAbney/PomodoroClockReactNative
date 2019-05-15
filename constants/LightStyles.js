@@ -111,12 +111,14 @@ export default lightStyles = StyleSheet.create({
         marginTop: 50,
         width: 300,
         height: 50,
+        backgroundColor: 'green'
     },
     button: {
         flex: 1,
         padding: 10,
         margin: 5,
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: mainTextLight,
         borderRadius: 7,
         height: 48,
@@ -150,6 +152,50 @@ export default lightStyles = StyleSheet.create({
         fontFamily: 'Lato',
     },
     logInButton: {
-width: 300,
+        width: 300,
     },
+    logoBig: {
+        width: 178,
+        height: 60,
+
+    },
+    logoContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        backgroundColor: backgroundLight
+    },
+    introContentContainer: {
+        flex: 2,
+        justifyContent: 'center',
+        alignContent: 'center',
+        backgroundColor: backgroundLight
+    },
+    viewPager: {
+        height: 100,
+        justifyContent: 'center',
+    },
+    viewPageStyle: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+    },
+    paginationContainer: {
+        height: 20,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    paginationDot: {
+        margin: 7,
+        height: 7,
+        width: 7,
+        borderWidth: 1,
+        borderRadius: 7,
+        borderColor: mainTextLight,
+    },
+    paginationDotActive: {
+        backgroundColor: mainTextLight
+    },
+
 })
