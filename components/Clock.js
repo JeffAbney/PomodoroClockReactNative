@@ -116,11 +116,11 @@ if (isSession && secondsLeft === 1) {
 }
     return (
       <View style={[styles.container, styles.center, styles.align]}>
-        <Text style={styles.clock}>{isSession ? "Session" : "Break"}</Text>
+        <Text style={styles.clock}>{isSession ? "SESSION" : "BREAK"}</Text>
         <Text style={styles.clock}>{fmtMSS(secondsLeft)}</Text>
         <View style={styles.rowContainer}>
           <View style={[styles.container, styles.center, styles.align]}>
-            <Text style={styles.timeAdjusterLabel}>Session</Text>
+            <Text style={styles.timeAdjusterLabel}>SESSION</Text>
             <View
               style={[
                 styles.rowContainer,
@@ -141,7 +141,7 @@ if (isSession && secondsLeft === 1) {
             </View>
           </View>
           <View style={[styles.container, styles.center, styles.align]}>
-            <Text style={styles.timeAdjusterLabel}>Break</Text>
+            <Text style={styles.timeAdjusterLabel}>BREAK</Text>
             <View
               style={[
                 styles.rowContainer,
@@ -166,9 +166,9 @@ if (isSession && secondsLeft === 1) {
           <TouchableHighlight
             title={clockIsRunning ? "Pause" : "Start"}
             onPress={clockIsRunning ? this._onPressPause : this._onPressStart}
-            style={styles.button}>
+            style={[styles.button, styles.flex]}>
             <Text style={styles.buttonText}>
-              {clockIsRunning ? "Pause" : "Start"}
+              {clockIsRunning ? "PAUSE" : "START"}
             </Text>
           </TouchableHighlight>
           {!clockHasStarted ?
@@ -177,8 +177,8 @@ if (isSession && secondsLeft === 1) {
             <TouchableHighlight
               title="Reset"
               onPress={this._onPressReset}
-              style={styles.button}>
-              <Text>Reset</Text>
+              style={[styles.button, styles.flex]}>
+              <Text style={styles.buttonText}>RESET</Text>
             </TouchableHighlight>}
 
         </View>

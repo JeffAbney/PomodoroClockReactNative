@@ -37,7 +37,7 @@ export default class HomeScreen extends Component {
               screenProps={this.props.screenProps}
               styles={styles} />
           </View>
-          <View style={styles.clockContainer}>
+          <View style={styles.flex}>
             <Clock
               screenProps={this.props.screenProps}
               navigation={navigation}

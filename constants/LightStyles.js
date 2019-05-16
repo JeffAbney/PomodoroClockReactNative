@@ -71,7 +71,7 @@ export default lightStyles = StyleSheet.create({
     margin: {
         margin: 35,
     },
-    clockContainer: {
+    flex: {
         flex: 1
     },
     SignUpScreenContainer: {
@@ -87,6 +87,7 @@ export default lightStyles = StyleSheet.create({
         fontSize: 60,
         color: mainTextLight,
         fontFamily: 'Lato',
+        marginBottom: 25
     },
     timeAdjusterLabel: {
         fontSize: 24,
@@ -109,14 +110,15 @@ export default lightStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-evenly',
         marginTop: 50,
-        width: 300,
         height: 50,
-        backgroundColor: 'green'
+        padding: 20
     },
     button: {
-        flex: 1,
         padding: 10,
-        margin: 5,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 20,
+        marginRight: 25,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: mainTextLight,
@@ -126,6 +128,7 @@ export default lightStyles = StyleSheet.create({
     buttonText: {
         color: backgroundLight,
         fontFamily: 'Lato',
+        fontWeight: 'bold'
     },
     signInContainer: {
         justifyContent: 'flex-end',
@@ -154,10 +157,17 @@ export default lightStyles = StyleSheet.create({
     logInButton: {
         width: 300,
     },
+    clearButton: {
+        backgroundColor: backgroundLight,
+        borderWidth: 1,
+        borderColor: mainTextLight,
+    },
+    clearButtonText: {
+        color: mainTextLight
+    },
     logoBig: {
         width: 178,
         height: 60,
-
     },
     logoContainer: {
         flex: 1,
@@ -167,9 +177,8 @@ export default lightStyles = StyleSheet.create({
     },
     introContentContainer: {
         flex: 2,
-        justifyContent: 'center',
-        alignContent: 'center',
-        backgroundColor: backgroundLight
+        marginTop: 25,
+        backgroundColor: backgroundLight,
     },
     viewPager: {
         height: 100,
@@ -196,6 +205,14 @@ export default lightStyles = StyleSheet.create({
     },
     paginationDotActive: {
         backgroundColor: mainTextLight
+    },
+    introButtonContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 50,
+    },
+    introButton: {
+        marginTop: 10,
     },
 
 })
