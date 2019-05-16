@@ -7,15 +7,13 @@ import ActivityLogScreen from '../screens/ActivityLogScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import AboutScreen from '../screens/AboutScreen';
 import ShareScreen from '../screens/ShareScreen';
-import LogInScreen from '../screens/LogInScreen';
-import SignUpScreen from '../screens/SignUpScreen';
 import SubmitActivityScreen from '../screens/SubmitActivityScreen';
 import TaskCategoiesScreen from '../screens/TaskCategoriesScreen';
+import IntroScreen from "../screens/IntroScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
-  LogIn: LogInScreen,
-  SignUp: SignUpScreen,
+  Intro: IntroScreen,
   SubmitActivity: SubmitActivityScreen,
 });
 
