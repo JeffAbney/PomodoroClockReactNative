@@ -1,10 +1,10 @@
 import React from 'react';
-import { ScrollView, TouchableHighlight, Text, View } from 'react-native';
+import { ScrollView, TouchableHighlight, Text, View, TextInput } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import DrawerMenu from '../components/DrawerMenu';
-import PieChart from '../components/PieChart';
 
-class TaskCategoriesScreen extends React.Component {
+
+class ProjectsScreen extends React.Component {
 
   static navigationOptions = {
     title: 'My Projects',
@@ -19,12 +19,14 @@ class TaskCategoriesScreen extends React.Component {
       log: [],
       categories: [],
       loadingFinished: false,
+      newProjectName: ""
     }
 
     this.getLog = this.getLog.bind(this);
     this.getCategories = this.getCategories.bind(this);
     this.categoryDisplay = this.categoryDisplay.bind(this);
     this.navigateToTaskName = this.navigateToTaskName.bind(this);
+
   }
 
   getCategories(log) {
@@ -113,9 +115,12 @@ class TaskCategoriesScreen extends React.Component {
         this.getLog();
       }
       return (
-        <ScrollView>
+        <ScrollView style={styles.scrollView}>
           <DrawerMenu navigation={navigation} styles={styles} />
-          <Text style={styles.text}>Logged in as: {username}</Text>
+          <TouchableHighlight
+            onPress={() => navigation.navigate("AddProject")}>
+            <Text>Add a new project</Text>
+          </TouchableHighlight>
           {this.state.loadingFinished ?
             this.categoryDisplay()
             :
@@ -133,4 +138,4 @@ class TaskCategoriesScreen extends React.Component {
   }
 }
 
-export default withNavigation(TaskCategoriesScreen);
+export default withNavigation(ProjectsScreen);

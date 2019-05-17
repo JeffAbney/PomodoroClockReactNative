@@ -1,15 +1,15 @@
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { createAppContainer, createDrawerNavigator, createStackNavigator } from "react-navigation";
 
 import HomeScreen from '../screens/HomeScreen';
-import ActivityLogScreen from '../screens/ActivityLogScreen';
+import TasksScreen from '../screens/TasksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import AboutScreen from '../screens/AboutScreen';
 import ShareScreen from '../screens/ShareScreen';
 import SubmitActivityScreen from '../screens/SubmitActivityScreen';
-import TaskCategoiesScreen from '../screens/TaskCategoriesScreen';
+import ProjectsScreen from '../screens/ProjectsScreen';
 import IntroScreen from "../screens/IntroScreen";
+import AddProjectScreen from "../screens/AddProjectScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -18,8 +18,9 @@ const HomeStack = createStackNavigator({
 });
 
 const TaskLogStack = createStackNavigator({
-  TaskCategoies: TaskCategoiesScreen,
-  TaskNames: ActivityLogScreen,
+  Projects: ProjectsScreen,
+  TaskNames: TasksScreen,
+  AddProject: AddProjectScreen
 });
 
 const MainDrawerNavigator = createDrawerNavigator({

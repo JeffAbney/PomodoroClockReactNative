@@ -1,10 +1,10 @@
 import React from 'react';
-import { ScrollView, TouchableHighlight, Text, View } from 'react-native';
+import { ScrollView, TouchableHighlight, Text, View, TextInput } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import DrawerMenu from '../components/DrawerMenu';
 import PieChart from '../components/PieChart';
 
-class activityLogScreen extends React.Component {
+class TasksScreen extends React.Component {
 
   static navigationOptions = {
     title: 'Activity Log',
@@ -21,11 +21,24 @@ class activityLogScreen extends React.Component {
       loadingFinished: false
     };
 
+    this.handleUserInput = this.handleUserInput.bind(this);
+    this.addTask = this.addTask.bind(this);
     this.logDisplay = this.logDisplay.bind(this);
     this.getLog = this.getLog.bind(this);
     this.getChartData = this.getChartData.bind(this);
     this.setPie = this.setPie.bind(this);
     this.setList = this.setList.bind(this);
+  }
+
+  handleUserInput(text) {
+    this.setState({
+      newProjectName: text
+    })
+  }
+
+  addTask() {
+    let projectName = this.state.newProjectName;
+
   }
 
   getLog() {
@@ -130,23 +143,37 @@ class activityLogScreen extends React.Component {
         return (
           <ScrollView style={[styles.container, styles.paddingTop]}>
             <DrawerMenu navigation={navigation} styles={styles} />
-            <Text style={styles.text}>Logged in as: {this.state.username}</Text>
+            <View 
+              style={[styles.rowContainer, styles.marginTop]}>
+              <TextInput
+                style={styles.userInput}
+                placeholder="Start a new task"
+                placeholderTextColor='#88c8b1'
+                onChangeText={(text) => this.handleUserInput({ text })}
+              />
+              <TouchableHighlight 
+                style={[styles.button, styles.addButton]}
+                onPress={this.addProject}>
+                <Text style={styles.buttonText}> Add </Text>
+              </TouchableHighlight>
+            </View>
             <View style={styles.rowContainer}>
-              <TouchableHighlight style={styles.button} onPress={this.setPie}>
+              <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setPie}>
                 <Text>Pie</Text>
               </TouchableHighlight>
-              <TouchableHighlight style={styles.button} onPress={this.setList}>
+              <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setList}>
                 <Text>List</Text>
               </TouchableHighlight>
             </View>
-            {this.state.pieDisplay ? <PieChart
-              categoryTime={categoryTime}
-              data={this.getChartData(category)}
-              pieWidth={150}
-              pieHeight={150}
-              onItemSelected={this._onPieItemSelected}
-              width={500}
-              height={200} />
+            {this.state.pieDisplay ?
+              <PieChart
+                categoryTime={categoryTime}
+                data={this.getChartData(category)}
+                pieWidth={150}
+                pieHeight={150}
+                onItemSelected={this._onPieItemSelected}
+                width={500}
+                height={200} />
               :
               this.logDisplay()}
           </ScrollView>
@@ -173,4 +200,4 @@ class activityLogScreen extends React.Component {
   }
 }
 
-export default withNavigation(activityLogScreen);
+export default withNavigation(TasksScreen);

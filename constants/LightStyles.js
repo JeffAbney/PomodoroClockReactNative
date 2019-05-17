@@ -17,6 +17,9 @@ export default lightStyles = StyleSheet.create({
         flex: 1,
         backgroundColor: backgroundLight,
     },
+    scrollView: {
+        backgroundColor: backgroundLight,
+    },
     center: {
         justifyContent: 'center',
     },
@@ -24,10 +27,15 @@ export default lightStyles = StyleSheet.create({
         alignItems: 'center'
     },
     userInput: {
+        flex: 1,
         padding: 20,
         marginBottom: 10,
         backgroundColor: userInputLight,
         fontFamily: 'Lato',
+        color: mainTextLight,
+    },
+    userInputContainer: {
+        margin: 20
     },
     settingsWelcomeText: {
         fontSize: 36,
@@ -43,6 +51,11 @@ export default lightStyles = StyleSheet.create({
     settingsPicker: {
         width: 90,
         height: 50,
+        color: mainTextLight,
+    },
+    settingsPickerItem: {
+        color: mainTextLight,
+        backgroundColor: backgroundLight,
     },
     welcomeText: {
         paddingLeft: 15,
@@ -130,6 +143,9 @@ export default lightStyles = StyleSheet.create({
         fontFamily: 'Lato',
         fontWeight: 'bold'
     },
+    addButton: {
+        width: 60
+    },
     signInContainer: {
         justifyContent: 'flex-end',
         paddingRight: 20,
@@ -211,8 +227,18 @@ export default lightStyles = StyleSheet.create({
         justifyContent: 'center',
         height: 50,
     },
-    introButton: {
-        marginTop: 10,
+    marginTop: {
+        marginTop: 20,
     },
-
+    colorGridContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    colorDot: {
+        height: 55,
+        width: 55,
+        borderRadius: 55,
+        margin: 20,
+    },
 })

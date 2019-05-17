@@ -30,12 +30,6 @@ export default class HomeScreen extends Component {
         <View style={styles.container}>
           <View style={[styles.rowContainer, styles.spaceBetween]}>
             <DrawerMenu navigation={navigation} styles={styles}/>
-            <SignIn
-              loggedIn={isLoggedIn}
-              navigation={navigation}
-              username={username}
-              screenProps={this.props.screenProps}
-              styles={styles} />
           </View>
           <View style={styles.flex}>
             <Clock
