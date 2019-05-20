@@ -37,14 +37,14 @@ export default class SubmitActivityScreen extends Component {
   };
 
   fetchCategoryList() {
-    let username = this.props.screenProps.username
+    let userID = this.props.screenProps.userID
     fetch('http://localhost:3000/showLog', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: username,
+        userID: userID,
       })
     })
       .then(res => {
@@ -72,9 +72,8 @@ export default class SubmitActivityScreen extends Component {
 
   _onSubmitActivity() {
     const { navigation } = this.props;
-    const loggedIn = navigation.getParam('loggedIn', false);
-    const username = navigation.getParam('username', "guest");
-    const activityTime = navigation.getParam('activityTime', 15);
+    const { userID } = this.props.screenProps
+    const taskTime = navigation.getParam('activityTime', 15);
 
     let { activityCategory, activityName } = this.state;
     fetch('http://localhost:3000/log', {
@@ -83,10 +82,10 @@ export default class SubmitActivityScreen extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: username,
-        activityCategory: activityCategory,
-        activityName: activityName,
-        activityTime: activityTime,
+        userID: userID,
+        projectName: projectName,
+        taskName: taskName,
+        taskTime: taskTime,
         date: new Date()
       })
     })

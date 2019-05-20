@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 
+
 export class Clock extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +20,7 @@ export class Clock extends Component {
     this._onPressStart = this._onPressStart.bind(this);
     this._onPressPause = this._onPressPause.bind(this);
     this._onPressReset = this._onPressReset.bind(this);
+    this._onSubmitActivity = this._onSubmitActivity.bind(this);
     this.goToLogSessionAlert = this.goToLogSessionAlert.bind(this);
   }
 
@@ -74,7 +76,8 @@ export class Clock extends Component {
   }
 
   goToLogSessionAlert(time) {
-    let { username, clockStartedOver } = this.props.screenProps;
+    let { userId, clockStartedOver } = this.props.screenProps;
+    let { projectName, taskName } = this.props
     Alert.alert(
       'Session Over',
       'Save this session',
@@ -83,16 +86,61 @@ export class Clock extends Component {
           text: 'No thanks',
           style: 'cancel',
         },
-        { text: 'OK', onPress: () => {
-        clockStartedOver();
-        this.props.navigation.navigate('SubmitActivity', {
-          loggedIn: true,
-          username: username,
-          activityTime: time
-        }) }},
+        {
+          text: 'OK', onPress: () => {
+            clockStartedOver();
+            if (projectName === undefined) {
+              this.props.navigation.navigate('SubmitActivity', {
+                loggedIn: true,
+                taskName: taskName
+              })
+            } else {
+              this._onSubmitActivity();
+            }
+          }
+        },
       ],
       { cancelable: false },
     )
+  }
+
+  _onSubmitActivity() {
+    const { navigation, projectName, taskName } = this.props;
+    const { userID, sessionTime } = this.props.screenProps;
+    let taskTime = sessionTime;
+
+    fetch('http://localhost:3000/log', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userID: userID,
+        projectName: projectName,
+        taskName: taskName,
+        taskTime: taskTime,
+        date: new Date()
+      })
+    })
+      .then(res => {
+        return res.text()
+      })
+      .then(res => {
+        console.log("clock res", res);
+        if (res === "OK") {
+          navigation.navigate('Tasks', {
+            projectName: projectName
+          })
+        } else {
+          Alert.alert("Error",
+            "There was a problem saving your activity",
+            [{ text: "OK" }]);
+          navigation.navigate('Home', {
+            loggedIn: true,
+            username: username
+          })
+        }
+      })
   }
 
   render() {
@@ -111,9 +159,10 @@ export class Clock extends Component {
       username } = this.props.screenProps;
 
 
-if (isSession && secondsLeft === 1) {
-  this.goToLogSessionAlert(sessionTime);
-}
+    if (isSession && secondsLeft === 1) {
+      this.goToLogSessionAlert(sessionTime);
+    }
+    
     return (
       <View style={[styles.container, styles.center, styles.align]}>
         <Text style={styles.clock}>{isSession ? "SESSION" : "BREAK"}</Text>

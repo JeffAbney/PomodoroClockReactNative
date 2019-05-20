@@ -55,9 +55,10 @@ class ProjectsScreen extends React.Component {
   }
 
   navigateToTaskName(proj) {
+    const { projects } = this.state;
     this.props.navigation.navigate(
       'TaskNames',
-      { project: proj, projectTime: proj.projectTime }
+      { project: proj, projectLog: projects[proj].log, projectTime: projects[proj].projectTime }
     );
   }
 

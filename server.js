@@ -30,7 +30,7 @@ app.post('/', (req, res) => {
           } else {
             console.log("New User Created");
             console.log(results);
-            res.json({newUser: true, username: username, settings: null, userID: userID });
+            res.json({ newUser: true, username: username, settings: null, userID: userID });
           }
         })
       } else {
@@ -74,7 +74,7 @@ app.post('/newProject', (req, res) => {
       {
 
         $set: {
-          [projectKey] : {
+          [projectKey]: {
             creationDate: date,
             color: projectColor,
             log: []
@@ -104,6 +104,7 @@ app.post('/log', (req, res) => {
   let taskName = req.body.taskName;
   let date = req.body.date;
   let taskTime = req.body.taskTime;
+  let projectKey = `projects.${projectName}.log`
 
   MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
     if (error) return process.exit(1);
@@ -113,21 +114,16 @@ app.post('/log', (req, res) => {
     collection.updateOne({ userID: userID },
       {
         $push: {
-          projects: {
-            [projectName]: {
-              color: 'red',
-              log: {
-                projectName: projectName,
-                taskName: taskName,
-                taskTime: taskTime,
-                date: date
-              }
-            }
+          [projectKey]: {
+            projectName: projectName,
+            taskName: taskName,
+            taskTime: taskTime,
+            date: date
           }
         }
       },
       (error, doc) => {
-        if (error) return next(error);
+        if (error) return console.log(error);
         if (doc == null) {
           console.log("Can't find user to log.")
           res.sendStatus(404);

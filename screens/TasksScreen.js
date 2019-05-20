@@ -30,6 +30,10 @@ class TasksScreen extends React.Component {
     this.setList = this.setList.bind(this);
   }
 
+  componentDidMount() {
+    this.getLog();
+  }
+
   handleUserInput(text) {
     this.setState({
       newProjectName: text
@@ -42,36 +46,23 @@ class TasksScreen extends React.Component {
   }
 
   getLog() {
-    let username = this.props.screenProps.username
-    fetch('http://localhost:3000/showLog', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-      })
+    let log = this.props.navigation.getParam('projectLog', []);
+    console.log("TasksScreen Log", log)
+    this.setState({
+      log: log,
+      loadingFinished: true
     })
-      .then(res => {
-        return res.json()
-      })
-      .then(res => {
-        this.setState({
-          username: res.username,
-          log: res.log,
-          loadingFinished: true
-        })
-      })
   }
 
+// UPDATE FOR NEW API
   logDisplay() {
     let styles = this.props.screenProps.styles;
-    let category = this.props.navigation.getParam('category', 'Planning');
+    let project = this.props.navigation.getParam('project', 'Planning');
 
-    return this.state.log.filter((el) => (el.activityCategory === category)).map((act, index) => {
+    return this.state.log.filter((el) => (el.project === project)).map((act, index) => {
       return (
         <View style={styles.activityCard} key={index}>
-          <Text>{act.activityCategory}</Text>
+          <Text>{act.project}</Text>
           <Text>{act.activityName}</Text>
           <Text>{act.activityTime} minute(s)</Text>
           <Text>{new Date(act.date).toLocaleDateString("en-US")}</Text>
@@ -80,28 +71,29 @@ class TasksScreen extends React.Component {
     })
   }
 
-  getChartData(cat) {
-    let arr = this.state.log;
-    let category = arr.filter((act) => act.activityCategory === cat
-    )
-    let categoryTime = this.props.navigation.getParam('categoryTime', 0);
+
+  //ADD ProjectTime to new Projects, add to it each task.
+  getChartData(proj) {
+    let log = this.state.log;
+    let projectTime = 2; //this.props.navigation.getParam('projectTime', 2);
     let getTasksWithTimes = function () {
       let taskNames = [];
-      category.forEach((act) => {
-        if (!taskNames.includes(act.activityName)) {
-          taskNames.push(act.activityName);
+      log.map((task) => {
+        if (!taskNames.includes(task.taskName)) {
+          taskNames.push(task.taskName);
         };
       })
       let tasksWithTimes = [];
       let getTimes = function () {
         if (taskNames.length !== 0) {
           let taskTime = 0;
-
           for (i = 0; i < taskNames.length; i++) {
             let taskName = taskNames[i];
-            for (j = 0; j < category.length; j++) {
-              category[j].activityName === taskName ?
-                taskTime += Math.floor(category[j].activityTime / categoryTime * 100)
+            for (j = 0; j < log.length; j++) {
+              console.log("Got here", log[j]);
+              console.log("project Time", projectTime);
+              log[j].taskName === taskName ?
+                taskTime += Math.floor(log[j].taskTime / projectTime * 100)
                 :
                 ""
             }
@@ -133,69 +125,56 @@ class TasksScreen extends React.Component {
   render() {
     let { isLoggedIn, styles, username } = this.props.screenProps;
     const { navigation } = this.props;
-    let category = this.props.navigation.getParam('category', 'Planning')
-    let categoryTime = this.props.navigation.getParam('categoryTime', 0);
-    if (isLoggedIn) {
-      if (username != this.state.username) {
-        this.getLog();
-      }
-      if (this.state.loadingFinished) {
-        return (
-          <ScrollView style={[styles.container, styles.paddingTop]}>
-            <DrawerMenu navigation={navigation} styles={styles} />
-            <View 
-              style={[styles.rowContainer, styles.marginTop]}>
-              <TextInput
-                style={styles.userInput}
-                placeholder="Start a new task"
-                placeholderTextColor='#88c8b1'
-                onChangeText={(text) => this.handleUserInput({ text })}
-              />
-              <TouchableHighlight 
-                style={[styles.button, styles.addButton]}
-                onPress={this.addProject}>
-                <Text style={styles.buttonText}> Add </Text>
-              </TouchableHighlight>
-            </View>
-            <View style={styles.rowContainer}>
-              <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setPie}>
-                <Text>Pie</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setList}>
-                <Text>List</Text>
-              </TouchableHighlight>
-            </View>
-            {this.state.pieDisplay ?
-              <PieChart
-                categoryTime={categoryTime}
-                data={this.getChartData(category)}
-                pieWidth={150}
-                pieHeight={150}
-                onItemSelected={this._onPieItemSelected}
-                width={500}
-                height={200} />
-              :
-              this.logDisplay()}
-          </ScrollView>
-        );
-      } else {
-        return (
-          <ScrollView style={[styles.container, styles.paddingTop]}>
-            <DrawerMenu navigation={navigation} styles={styles} />
-            <Text style={styles.text}>Logged in as: {this.state.username}</Text>
-            <Text>...Loading</Text>
-            {this.logDisplay()}
-          </ScrollView>
-        );
-      }
+    let project = this.props.navigation.getParam('project', 'Planning')
+    let projectTime = this.props.navigation.getParam('projectTime', 0);
 
+    if (this.state.log === this.props.navigation.getParam('projectLog', [])) {
+      return (
+        <ScrollView style={[styles.container, styles.paddingTop]}>
+          <DrawerMenu navigation={navigation} styles={styles} />
+          <View
+            style={[styles.rowContainer, styles.marginTop]}>
+            <TextInput
+              style={styles.userInput}
+              placeholder="Start a new task"
+              placeholderTextColor='#88c8b1'
+              onChangeText={(text) => this.handleUserInput(text)}
+            />
+            <TouchableHighlight
+              style={[styles.button, styles.addButton]}
+              onPress={this.addProject}>
+              <Text style={styles.buttonText}> Add </Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.rowContainer}>
+            <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setPie}>
+              <Text>Pie</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setList}>
+              <Text>List</Text>
+            </TouchableHighlight>
+          </View>
+          {this.state.pieDisplay ? 
+            <PieChart
+              projectTime={projectTime}
+              data={this.getChartData(project)}
+              pieWidth={150}
+              pieHeight={150}
+              onItemSelected={this._onPieItemSelected}
+              width={500}
+              height={200} />
+            :
+            this.logDisplay()}
+        </ScrollView>
+      );
     } else {
       return (
-        <View style={styles.container}>
+        <ScrollView style={[styles.container, styles.paddingTop]}>
           <DrawerMenu navigation={navigation} styles={styles} />
-          <Text style={styles.welcomeText}>Please Log In to view Activity Log</Text>
-        </View>
-      )
+          <Text style={styles.text}>Logged in as: {this.state.username}</Text>
+          <Text>...Loading</Text>
+        </ScrollView>
+      );
     }
   }
 }
