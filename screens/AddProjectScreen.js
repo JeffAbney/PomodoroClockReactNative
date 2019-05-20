@@ -25,6 +25,7 @@ export default class AddProjectScreen extends Component {
     this.handleProjectChange = this.handleProjectChange.bind(this);
     this.handleTaskChange = this.handleTaskChange.bind(this);
     this.handleChooseColor = this.handleChooseColor.bind(this);
+    this.addProject = this.addProject.bind(this);
   }
   static navigationOptions = {
     header: null
@@ -49,6 +50,48 @@ export default class AddProjectScreen extends Component {
     this.setState({
       projectColor: color
     })
+  }
+
+  addProject() {
+
+    let userID = this.props.navigation.getParam('userID', undefined);
+    const { navigation } = this.props;
+    const { projectName, projectColor } = this.state;
+
+    fetch('http://localhost:3000/newProject', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userID: userID,
+        projectName: projectName,
+        projectColor: projectColor,
+        date: new Date()
+      })
+    })
+      .then(res => {
+        return res.text()
+      })
+      .then(res => {
+        console.log("clock res", res);
+        if (res === "OK") {
+          navigation.navigate("Home",
+            {
+              projectName: projectName,
+              taskName: this.state.taskName,
+              projectColor: projectColor
+            })
+        } else {
+          Alert.alert("Error",
+            "There was a problem adding your project",
+            [{ text: "OK" }]);
+          navigation.navigate('Home', {
+            loggedIn: true,
+            username: username
+          })
+        }
+      })
   }
 
   generateColorDots() {
@@ -85,17 +128,15 @@ export default class AddProjectScreen extends Component {
           <Text>Choose a color for you project!</Text>
           {this.generateColorDots()}
         </View>
-        <TouchableHighlight style={styles.button}>
-          <Text
-            style={styles.buttonText}
-            onPress={
-              navigation.navigate("Home",
-                {
-                  projectName: this.state.projectName,
-                  taskName: this.state.taskName,
-                  projectColor: this.state.projectColor
-                })
-            }>GO!</Text>
+        <TouchableHighlight
+          style={styles.button}
+          onPress={() => {
+            console.log("Creating new project");
+            this.addProject()
+          }
+
+          }>
+          <Text style={styles.buttonText}>GO!</Text>
         </TouchableHighlight>
       </View>
     )

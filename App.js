@@ -1,7 +1,6 @@
 import React from 'react';
-import { Platform, StatusBar, View, Alert } from 'react-native';
+import { Platform, StatusBar, View, Alert, AsyncStorage } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
-import { AsyncStorage } from "react-native"
 import AppNavigator from './navigation/AppNavigator';
 import lightStyles from './constants/LightStyles';
 import darkStyles from './constants/DarkStyles';
@@ -9,6 +8,7 @@ import AppNavigatorLogged from './navigation/AppNavigatorLogged';
 let sessionTime = 1;
 let shortBreakTime = 5;
 let longBreakTime = 15;
+
 
 export default class App extends React.Component {
   constructor(props) {
@@ -51,9 +51,6 @@ export default class App extends React.Component {
   handleSetState(newState) {
     this.setState(newState);
   }
-
-
-
 
   logOut() {
     this._clearDataLocal();
@@ -188,6 +185,7 @@ export default class App extends React.Component {
     })
   }
 
+
   tick() {
     let { secondsLeft, isSession, sessionTime, shortBreakTime, longBreakTime, isLoggedIn } = this.state;
 
@@ -293,6 +291,7 @@ export default class App extends React.Component {
 
   _retrieveDataLocal = async () => {
     let appState = { blank: true };
+
     try {
       const value = await AsyncStorage.getItem('appState');
       if (value !== null) {
@@ -300,20 +299,27 @@ export default class App extends React.Component {
         console.log("Got state", appState);
         // We have data!!
         if (appState.settings !== null) {
-          console.log("Got the settings", appState)
+          let { styles, sessionValue, shortBreakValue, longBreakValue } = appState.settings
+          console.log("Got the settings", appState);
+          sessionTime = sessionValue;
+          shortBreakTime = shortBreakValue;
+          longBreakTime = longBreakValue;
+
           this.setState({
             username: appState.username,
+            userID: appState.userID,
             isLoggedIn: true,
-            styles: appState.settings.styles === 'lightStyles' ? lightStyles : darkStyles,
-            sessionTime: appState.settings.sessionValue,
-            shortBreakTime: appState.settings.shortBreakValue,
-            longBreakTime: appState.settings.longBreakValue,
-            secondsLeft: this.state.isSession ? appState.settings.sessionValue * 60 : appState.settings.shortBreakValue * 60,
+            styles: styles === 'lightStyles' ? lightStyles : darkStyles,
+            sessionTime: sessionValue,
+            shortBreakTime: shortBreakValue,
+            longBreakTime: longBreakValue,
+            secondsLeft: this.state.isSession ? sessionValue * 60 : shortBreakValue * 60,
           });
         } else {
           console.log("User has no saved settings", appState.username);
           this.setState({
             username: appState.username,
+            userID: appState.userID,
             isLoggedIn: true,
           })
         }
@@ -347,11 +353,7 @@ export default class App extends React.Component {
     return Promise.all([
       Asset.loadAsync([
         require('./assets/images/back.png'),
-        require('./assets/images/border.png'),
-        require('./assets/images/button.png'),
         require('./assets/images/next.png'),
-        require('./assets/images/pause.png'),
-        require('./assets/images/play.png'),
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar

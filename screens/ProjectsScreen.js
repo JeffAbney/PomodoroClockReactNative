@@ -108,7 +108,7 @@ class ProjectsScreen extends React.Component {
   }
 
   render() {
-    let { isLoggedIn, styles, username } = this.props.screenProps;
+    let { isLoggedIn, styles, username, userID } = this.props.screenProps;
     const { navigation } = this.props;
     if (isLoggedIn) {
       if (username != this.state.username) {
@@ -118,7 +118,10 @@ class ProjectsScreen extends React.Component {
         <ScrollView style={styles.scrollView}>
           <DrawerMenu navigation={navigation} styles={styles} />
           <TouchableHighlight
-            onPress={() => navigation.navigate("AddProject")}>
+            onPress={() => {
+              console.log("PS USERID", userID);
+              navigation.navigate("AddProject", { userID: userID })
+            }}>
             <Text>Add a new project</Text>
           </TouchableHighlight>
           {this.state.loadingFinished ?

@@ -24,9 +24,12 @@ export default class HomeScreen extends Component {
   render() {
     const { navigation } = this.props;
     let { styles, isLoggedIn, username } = this.props.screenProps;
+    let projectName = this.props.navigation.getParam('projectName', undefined);
+    let taskName = this.props.navigation.getParam('taskName', undefined);
 
     return (
       <View style={styles.container}>
+      <SignIn styles={styles} screenProps={this.props.screenProps} navigation={navigation}/>
         <View style={styles.container}>
           <View style={[styles.rowContainer, styles.spaceBetween]}>
             <DrawerMenu navigation={navigation} styles={styles}/>
@@ -35,6 +38,8 @@ export default class HomeScreen extends Component {
             <Clock
               screenProps={this.props.screenProps}
               navigation={navigation}
+              projectName={projectName}
+              taskName={taskName}
             />
           </View>
         </View>

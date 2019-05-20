@@ -65,7 +65,7 @@ export default class IntroScreen extends Component {
     )
       .then(res => {
         console.log('login 66', res)
-        if (!res.username) {
+        if (res.newUser) {
           console.log("68 - new user");
         } else {
           if (res.settings === null) {

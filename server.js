@@ -30,16 +30,17 @@ app.post('/', (req, res) => {
           } else {
             console.log("New User Created");
             console.log(results);
-            res.json({ username: null, settings: null });
+            res.json({newUser: true, username: username, settings: null, userID: userID });
           }
         })
       } else {
         if (!doc.settings) {
           console.log("server didnt find any settings")
-          res.json({ username: username, settings: null });
+          res.json({ username: username, settings: null, userID: userID });
         } else {
           res.json({
             username: username,
+            userID: userID,
             settings: {
               styles: doc.settings.styles,
               sessionValue: doc.settings.sessionValue,
@@ -54,28 +55,74 @@ app.post('/', (req, res) => {
 })
 
 
-//Handle Log activity
+//Handle add project
 
-app.post('/log', (req, res) => {
-  let username = req.body.username;
-  let activityCategory = req.body.activityCategory;
-  let activityName = req.body.activityName;
+app.post('/newProject', (req, res) => {
+  let userID = req.body.userID;
+  let projectName = req.body.projectName;
   let date = req.body.date;
-  let activityTime = req.body.activityTime;
+  let projectColor = req.body.projectColor;
+  let projectKey = `projects.${projectName}`
 
   MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
     if (error) return process.exit(1);
     var db = client.db('Pomodoro');
     var collection = db.collection('Users');
-    console.log("connection is working");
-    collection.updateOne({ username: username },
+    console.log("connection is working, will try to add proejcts");
+    console.log("userID", userID);
+    collection.updateOne({ userID: userID },
+      {
+
+        $set: {
+          [projectKey] : {
+            creationDate: date,
+            color: projectColor,
+            log: []
+          }
+        }
+
+      },
+      (error, doc) => {
+        if (error) return console.log(error);
+        if (doc == null) {
+          console.log("Can't find user to add project.")
+          res.sendStatus(404);
+        } else {
+          console.log("Added project", doc);
+          res.sendStatus(200);
+        }
+      }
+    )
+  })
+})
+
+//Handle Log activity
+
+app.post('/log', (req, res) => {
+  let userID = req.body.userID;
+  let projectName = req.body.projectName;
+  let taskName = req.body.taskName;
+  let date = req.body.date;
+  let taskTime = req.body.taskTime;
+
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("connection is working, will try to add task");
+    collection.updateOne({ userID: userID },
       {
         $push: {
-          log: {
-            activityCategory: activityCategory,
-            activityName: activityName,
-            activityTime: activityTime,
-            date: date
+          projects: {
+            [projectName]: {
+              color: 'red',
+              log: {
+                projectName: projectName,
+                taskName: taskName,
+                taskTime: taskTime,
+                date: date
+              }
+            }
           }
         }
       },
