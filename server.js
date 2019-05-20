@@ -142,7 +142,7 @@ app.post('/log', (req, res) => {
 //Handle Get Actvitiy Log
 
 app.post("/showLog", (req, res, next) => {
-  let username = req.body.username;
+  let userID = req.body.userID;
 
   MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
     if (error) return process.exit(1);
@@ -150,14 +150,14 @@ app.post("/showLog", (req, res, next) => {
     var collection = db.collection('Users');
     console.log("connection is working");
 
-    collection.findOne({ username: username }, (error, doc) => {
+    collection.findOne({ userID: userID }, (error, doc) => {
       console.log("Getting user data...");
       if (error) res.send(error);
       if (doc == null) {
         next("Can't find user");
       } else {
         console.log("Here's the data");
-        res.json({ username: doc.username, log: doc.log });
+        res.json({ projects: doc.projects, userID: userID });
       }
     })
   })

@@ -17,56 +17,28 @@ class ProjectsScreen extends React.Component {
     this.state = {
       username: "Guest",
       log: [],
-      categories: [],
+      projects: [],
       loadingFinished: false,
-      newProjectName: ""
+      newProjectName: "",
+      userID: undefined
     }
 
-    this.getLog = this.getLog.bind(this);
-    this.getCategories = this.getCategories.bind(this);
-    this.categoryDisplay = this.categoryDisplay.bind(this);
+    this.getProjects = this.getProjects.bind(this);
+    this.projectDisplay = this.projectDisplay.bind(this);
     this.navigateToTaskName = this.navigateToTaskName.bind(this);
 
   }
 
-  getCategories(log) {
-    console.log("Getting Categories")
-    if (log === []) {
-      console.log("Log is empty")
-    } else {
-      let categoryData = {};
-      log.forEach((act) => {
-        let category = act.activityCategory;
-        if (!categoryData.hasOwnProperty(category)) {
-          categoryData[category] = {
-            activityCategory: category,
-            categoryTime: act.activityTime,
-            startDate: act.date
-          };
-        } else {
-          categoryData[category].categoryTime += act.activityTime;
-          if (categoryData[category].startDate > act.date) {
-            categoryData[category].startDate = act.date;
-          }
-        }
-      })
-      this.setState({
-        categories: Object.entries(categoryData),
-        loadingFinished: true,
-      })
-    }
-  }
-
-  getLog() {
+  getProjects() {
     console.log("Getting Log");
-    let username = this.props.screenProps.username
+    let userID = this.props.screenProps.userID
     fetch('http://localhost:3000/showLog', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: username,
+        userID: userID,
       })
     })
       .then(res => {
@@ -74,45 +46,51 @@ class ProjectsScreen extends React.Component {
       })
       .then(res => {
         this.setState({
-          username: res.username,
-          log: res.log,
+          projects: res.projects,
+          loadingFinished: true,
+          userID: res.userID
         })
-        console.log("Setting log to:", res.log)
-        this.getCategories(res.log);
+        console.log("Setting projects to:", res.projects)
       })
   }
 
-  navigateToTaskName(cat) {
+  navigateToTaskName(proj) {
     this.props.navigation.navigate(
       'TaskNames',
-      { category: cat.activityCategory, categoryTime: cat.categoryTime }
+      { project: proj, projectTime: proj.projectTime }
     );
   }
 
-  categoryDisplay() {
+  projectDisplay() {
     let styles = this.props.screenProps.styles;
-    return this.state.categories.map((cat, index) => {
-      return (
+    let projects = this.state.projects;
+    let index = 0;
+    let projArr = []
+    for (var proj in projects) {
+      if (projects.hasOwnProperty(proj)) {
+      projArr.push (
         <TouchableHighlight
-          key={`category ${index}`}
-          onPress={() => this.navigateToTaskName(cat[1])}
+          key={`project ${index}`}
+          onPress={() => this.navigateToTaskName(proj)}
         >
-          <View style={styles.activityCard} >
-            <Text>{cat[1].activityCategory}</Text>
-            <Text>Total Time: {cat[1].categoryTime} minutes</Text>
-            <Text>Started on {new Date(cat[1].startDate).toLocaleDateString("en-US")}</Text>
+          <View style={styles.activityCard}>
+            <Text>{proj}</Text>
+            <Text>Total Time: {proj.projectTime ? `${proj.projectTime} minutes` : 'Not started' }</Text>
+            <Text>Started on {new Date(proj.creationDate).toLocaleDateString("en-US")}</Text>
           </View>
         </TouchableHighlight >
       )
-    })
-  }
+      index++;
+    }
+  } return projArr;
+}
 
   render() {
     let { isLoggedIn, styles, username, userID } = this.props.screenProps;
     const { navigation } = this.props;
     if (isLoggedIn) {
-      if (username != this.state.username) {
-        this.getLog();
+      if (userID != this.state.userID) {
+        this.getProjects();
       }
       return (
         <ScrollView style={styles.scrollView}>
@@ -125,9 +103,9 @@ class ProjectsScreen extends React.Component {
             <Text>Add a new project</Text>
           </TouchableHighlight>
           {this.state.loadingFinished ?
-            this.categoryDisplay()
+            this.projectDisplay()
             :
-            <Text>Loading categories </Text>}
+            <Text>Loading projects </Text>}
         </ScrollView>
       )
     } else {
