@@ -77,7 +77,8 @@ app.post('/newProject', (req, res) => {
           [projectKey]: {
             creationDate: date,
             color: projectColor,
-            log: []
+            log: [],
+            projectTime: 0,
           }
         }
 
@@ -104,7 +105,8 @@ app.post('/log', (req, res) => {
   let taskName = req.body.taskName;
   let date = req.body.date;
   let taskTime = req.body.taskTime;
-  let projectKey = `projects.${projectName}.log`
+  let projectKeyLog = `projects.${projectName}.log`;
+  let projectKeyTime = `projects.${projectName}.projectTime`
 
   MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
     if (error) return process.exit(1);
@@ -114,12 +116,15 @@ app.post('/log', (req, res) => {
     collection.updateOne({ userID: userID },
       {
         $push: {
-          [projectKey]: {
+          [projectKeyLog]: {
             projectName: projectName,
             taskName: taskName,
             taskTime: taskTime,
             date: date
           }
+        },
+        $inc: {
+          [projectKeyTime]: taskTime
         }
       },
       (error, doc) => {

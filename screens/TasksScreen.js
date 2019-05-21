@@ -18,7 +18,8 @@ class TasksScreen extends React.Component {
       username: "Guest",
       log: [],
       pieDisplay: true,
-      loadingFinished: false
+      loadingFinished: false,
+      newTaskName: undefined,
     };
 
     this.handleUserInput = this.handleUserInput.bind(this);
@@ -36,13 +37,14 @@ class TasksScreen extends React.Component {
 
   handleUserInput(text) {
     this.setState({
-      newProjectName: text
+      newTaskName: text
     })
   }
 
   addTask() {
-    let projectName = this.state.newProjectName;
-
+    let projectName = this.props.navigation.getParam('project', 'Planning');
+    let taskName = this.state.newTaskName;
+    this.props.navigation.navigate("Home", {projectName: projectName, taskName: taskName});
   }
 
   getLog() {
@@ -58,24 +60,24 @@ class TasksScreen extends React.Component {
   logDisplay() {
     let styles = this.props.screenProps.styles;
     let project = this.props.navigation.getParam('project', 'Planning');
+    let log = this.state.log;
 
-    return this.state.log.filter((el) => (el.project === project)).map((act, index) => {
+    return log.map((task, index) => {
       return (
         <View style={styles.activityCard} key={index}>
-          <Text>{act.project}</Text>
-          <Text>{act.activityName}</Text>
-          <Text>{act.activityTime} minute(s)</Text>
-          <Text>{new Date(act.date).toLocaleDateString("en-US")}</Text>
+          <Text>{task.projectName}</Text>
+          <Text>{task.taskName}</Text>
+          <Text>{task.taskTime} minute(s)</Text>
+          <Text>{new Date(task.date).toLocaleDateString("en-US")}</Text>
         </View>
       )
     })
   }
 
 
-  //ADD ProjectTime to new Projects, add to it each task.
-  getChartData(proj) {
+  getChartData() {
     let log = this.state.log;
-    let projectTime = 2; //this.props.navigation.getParam('projectTime', 2);
+    let projectTime = this.props.navigation.getParam('projectTime', 2);
     let getTasksWithTimes = function () {
       let taskNames = [];
       log.map((task) => {
@@ -125,7 +127,6 @@ class TasksScreen extends React.Component {
   render() {
     let { isLoggedIn, styles, username } = this.props.screenProps;
     const { navigation } = this.props;
-    let project = this.props.navigation.getParam('project', 'Planning')
     let projectTime = this.props.navigation.getParam('projectTime', 0);
 
     if (this.state.log === this.props.navigation.getParam('projectLog', [])) {
@@ -142,7 +143,7 @@ class TasksScreen extends React.Component {
             />
             <TouchableHighlight
               style={[styles.button, styles.addButton]}
-              onPress={this.addProject}>
+              onPress={this.addTask}>
               <Text style={styles.buttonText}> Add </Text>
             </TouchableHighlight>
           </View>
@@ -157,7 +158,7 @@ class TasksScreen extends React.Component {
           {this.state.pieDisplay ? 
             <PieChart
               projectTime={projectTime}
-              data={this.getChartData(project)}
+              data={this.getChartData()}
               pieWidth={150}
               pieHeight={150}
               onItemSelected={this._onPieItemSelected}
