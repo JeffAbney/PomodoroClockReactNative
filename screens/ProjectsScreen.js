@@ -66,8 +66,10 @@ class ProjectsScreen extends React.Component {
     let styles = this.props.screenProps.styles;
     let projects = this.state.projects;
     let index = 0;
-    let projArr = []
+    let projArr = [];
+    
     for (var proj in projects) {
+      console.log("Display", projects[proj]);
       if (projects.hasOwnProperty(proj)) {
       projArr.push (
         <TouchableHighlight
@@ -76,8 +78,8 @@ class ProjectsScreen extends React.Component {
         >
           <View style={styles.activityCard}>
             <Text>{proj}</Text>
-            <Text>Total Time: {proj.projectTime ? `${proj.projectTime} minutes` : 'Not started' }</Text>
-            <Text>Started on {new Date(proj.creationDate).toLocaleDateString("en-US")}</Text>
+            <Text>Total Time: {projects[proj].projectTime ? `${projects[proj].projectTime} minutes` : 'Not started' }</Text>
+            <Text>Started on {new Date(projects[proj].creationDate).toLocaleDateString("en-US")}</Text>
           </View>
         </TouchableHighlight >
       )
