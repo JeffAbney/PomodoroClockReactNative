@@ -6,6 +6,7 @@ import {
   View,
   Alert,
 } from 'react-native';
+import styles from '../constants/Styles';
 
 
 
@@ -13,54 +14,10 @@ export class Clock extends Component {
   constructor(props) {
     super(props);
 
-    this._onPressSessionDecrease = this._onPressSessionDecrease.bind(this);
-    this._onPressSessionIncrease = this._onPressSessionIncrease.bind(this);
-    this._onPressBreakDecrease = this._onPressBreakDecrease.bind(this);
-    this._onPressBreakIncrease = this._onPressBreakIncrease.bind(this);
     this._onPressStart = this._onPressStart.bind(this);
     this._onPressPause = this._onPressPause.bind(this);
     this._onPressReset = this._onPressReset.bind(this);
-    this._onSubmitActivity = this._onSubmitActivity.bind(this);
-    this.goToLogSessionAlert = this.goToLogSessionAlert.bind(this);
-  }
-
-  _onPressSessionDecrease() {
-    let { sessionTime, setSessionTime } = this.props.screenProps;
-    if (sessionTime > 1) {
-      setSessionTime(sessionTime - 1)
-    }
-    else {
-      Alert.alert("That's as low as it goes!")
-    }
-  }
-
-  _onPressSessionIncrease() {
-    let { sessionTime, setSessionTime } = this.props.screenProps;
-    if (sessionTime < 60)
-      setSessionTime(sessionTime + 1)
-    else {
-      Alert.alert("That's as high as it goes!")
-    }
-  }
-
-  _onPressBreakDecrease() {
-    let { shortBreakTime, setShortBreakTime } = this.props.screenProps;
-    if (shortBreakTime > 1) {
-      setShortBreakTime(shortBreakTime - 1)
-    } else {
-      Alert.alert("That's as low as it goes!")
-    }
-
-  }
-
-  _onPressBreakIncrease() {
-    let { shortBreakTime, setShortBreakTime } = this.props.screenProps;
-    if (shortBreakTime < 60) {
-      setShortBreakTime(shortBreakTime + 1)
-    } else {
-      Alert.alert("That's as high as it goes!")
-    }
-
+    this.onSubmitTask = this.onSubmitTask.bind(this);
   }
 
   _onPressStart() {
@@ -75,142 +32,76 @@ export class Clock extends Component {
     this.props.screenProps.resetTimer();
   }
 
-  goToLogSessionAlert(time) {
-    let { userId, clockStartedOver } = this.props.screenProps;
-    let { projectName, taskName } = this.props
-    Alert.alert(
-      'Session Over',
-      'Save this session',
-      [
-        {
-          text: 'No thanks',
-          style: 'cancel',
-        },
-        {
-          text: 'OK', onPress: () => {
-            clockStartedOver();
-            if (projectName === undefined) {
-              this.props.navigation.navigate('SubmitActivity', {
-                loggedIn: true,
-                taskName: taskName
-              })
-            } else {
-              this._onSubmitActivity();
-            }
-          }
-        },
-      ],
-      { cancelable: false },
-    )
-  }
 
-  _onSubmitActivity() {
+  onSubmitTask() {
     const { navigation, projectName, taskName } = this.props;
-    const { userID, sessionTime } = this.props.screenProps;
+    const { userID, sessionTime, getProjects } = this.props.screenProps;
     let taskTime = sessionTime;
 
-    fetch('http://localhost:3000/log', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userID: userID,
-        projectName: projectName,
-        taskName: taskName,
+    if (projectName === undefined) {
+      this.props.navigation.navigate('SubmitActivity', {
+        loggedIn: true,
         taskTime: taskTime,
-        date: new Date()
       })
-    })
-      .then(res => {
-        return res.text()
+    } else {
+      fetch('http://localhost:3000/log', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userID: userID,
+          projectName: projectName,
+          taskName: taskName,
+          taskTime: taskTime,
+          date: new Date()
+        })
       })
-      .then(res => {
-        console.log("clock res", res);
-        if (res === "OK") {
-          navigation.navigate('Tasks', {
-            projectName: projectName
-          })
-        } else {
-          Alert.alert("Error",
-            "There was a problem saving your activity",
-            [{ text: "OK" }]);
-          navigation.navigate('Home', {
-            loggedIn: true,
-            username: username
-          })
-        }
-      })
+        .then(res => {
+          return res.text()
+        })
+        .then(res => {
+          getProjects();
+          return res;
+        })
+        .then(res => {
+          console.log("clock res", res);
+          if (res === "OK") {
+            navigation.navigate('Tasks', {
+              projectName: projectName,
+              userID: userID
+            })
+          } else {
+            Alert.alert("Error",
+              "There was a problem saving your activity",
+              [{ text: "OK" }]);
+            navigation.navigate('Home', {
+              loggedIn: true,
+            })
+          }
+        })
+    }
   }
 
   render() {
     let fmtMSS = (s) => (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
 
     let {
-      isSession,
+      projectName,
+      taskName,
       clockIsRunning,
       clockHasStarted,
-      secondsLeft,
-      styles,
       sessionTime,
-      shortBreakTime,
-      longBreakTime,
-      timeIsUp,
-      username } = this.props.screenProps;
+    } = this.props.screenProps;
 
-
-    if (isSession && secondsLeft === 1) {
-      this.goToLogSessionAlert(sessionTime);
-    }
-    
     return (
       <View style={[styles.container, styles.center, styles.align]}>
-        <Text style={styles.clock}>{isSession ? "SESSION" : "BREAK"}</Text>
-        <Text style={styles.clock}>{fmtMSS(secondsLeft)}</Text>
-        <View style={styles.rowContainer}>
-          <View style={[styles.container, styles.center, styles.align]}>
-            <Text style={styles.timeAdjusterLabel}>SESSION</Text>
-            <View
-              style={[
-                styles.rowContainer,
-                styles.center,
-                styles.align
-              ]}>
-              <TouchableHighlight
-                style={styles.touchableArrow}
-                onPress={this._onPressSessionDecrease}>
-                <Image source={require('../assets/images/back.png')} />
-              </TouchableHighlight>
-              <Text style={styles.setTimeText}>{sessionTime}</Text>
-              <TouchableHighlight
-                style={styles.touchableArrow}
-                onPress={this._onPressSessionIncrease}>
-                <Image source={require('../assets/images/next.png')} />
-              </TouchableHighlight>
-            </View>
-          </View>
-          <View style={[styles.container, styles.center, styles.align]}>
-            <Text style={styles.timeAdjusterLabel}>BREAK</Text>
-            <View
-              style={[
-                styles.rowContainer,
-                styles.center,
-                styles.align
-              ]}>
-              <TouchableHighlight
-                style={styles.touchableArrow}
-                onPress={this._onPressBreakDecrease}>
-                <Image source={require('../assets/images/back.png')} />
-              </TouchableHighlight>
-              <Text style={styles.setTimeText}>{shortBreakTime}</Text>
-              <TouchableHighlight
-                style={styles.touchableArrow}
-                onPress={this._onPressBreakIncrease}>
-                <Image source={require('../assets/images/next.png')} />
-              </TouchableHighlight>
-            </View>
-          </View>
-        </View>
+        <Text style={styles.clock}>{projectName ? `${projectName}` : "Work"}</Text>
+        <Text>{taskName ? `${taskName}` : ""}</Text>
+        <TouchableHighlight style={styles.button} onPress={() => this.onSubmitTask()}>
+          <Text style={styles.buttonText}>Did it!</Text>
+        </TouchableHighlight>
+        <Text style={styles.clock}>{fmtMSS(sessionTime)}</Text>
         <View style={[styles.rowContainer, styles.buttonContainer]}>
           <TouchableHighlight
             title={clockIsRunning ? "Pause" : "Start"}

@@ -2,13 +2,8 @@ import React from 'react';
 import { Platform, StatusBar, View, Alert, AsyncStorage } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
-import lightStyles from './constants/LightStyles';
-import darkStyles from './constants/DarkStyles';
+import styles from './constants/Styles';
 import AppNavigatorLogged from './navigation/AppNavigatorLogged';
-let sessionTime = 1;
-let shortBreakTime = 5;
-let longBreakTime = 15;
-
 
 export default class App extends React.Component {
   constructor(props) {
@@ -19,24 +14,17 @@ export default class App extends React.Component {
       isLoggedIn: false,
       username: "Guest",
       userID: undefined,
-      email: undefined,
-      styles: lightStyles,
-      sessionTime: sessionTime,
-      shortBreakTime: shortBreakTime,
-      longBreakTime: longBreakTime,
-      secondsLeft: 5,
+      userEmail: undefined,
+      sessionTime: 0,
       clockIsRunning: false,
-      isSession: true,
       clockHasStarted: false,
       timeIsUp: false,
+      userProjects: {}
     };
 
+    this.getProjects = this.getProjects.bind(this);
     this.logOut = this.logOut.bind(this);
-    this.changeTheme = this.changeTheme.bind(this);
     this.setSessionTime = this.setSessionTime.bind(this);
-    this.setShortBreakTime = this.setShortBreakTime.bind(this);
-    this.setLongBreakTime = this.setLongBreakTime.bind(this);
-    this.saveSettings = this.saveSettings.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
     this.resetTimer = this.resetTimer.bind(this);
@@ -46,92 +34,84 @@ export default class App extends React.Component {
     this._retrieveDataLocal = this._retrieveDataLocal.bind(this);
     this.clockStartedOver = this.clockStartedOver.bind(this);
     this.handleSetState = this.handleSetState.bind(this);
+    this.signInDiddit = this.signInDiddit.bind(this);
   }
 
   handleSetState(newState) {
     this.setState(newState);
   }
 
+  signInDiddit(userData) {
+    console.log("Loggin in");
+    fetch('http://localhost:3000', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData)
+    })
+      .then(res =>
+        res.json()
+      )
+      .then(res => {
+        console.log("Response - signInDiddit", res.projects);
+        this.setState({
+          userProjects: res.projects
+        });
+        return res;
+      })
+      .then(res => {
+        console.log("Saving data locally")
+        this._storeDataLocal();
+      })
+  }
+
+  getProjects() {
+    console.log("Getting Log");
+    let userID = this.state.userID
+    fetch('http://localhost:3000/showLog', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userID: userID,
+      })
+    })
+      .then(res => {
+        return res.json()
+      })
+      .then(res => {
+        this.setState({
+          userProjects: res.projects,
+        })
+        console.log("Setting projects to:", res.projects)
+      })
+      .then(res => {
+        this._storeDataLocal();
+      })
+  }
+
+
+
   logOut() {
     this._clearDataLocal();
     this.setState({
       isLoggedIn: false,
       username: "Guest",
-      styles: lightStyles,
-      sessionTime: sessionTime,
-      shortBreakTime: shortBreakTime,
-      longBreakTime: longBreakTime,
-      secondsLeft: 5,
+      sessionTime: 0,
       clockIsRunning: false,
       isSession: true,
       clockHasStarted: false,
+      userProjects: {},
     });
   }
 
-  changeTheme() {
-    this.setState({
-      styles: this.state.styles === lightStyles ? darkStyles : lightStyles
-    })
-  }
 
-  setSessionTime(min) {
+  setSessionTime(sec) {
     this.setState({
-      sessionTime: min,
-      secondsLeft: !this.state.isSession ?
-        this.state.secondsLeft
-        :
-        min > this.state.sessionTime ?
-          this.state.secondsLeft + 60
-          :
-          this.state.secondsLeft - 60
+      sessionTime: sec,
     })
-  }
-
-  setShortBreakTime(min) {
-    this.setState({
-      shortBreakTime: min,
-      secondsLeft: this.state.isSession ?
-        this.state.secondsLeft
-        :
-        min > this.state.shortBreakTime ?
-          this.state.secondsLeft + 60
-          :
-          this.state.secondsLeft - 60
-    })
-  }
-
-  setLongBreakTime(min) {
-    this.setState({
-      longBreakTime: min
-    })
-  }
-
-  saveSettings(appState) {
-    let newState = {
-      styles: appState.settings.switchValue === false ? lightStyles : darkStyles,
-      sessionTime: appState.settings.sessionValue,
-      shortBreakTime: appState.settings.shortBreakValue,
-      longBreakTime: appState.settings.longBreakValue,
-      secondsLeft: this.state.isSession ? appState.settings.sessionValue * 60 : appState.settings.shortBreakValue * 60
-    }
-    let setState = this.setState(newState)
-    !this.state.clockHasStarted ?
-      setState
-      :
-      Alert.alert(
-        'Saving Settings while clock is running will reset clock.',
-        'Are you sure you want to reset the clock?',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          { text: 'OK', onPress: () => setState },
-        ],
-        { cancelable: false },
-      );
-    console.log("settings to be saved", appState)
-    this._storeDataLocal(JSON.stringify(appState));
   }
 
   startTimer() {
@@ -168,12 +148,8 @@ export default class App extends React.Component {
   resetClockState() {
     clearInterval(this.intervalHandle);
     this.setState({
-      sessionTime: sessionTime,
-      shortBreakTime: shortBreakTime,
-      longBreakTime: longBreakTime,
-      secondsLeft: sessionTime * 60,
+      sessionTime: 0,
       clockIsRunning: false,
-      isSession: true,
       clockHasStarted: false,
       timeIsUp: false,
     })
@@ -187,25 +163,10 @@ export default class App extends React.Component {
 
 
   tick() {
-    let { secondsLeft, isSession, sessionTime, shortBreakTime, longBreakTime, isLoggedIn } = this.state;
-
-    if (secondsLeft === 1) {
-      clearInterval(this.intervalHandle);
-      this.setState({
-        clockIsRunning: false,
-        secondsLeft:
-          isSession ?
-            Math.floor(shortBreakTime * 60)
-            :
-            Math.floor(sessionTime * 60),
-        isSession: !isSession,
-        timeIsUp: true,
-      })
-    } else {
-      this.setState({
-        secondsLeft: --secondsLeft
-      })
-    }
+    let { sessionTime } = this.state;
+    this.setState({
+      sessionTime: ++sessionTime
+    })
   }
 
   render() {
@@ -213,41 +174,31 @@ export default class App extends React.Component {
       clockHasStarted,
       clockIsRunning,
       isLoggedIn,
-      isSession,
       sessionTime,
-      secondsLeft,
-      shortBreakTime,
-      longBreakTime,
-      styles,
       username,
       userID,
-      photoUrl
+      photoUrl,
+      userProjects,
     } = this.state;
 
     let screenProps = {
-      changeTheme: this.changeTheme,
+
       clockHasStarted: clockHasStarted,
       clockIsRunning: clockIsRunning,
       clockStartedOver: this.clockStartedOver,
-      isSession: isSession,
+      getProjects: this.getProjects,
       isLoggedIn: isLoggedIn,
+      navigateToTaskName: this.navigateToTaskName,
       onLogOut: this.logOut,
-      getSettings: this.getSettings,
       sessionTime: sessionTime,
-      shortBreakTime: shortBreakTime,
-      longBreakTime: longBreakTime,
-      saveSettings: this.saveSettings,
-      secondsLeft: secondsLeft,
-      setSessionTime: this.setSessionTime,
-      setShortBreakTime: this.setShortBreakTime,
-      setLongBreakTime: this.setLongBreakTime,
+      signInDiddit: this.signInDiddit,
       startTimer: this.startTimer,
       _storeDataLocal: this._storeDataLocal,
       pauseTimer: this.pauseTimer,
       resetTimer: this.resetTimer,
-      styles: styles,
       username: username,
       userID: userID,
+      userProjects: userProjects,
       photoUrl: photoUrl,
       handleSetState: this.handleSetState,
     }
@@ -272,8 +223,17 @@ export default class App extends React.Component {
       );
     }
   }
-
-  _storeDataLocal = async (appState) => {
+  //store could use this.state to set local instead of taking argument
+  _storeDataLocal = async () => {
+    let { photoUrl, username, userID, userEmail, userProjects } = this.state;
+    let appState = JSON.stringify({
+      photoUrl: photoUrl,
+      isLoggedIn: true,
+      username: username,
+      userID: userID,
+      userEmail: userEmail,
+      userProjects: userProjects,
+    })
 
     try {
       console.log("Trying to save in _storeDataLocal", appState);
@@ -297,43 +257,26 @@ export default class App extends React.Component {
       if (value !== null) {
         appState = JSON.parse(value);
         console.log("Got state", appState);
-        // We have data!!
-        if (appState.settings !== null) {
-          let { styles, sessionValue, shortBreakValue, longBreakValue } = appState.settings
-          console.log("Got the settings", appState);
-          sessionTime = sessionValue;
-          shortBreakTime = shortBreakValue;
-          longBreakTime = longBreakValue;
-
-          this.setState({
-            username: appState.username,
-            userID: appState.userID,
-            isLoggedIn: true,
-            styles: styles === 'lightStyles' ? lightStyles : darkStyles,
-            sessionTime: sessionValue,
-            shortBreakTime: shortBreakValue,
-            longBreakTime: longBreakValue,
-            secondsLeft: this.state.isSession ? sessionValue * 60 : shortBreakValue * 60,
-          });
-        } else {
-          console.log("User has no saved settings", appState.username);
-          this.setState({
-            username: appState.username,
-            userID: appState.userID,
-            isLoggedIn: true,
-          })
-        }
+        // We have data!!       
+        let { username, userID, userProjects, userEmail } = appState;
+        this.setState({
+          username: username,
+          userID: userID,
+          userProjects: userProjects,
+          userEmail: userEmail,
+          isLoggedIn: true,
+        });
       } else {
-        console.log("No user saved", appState.username);
+        console.log("No user saved locally");
       }
     } catch (error) {
-      console.log("Error Retrieving Data", error)
+      console.log("Error Retrieving Local Data ", error)
     }
   }
 
   _clearDataLocal = async () => {
     try {
-      const value = await AsyncStorage.getAllKeys((err) => console.log("Error getting keys", err));
+      const value = await AsyncStorage.getAllKeys((err) => { (err) => console.log("Error getting keys", err) });
       console.log("Clearing User data");
       let keys = value;
       await AsyncStorage.multiRemove(keys, (err) => {

@@ -13,7 +13,9 @@ const uri = "mongodb+srv://JeffAbney:warhol88@cluster0-schfu.mongodb.net/test?re
 // Handle Sign In
 app.post('/', (req, res) => {
   let userID = req.body.userID;
-  let username = req.body.username
+  let username = req.body.username;
+  let userEmail = req.body.email;
+  let photoUrl = req.body.photoUrl;
 
   MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
     if (error) return process.exit(1);
@@ -22,33 +24,26 @@ app.post('/', (req, res) => {
     console.log("connection is working");
     collection.findOne({ userID: userID }, (error, doc) => {
       if (error) return next(error);
-      if (doc == null) {
+      //If user is not registered in diddit DB
+      if (doc === null) {
         console.log("No Such User, Creating new one");
-        collection.insertOne({ userID: userID, username: username, log: [] }, (error, results) => {
+        collection.insertOne({ userID: userID, username: username, userEmail: userEmail, userPhoto: photoUrl, projects: {} }, (error, results) => {
           if (error) {
             return res.json({ "error": "something went wrong creating new user" });
           } else {
             console.log("New User Created");
             console.log(results);
-            res.json({ newUser: true, username: username, settings: null, userID: userID });
+            res.json({ newUser: true, username: username, userID: userID, projects: {} });
           }
         })
+        //If user is registered in DB
       } else {
-        if (!doc.settings) {
-          console.log("server didnt find any settings")
-          res.json({ username: username, settings: null, userID: userID });
-        } else {
-          res.json({
-            username: username,
-            userID: userID,
-            settings: {
-              styles: doc.settings.styles,
-              sessionValue: doc.settings.sessionValue,
-              shortBreakValue: doc.settings.shortBreakValue,
-              longBreakValue: doc.settings.longBreakValue,
-            }
-          });
-        }
+        res.json({
+          username: username,
+          userID: userID,
+          projects: doc.projects,
+          
+        });
       }
     })
   })
@@ -69,10 +64,8 @@ app.post('/newProject', (req, res) => {
     var db = client.db('Pomodoro');
     var collection = db.collection('Users');
     console.log("connection is working, will try to add proejcts");
-    console.log("userID", userID);
     collection.updateOne({ userID: userID },
       {
-
         $set: {
           [projectKey]: {
             creationDate: date,
@@ -81,7 +74,6 @@ app.post('/newProject', (req, res) => {
             projectTime: 0,
           }
         }
-
       },
       (error, doc) => {
         if (error) return console.log(error);
@@ -157,8 +149,32 @@ app.post("/showLog", (req, res, next) => {
       if (doc == null) {
         next("Can't find user");
       } else {
-        console.log("Here's the data");
+        console.log("Here's the data", doc.projects);
         res.json({ projects: doc.projects, userID: userID });
+      }
+    })
+  })
+})
+
+//Handle get single project Log
+app.post('/showSingleLog', (req, res) => {
+  let userID = req.body.userID;
+  let projectName = req.body.projectName;
+
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("showSingleLog - connection is working");
+
+    collection.findOne({ userID: userID }, (error, doc) => {
+      console.log("Getting user data...");
+      if (error) res.send(error);
+      if (doc == null) {
+        next("Can't find user");
+      } else {
+        console.log("Here's the data");
+        res.json({ projects: doc.projects[projectName].log, userID: userID });
       }
     })
   })

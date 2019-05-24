@@ -3,6 +3,7 @@ import { ScrollView, TouchableHighlight, Text, View, TextInput } from 'react-nat
 import { withNavigation } from 'react-navigation';
 import DrawerMenu from '../components/DrawerMenu';
 import PieChart from '../components/PieChart';
+import styles from '../constants/Styles'
 
 class TasksScreen extends React.Component {
 
@@ -15,24 +16,16 @@ class TasksScreen extends React.Component {
     super(props);
 
     this.state = {
-      username: "Guest",
-      log: [],
       pieDisplay: true,
-      loadingFinished: false,
       newTaskName: undefined,
     };
 
     this.handleUserInput = this.handleUserInput.bind(this);
     this.addTask = this.addTask.bind(this);
     this.logDisplay = this.logDisplay.bind(this);
-    this.getLog = this.getLog.bind(this);
     this.getChartData = this.getChartData.bind(this);
     this.setPie = this.setPie.bind(this);
     this.setList = this.setList.bind(this);
-  }
-
-  componentDidMount() {
-    this.getLog();
   }
 
   handleUserInput(text) {
@@ -44,24 +37,12 @@ class TasksScreen extends React.Component {
   addTask() {
     let projectName = this.props.navigation.getParam('project', 'Planning');
     let taskName = this.state.newTaskName;
-    this.props.navigation.navigate("Home", {projectName: projectName, taskName: taskName});
+    this.props.navigation.navigate("Home", { projectName: projectName, taskName: taskName });
   }
 
-  getLog() {
-    let log = this.props.navigation.getParam('projectLog', []);
-    console.log("TasksScreen Log", log)
-    this.setState({
-      log: log,
-      loadingFinished: true
-    })
-  }
-
-// UPDATE FOR NEW API
   logDisplay() {
-    let styles = this.props.screenProps.styles;
-    let project = this.props.navigation.getParam('project', 'Planning');
-    let log = this.state.log;
-
+    let log = this.props.navigation.getParam('projectLog', []);
+    console.log("TS - screenprops", this.props.screenprops)
     return log.map((task, index) => {
       return (
         <View style={styles.activityCard} key={index}>
@@ -76,8 +57,8 @@ class TasksScreen extends React.Component {
 
 
   getChartData() {
-    let log = this.state.log;
-    let projectTime = this.props.navigation.getParam('projectTime', 2);
+    let log = this.props.navigation.getParam('projectLog', []);
+    let projectTime = this.props.navigation.getParam('projectTime', 0);
     let getTasksWithTimes = function () {
       let taskNames = [];
       log.map((task) => {
@@ -92,8 +73,6 @@ class TasksScreen extends React.Component {
           for (i = 0; i < taskNames.length; i++) {
             let taskName = taskNames[i];
             for (j = 0; j < log.length; j++) {
-              console.log("Got here", log[j]);
-              console.log("project Time", projectTime);
               log[j].taskName === taskName ?
                 taskTime += Math.floor(log[j].taskTime / projectTime * 100)
                 :
@@ -125,58 +104,48 @@ class TasksScreen extends React.Component {
 
 
   render() {
-    let { isLoggedIn, styles, username } = this.props.screenProps;
     const { navigation } = this.props;
     let projectTime = this.props.navigation.getParam('projectTime', 0);
 
-    if (this.state.log === this.props.navigation.getParam('projectLog', [])) {
-      return (
-        <ScrollView style={[styles.container, styles.paddingTop]}>
-          <DrawerMenu navigation={navigation} styles={styles} />
-          <View
-            style={[styles.rowContainer, styles.marginTop]}>
-            <TextInput
-              style={styles.userInput}
-              placeholder="Start a new task"
-              placeholderTextColor='#88c8b1'
-              onChangeText={(text) => this.handleUserInput(text)}
-            />
-            <TouchableHighlight
-              style={[styles.button, styles.addButton]}
-              onPress={this.addTask}>
-              <Text style={styles.buttonText}> Add </Text>
-            </TouchableHighlight>
-          </View>
-          <View style={styles.rowContainer}>
-            <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setPie}>
-              <Text>Pie</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setList}>
-              <Text>List</Text>
-            </TouchableHighlight>
-          </View>
-          {this.state.pieDisplay ? 
-            <PieChart
-              projectTime={projectTime}
-              data={this.getChartData()}
-              pieWidth={150}
-              pieHeight={150}
-              onItemSelected={this._onPieItemSelected}
-              width={500}
-              height={200} />
-            :
-            this.logDisplay()}
-        </ScrollView>
-      );
-    } else {
-      return (
-        <ScrollView style={[styles.container, styles.paddingTop]}>
-          <DrawerMenu navigation={navigation} styles={styles} />
-          <Text style={styles.text}>Logged in as: {this.state.username}</Text>
-          <Text>...Loading</Text>
-        </ScrollView>
-      );
-    }
+    return (
+      <ScrollView style={[styles.container, styles.paddingTop]}>
+        <DrawerMenu navigation={navigation} styles={styles} />
+        <View
+          style={[styles.rowContainer, styles.marginTop]}>
+          <TextInput
+            style={styles.userInput}
+            placeholder="Start a new task"
+            placeholderTextColor='#88c8b1'
+            onChangeText={(text) => this.handleUserInput(text)}
+          />
+          <TouchableHighlight
+            style={[styles.button, styles.addButton]}
+            onPress={this.addTask}>
+            <Text style={styles.buttonText}> Add </Text>
+          </TouchableHighlight>
+        </View>
+        <View style={styles.rowContainer}>
+          <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setPie}>
+            <Text>Pie</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setList}>
+            <Text>List</Text>
+          </TouchableHighlight>
+        </View>
+        
+        {this.state.pieDisplay ?
+          <PieChart
+            projectTime={projectTime}
+            data={this.getChartData()}
+            pieWidth={150}
+            pieHeight={150}
+            onItemSelected={this._onPieItemSelected}
+            width={500}
+            height={200} />
+          :
+          this.logDisplay()}
+      </ScrollView>
+    );
   }
 }
 

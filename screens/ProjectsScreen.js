@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, TouchableHighlight, Text, View, TextInput } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import DrawerMenu from '../components/DrawerMenu';
-
+import styles from '../constants/Styles';
 
 class ProjectsScreen extends React.Component {
 
@@ -16,70 +16,30 @@ class ProjectsScreen extends React.Component {
 
     this.state = {
       username: "Guest",
-      log: [],
-      projects: [],
-      loadingFinished: false,
       newProjectName: "",
-      userID: undefined
     }
 
-    this.getProjects = this.getProjects.bind(this);
     this.projectDisplay = this.projectDisplay.bind(this);
     this.navigateToTaskName = this.navigateToTaskName.bind(this);
-
-  }
-
-  getProjects() {
-    console.log("Getting Log");
-    let userID = this.props.screenProps.userID
-    fetch('http://localhost:3000/showLog', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userID: userID,
-      })
-    })
-      .then(res => {
-        return res.json()
-      })
-      .then(res => {
-        this.setState({
-          projects: res.projects,
-          loadingFinished: true,
-          userID: res.userID
-        })
-        console.log("Setting projects to:", res.projects)
-      })
-  }
-
-  navigateToTaskName(proj) {
-    const { projects } = this.state;
-    this.props.navigation.navigate(
-      'TaskNames',
-      { project: proj, projectLog: projects[proj].log, projectTime: projects[proj].projectTime }
-    );
   }
 
   projectDisplay() {
-    let styles = this.props.screenProps.styles;
-    let projects = this.state.projects;
+    let { userProjects, username } = this.props.screenProps;
     let index = 0;
     let projArr = [];
-    
-    for (var proj in projects) {
-      console.log("Display", projects[proj]);
-      if (projects.hasOwnProperty(proj)) {
+    console.log("PS - userProjects", userProjects);
+    console.log("PS - username", username);
+    for (var proj in userProjects) {
+      if (userProjects.hasOwnProperty(proj)) {
       projArr.push (
         <TouchableHighlight
           key={`project ${index}`}
           onPress={() => this.navigateToTaskName(proj)}
         >
-          <View style={styles.activityCard}>
+          <View style={[styles.activityCard, {backgroundColor: `${userProjects[proj].color}`}]}>
             <Text>{proj}</Text>
-            <Text>Total Time: {projects[proj].projectTime ? `${projects[proj].projectTime} minutes` : 'Not started' }</Text>
-            <Text>Started on {new Date(projects[proj].creationDate).toLocaleDateString("en-US")}</Text>
+            <Text>Total Time: {userProjects[proj].projectTime ? `${userProjects[proj].projectTime} minutes` : 'Not started' }</Text>
+            <Text>Started on {new Date(userProjects[proj].creationDate).toLocaleDateString("en-US")}</Text>
           </View>
         </TouchableHighlight >
       )
@@ -88,27 +48,30 @@ class ProjectsScreen extends React.Component {
   } return projArr;
 }
 
+navigateToTaskName(proj) {
+  const { navigation } = this.props;
+  const { userProjects } = this.props.screenProps;
+  console.log("Trying to navigate to task:", proj)
+  navigation.navigate(
+    'Tasks',
+    { project: proj, projectLog: userProjects[proj].log, projectTime: userProjects[proj].projectTime }
+  );
+}
+
   render() {
-    let { isLoggedIn, styles, username, userID } = this.props.screenProps;
+    let { isLoggedIn, userID } = this.props.screenProps;
     const { navigation } = this.props;
     if (isLoggedIn) {
-      if (userID != this.state.userID) {
-        this.getProjects();
-      }
       return (
         <ScrollView style={styles.scrollView}>
           <DrawerMenu navigation={navigation} styles={styles} />
           <TouchableHighlight
             onPress={() => {
-              console.log("PS USERID", userID);
               navigation.navigate("AddProject", { userID: userID })
             }}>
             <Text>Add a new project</Text>
           </TouchableHighlight>
-          {this.state.loadingFinished ?
-            this.projectDisplay()
-            :
-            <Text>Loading projects </Text>}
+            {this.projectDisplay()}
         </ScrollView>
       )
     } else {

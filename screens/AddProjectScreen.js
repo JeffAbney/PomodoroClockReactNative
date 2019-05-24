@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import styles from '../constants/Styles';
 import {
   Text,
   View,
@@ -56,46 +56,51 @@ export default class AddProjectScreen extends Component {
 
     let userID = this.props.navigation.getParam('userID', undefined);
     const { navigation } = this.props;
-    const { projectName, projectColor } = this.state;
+    const { projectName, projectColor, taskName } = this.state;
 
-    fetch('http://localhost:3000/newProject', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userID: userID,
-        projectName: projectName,
-        projectColor: projectColor,
-        date: new Date()
+    if (userID === undefined) {
+      Alert.alert("Please Log In to create your project!")
+    } else {
+      fetch('http://localhost:3000/newProject', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userID: userID,
+          projectName: projectName,
+          projectColor: projectColor,
+          date: new Date()
+        })
       })
-    })
-      .then(res => {
-        return res.text()
-      })
-      .then(res => {
-        console.log("clock res", res);
-        if (res === "OK") {
-          navigation.navigate("Home",
-            {
-              projectName: projectName,
-              taskName: this.state.taskName,
-              projectColor: projectColor
-            })
-        } else {
-          Alert.alert("Error",
-            "There was a problem adding your project",
-            [{ text: "OK" }]);
-          navigation.navigate('Home', {
-            loggedIn: true,
-            username: username
-          })
-        }
-      })
+        .then(res => {
+          return res.text()
+        })
+        // Refresh state to reflect new project and store locally
+        .then(res => {
+          console.log("Refreshing userProjects State")
+          this.props.screenProps.getProjects();
+          return res;
+        })
+        .then(res => {
+          if (res === "OK") {
+            navigation.navigate("Home",
+              {
+                projectName: projectName,
+                taskName: taskName,
+                projectColor: projectColor
+              })
+          } else {
+            Alert.alert("Error",
+              "There was a problem adding your project",
+              [{ text: "OK" }]);
+            navigation.navigate('Home')
+          }
+        })
+    }
   }
 
   generateColorDots() {
-    let { styles } = this.props.screenProps;
     let colors = [['red', 'blue', 'green'], ['yellow', 'purple', 'brown'], ['black', 'orange', 'pink']];
 
     return colors.map((group, index) => {
@@ -117,7 +122,6 @@ export default class AddProjectScreen extends Component {
 
   render() {
     const { navigation } = this.props;
-    let { styles } = this.props.screenProps;
 
     return (
       <View style={styles.container}>
