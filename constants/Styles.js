@@ -4,21 +4,21 @@ import {
 
 import colors from './Colors';
 const {
-    backgroundLight,
-    mainTextLight,
-    secondaryTextLight,
-    userInputLight,
-    submitBackgroundLight,
-    buttonOutlineLight
+    backgroundColor,
+    mainTextColor,
+    secondaryTextColor,
+    userInputColor,
+    submitBackgroundColor,
+    buttonOutlineColor
 } = colors;
 
-export default lightStyles = StyleSheet.create({
+export default styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: backgroundLight,
+        backgroundColor: backgroundColor,
     },
     scrollView: {
-        backgroundColor: backgroundLight,
+        backgroundColor: backgroundColor,
     },
     center: {
         justifyContent: 'center',
@@ -30,49 +30,49 @@ export default lightStyles = StyleSheet.create({
         flex: 1,
         padding: 20,
         marginBottom: 10,
-        backgroundColor: userInputLight,
+        backgroundColor: userInputColor,
         fontFamily: 'Lato',
-        color: mainTextLight,
+        color: mainTextColor,
     },
     userInputContainer: {
         margin: 20
     },
     settingsWelcomeText: {
         fontSize: 36,
-        color: mainTextLight,
+        color: mainTextColor,
         fontFamily: 'Lato',
     },
     settingsText: {
         fontSize: 24,
         padding: 20,
-        color: mainTextLight,
+        color: mainTextColor,
         fontFamily: 'Lato',
     },
     settingsPicker: {
         width: 90,
         height: 50,
-        color: mainTextLight,
+        color: mainTextColor,
     },
     settingsPickerItem: {
-        color: mainTextLight,
-        backgroundColor: backgroundLight,
+        color: mainTextColor,
+        backgroundColor: backgroundColor,
     },
     welcomeText: {
         paddingLeft: 15,
         paddingRight: 10,
-        color: mainTextLight,
+        color: mainTextColor,
         fontFamily: 'Lato',
     },
     activityCard: {
         flex: 1,
         marginTop: 1,
         paddingTop: 5,
-        backgroundColor: submitBackgroundLight,
+        backgroundColor: submitBackgroundColor,
         justifyContent: 'center',
         borderWidth: 2,
-        borderColor: buttonOutlineLight,
+        borderColor: buttonOutlineColor,
         elevation: 2,
-        color: mainTextLight,
+        color: mainTextColor,
         fontFamily: 'Lato',
     },
     paddingTop: {
@@ -98,14 +98,14 @@ export default lightStyles = StyleSheet.create({
     },
     clock: {
         fontSize: 60,
-        color: mainTextLight,
+        color: mainTextColor,
         fontFamily: 'Lato',
         marginBottom: 25
     },
     timeAdjusterLabel: {
         fontSize: 24,
         paddingBottom: 15,
-        color: mainTextLight,
+        color: mainTextColor,
         fontFamily: 'Lato',
     },
     touchableArrow: {
@@ -116,7 +116,7 @@ export default lightStyles = StyleSheet.create({
         paddingRight: 8,
         paddingLeft: 8,
         fontSize: 32,
-        color: mainTextLight,
+        color: mainTextColor,
         fontFamily: 'Lato',
     },
     buttonContainer: {
@@ -134,12 +134,12 @@ export default lightStyles = StyleSheet.create({
         marginRight: 25,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: mainTextLight,
+        backgroundColor: mainTextColor,
         borderRadius: 7,
         height: 48,
     },
     buttonText: {
-        color: backgroundLight,
+        color: backgroundColor,
         fontFamily: 'Lato',
         fontWeight: 'bold'
     },
@@ -150,13 +150,13 @@ export default lightStyles = StyleSheet.create({
         justifyContent: 'flex-end',
         paddingRight: 20,
         paddingTop: 30,
-        color: mainTextLight
+        color: mainTextColor
     },
     spaceBetween: {
         justifyContent: 'space-between'
     },
     signOutText: {
-        color: secondaryTextLight,
+        color: secondaryTextColor,
         fontFamily: 'Lato',
     },
     drawerIcon: {
@@ -167,19 +167,19 @@ export default lightStyles = StyleSheet.create({
     },
     redirectText: {
         paddingTop: 10,
-        color: secondaryTextLight,
+        color: secondaryTextColor,
         fontFamily: 'Lato',
     },
     logInButton: {
         width: 300,
     },
     clearButton: {
-        backgroundColor: backgroundLight,
+        backgroundColor: backgroundColor,
         borderWidth: 1,
-        borderColor: mainTextLight,
+        borderColor: mainTextColor,
     },
     clearButtonText: {
-        color: mainTextLight
+        color: mainTextColor
     },
     logoBig: {
         width: 178,
@@ -189,12 +189,12 @@ export default lightStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: backgroundLight
+        backgroundColor: backgroundColor
     },
     introContentContainer: {
         flex: 2,
         marginTop: 25,
-        backgroundColor: backgroundLight,
+        backgroundColor: backgroundColor,
     },
     viewPager: {
         height: 100,
@@ -217,10 +217,10 @@ export default lightStyles = StyleSheet.create({
         width: 7,
         borderWidth: 1,
         borderRadius: 7,
-        borderColor: mainTextLight,
+        borderColor: mainTextColor,
     },
     paginationDotActive: {
-        backgroundColor: mainTextLight
+        backgroundColor: mainTextColor
     },
     introButtonContainer: {
         alignItems: 'center',

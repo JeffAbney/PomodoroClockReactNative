@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
 import SignIn from '../components/SignIn';
 import DrawerMenu from '../components/DrawerMenu';
+import styles from '../constants/Styles';
 
-import {
-  Image,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  View,
-  Alert,
-} from 'react-native';
+import { View } from 'react-native';
 
 import { Clock } from '../components/Clock'
 
@@ -23,7 +15,7 @@ export default class HomeScreen extends Component {
 
   render() {
     const { navigation } = this.props;
-    let { styles, isLoggedIn, username } = this.props.screenProps;
+    let { isLoggedIn, username } = this.props.screenProps;
     let projectName = this.props.navigation.getParam('projectName', undefined);
     let taskName = this.props.navigation.getParam('taskName', undefined);
 

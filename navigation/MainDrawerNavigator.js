@@ -3,7 +3,6 @@ import { createAppContainer, createDrawerNavigator, createStackNavigator } from 
 
 import HomeScreen from '../screens/HomeScreen';
 import TasksScreen from '../screens/TasksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 import AboutScreen from '../screens/AboutScreen';
 import ShareScreen from '../screens/ShareScreen';
 import SubmitActivityScreen from '../screens/SubmitActivityScreen';
@@ -19,16 +18,13 @@ const HomeStack = createStackNavigator({
 
 const TaskLogStack = createStackNavigator({
   Projects: ProjectsScreen,
-  TaskNames: TasksScreen,
+  Tasks: TasksScreen,
   AddProject: AddProjectScreen
 });
 
 const MainDrawerNavigator = createDrawerNavigator({
   HomeStack,
   TaskLogStack,
-  Settings: {
-    screen: SettingsScreen,
-  },
   Share: {
     screen: ShareScreen,
   },

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import styles from '../constants/LightStyles'
+import styles from '../constants/Styles'
 import {
-  StyleSheet,
   Text,
   Alert,
   Button,
@@ -14,8 +13,6 @@ export default class SubmitActivityScreen extends Component {
   static navigationOptions = {
     header: null,
   };
-
-
 
   constructor(props) {
     super(props);

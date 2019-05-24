@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import styles from '../constants/Styles';
 
 import {
   Text,
@@ -19,7 +20,6 @@ export default class ShareScreen extends Component {
 
   render() {
     const { navigation } = this.props;
-    let { styles } = this.props.screenProps;
 
     return (
       <View style={styles.container}>

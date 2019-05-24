@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import styles from '../constants/Styles.js';
 import {
   Text,
   View,
@@ -12,8 +12,6 @@ export default class WelcomeViewpager extends Component {
   constructor(props) {
     super(props);
 
-    let { styles } = this.props;
-
     this.state = {
       dot0: [styles.paginationDot, styles.paginationDotActive],
       dot1: styles.paginationDot,
@@ -24,7 +22,6 @@ export default class WelcomeViewpager extends Component {
 
   handlePageSelected(index) {
     console.log(index);
-    let { styles } = this.props;
     if (index === 0) {
       this.setState({
         dot0: [styles.paginationDot, styles.paginationDotActive],
@@ -47,7 +44,6 @@ export default class WelcomeViewpager extends Component {
   }
 
   render() {
-    let { styles } = this.props;
 
     return (
       <View style={styles.container}>
