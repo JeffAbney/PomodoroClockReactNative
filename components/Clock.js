@@ -35,8 +35,8 @@ export class Clock extends Component {
 
   onSubmitTask() {
     const { navigation, projectName, taskName } = this.props;
-    const { userID, sessionTime, getProjects } = this.props.screenProps;
-    let taskTime = sessionTime;
+    const { userID, sessionTime, getProjects, userProjects } = this.props.screenProps;
+    let taskTime = sessionTime < 30 ? 0 : Math.round(sessionTime / 60);
 
     if (projectName === undefined) {
       this.props.navigation.navigate('SubmitActivity', {
@@ -60,7 +60,7 @@ export class Clock extends Component {
         .then(res => {
           return res.text()
         })
-        .then(res => {
+        .then( res => {
           getProjects();
           return res;
         })
@@ -69,15 +69,15 @@ export class Clock extends Component {
           if (res === "OK") {
             navigation.navigate('Tasks', {
               projectName: projectName,
-              userID: userID
+              userID: userID,
+              projectLog: userProjects[projectName].log
             })
           } else {
+            console.log("Reached clock error")
             Alert.alert("Error",
               "There was a problem saving your activity",
               [{ text: "OK" }]);
-            navigation.navigate('Home', {
-              loggedIn: true,
-            })
+              navigation.navigate('Home')
           }
         })
     }
