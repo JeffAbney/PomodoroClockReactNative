@@ -27,36 +27,38 @@ class ProjectsScreen extends React.Component {
     let { userProjects, username } = this.props.screenProps;
     let index = 0;
     let projArr = [];
-    console.log("PS - userProjects", userProjects);
-    console.log("PS - username", username);
-    for (var proj in userProjects) {
+    for (const proj in userProjects) {
       if (userProjects.hasOwnProperty(proj)) {
-      projArr.push (
-        <TouchableHighlight
-          key={`project ${index}`}
-          onPress={() => this.navigateToTaskName(proj)}
-        >
-          <View style={[styles.activityCard, {backgroundColor: `${userProjects[proj].color}`}]}>
-            <Text>{proj}</Text>
-            <Text>Total Time: {userProjects[proj].projectTime ? `${userProjects[proj].projectTime} minutes` : 'Not started' }</Text>
-            <Text>Started on {new Date(userProjects[proj].creationDate).toLocaleDateString("en-US")}</Text>
-          </View>
-        </TouchableHighlight >
-      )
-      index++;
-    }
-  } return projArr;
-}
+        projArr.push(
+          <TouchableHighlight
+            key={`project ${index}`}
+            onPress={() => this.navigateToTaskName(proj)}
+          >
+            <View style={[styles.activityCard, { backgroundColor: `${userProjects[proj].color}` }]}>
+              <Text>{proj}</Text>
+              <Text>Total Time: {userProjects[proj].projectTime ? `${userProjects[proj].projectTime} minutes` : 'Not started'}</Text>
+              <Text>Started on {new Date(userProjects[proj].creationDate).toLocaleDateString("en-US")}</Text>
+            </View>
+          </TouchableHighlight >
+        )
+        index++;
+      }
+    } return projArr;
+  }
 
-navigateToTaskName(proj) {
-  const { navigation } = this.props;
-  const { userProjects } = this.props.screenProps;
-  console.log("Trying to navigate to task:", proj)
-  navigation.navigate(
-    'Tasks',
-    { project: proj, projectLog: userProjects[proj].log, projectTime: userProjects[proj].projectTime }
-  );
-}
+  navigateToTaskName(proj) {
+    const { navigation } = this.props;
+    const { userProjects } = this.props.screenProps;
+    console.log("Trying to navigate to task:", proj)
+    navigation.navigate(
+      'Tasks',
+      {
+        projectName: proj,
+        projectLog: userProjects[proj].log,
+        projectTime: userProjects[proj].projectTime
+      }
+    );
+  }
 
   render() {
     let { isLoggedIn, userID } = this.props.screenProps;
@@ -71,7 +73,7 @@ navigateToTaskName(proj) {
             }}>
             <Text>Add a new project</Text>
           </TouchableHighlight>
-            {this.projectDisplay()}
+          {this.projectDisplay()}
         </ScrollView>
       )
     } else {
