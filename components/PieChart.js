@@ -83,61 +83,70 @@ export default class PieChart extends React.Component {
     const x = this.props.pieWidth / 2 + margin;
     const y = this.props.pieHeight / 2 + margin;
 
-    return (
-      <View width={this.props.width} height={this.props.height}>
-        <Surface width={this.props.width} height={this.props.height}>
-          <Group x={x} y={y}>
-            {
-              this.props.data.map((item, index) =>
-                (<Shape
-                  key={'pie_shape_' + index}
-                  color={this._color(index)}
-                  d={this._createPieChart(index)}
-                  fill={this._color(index)}
-                  stroke={this._color(index)}
-                />)
-              )
-            }
-          </Group>
-        </Surface>
-        <View
-          style={{
-            position: 'absolute',
-            top: margin,
-            left: 2 * margin + this.props.pieWidth
-          }}>
-          {
-            this.props.data.map((item, index) => {
-              var fontWeight =
-                this.state.highlightedIndex == index ? 'bold' : 'normal';
-              return (
-                <TouchableWithoutFeedback
-                  key={index}
-                  onPress={() => this._onPieItemSelected(index)}
-                >
-                  <View>
-                    <Text
-                      style={[
-                        styles.label,
-                        {
-                          color: this._color(index),
-                          fontWeight: fontWeight
-                        },
-                      ]}>
-                      {this._label(item)}
-                      :&nbsp;
-                        {this._value(item)}
-                         %
-                        </Text>
-                  </View>
-                </TouchableWithoutFeedback>
-              );
-            })
-          }
-          <Text>Total Time: {this.props.categoryTime} Minutes</Text>
+    if (this.props.data === undefined || this.props.projectTime === 0 ) {
+      return (
+        <View>
+          <Text>Complete a task in order to view project summary!</Text>
         </View>
-      </View>
-    );
+      )
+    } else {
+      return (
+
+        <View width={this.props.width} height={this.props.height}>
+          <Surface width={this.props.width} height={this.props.height}>
+            <Group x={x} y={y}>
+              {
+                this.props.data.map((item, index) =>
+                  (<Shape
+                    key={'pie_shape_' + index}
+                    color={this._color(index)}
+                    d={this._createPieChart(index)}
+                    fill={this._color(index)}
+                    stroke={this._color(index)}
+                  />)
+                )
+              }
+            </Group>
+          </Surface>
+          <View
+            style={{
+              position: 'absolute',
+              top: margin,
+              left: 2 * margin + this.props.pieWidth
+            }}>
+            {
+              this.props.data.map((item, index) => {
+                var fontWeight =
+                  this.state.highlightedIndex == index ? 'bold' : 'normal';
+                return (
+                  <TouchableWithoutFeedback
+                    key={index}
+                    onPress={() => this._onPieItemSelected(index)}
+                  >
+                    <View>
+                      <Text
+                        style={[
+                          styles.label,
+                          {
+                            color: this._color(index),
+                            fontWeight: fontWeight
+                          },
+                        ]}>
+                        {this._label(item)}
+                        :&nbsp;
+                          {this._value(item)}
+                        %
+                          </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                );
+              })
+            }
+            <Text>Total Time: {this.props.categoryTime} Minutes</Text>
+          </View>
+        </View>
+      );
+    }
   }
 }
 
