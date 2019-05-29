@@ -35,7 +35,7 @@ export class Clock extends Component {
 
   onSubmitTask() {
     const { navigation, projectName, taskName } = this.props;
-    const { userID, sessionTime, getProjects, userProjects } = this.props.screenProps;
+    const { userID, sessionTime, handleSetState, userProjects, _storeDataLocal } = this.props.screenProps;
     let taskTime = sessionTime < 30 ? 0 : Math.round(sessionTime / 60);
 
     if (projectName === undefined) {
@@ -44,6 +44,7 @@ export class Clock extends Component {
         taskTime: taskTime,
       })
     } else {
+      let date = new Date();
       fetch('http://localhost:3000/log', {
         method: 'POST',
         headers: {
@@ -54,41 +55,51 @@ export class Clock extends Component {
           projectName: projectName,
           taskName: taskName,
           taskTime: taskTime,
-          date: new Date()
+          date: date
         })
       })
-        .then(res => {
-          return res.text()
-        })
-        .then( res => {
-          getProjects();
-          return res;
-        })
-        .then(res => {
-          console.log("clock res", res);
+        .then(res =>
+          res.text()
+        )
+        .then((res) => {
           if (res === "OK") {
-            navigation.navigate('Tasks', {
-              projectName: projectName,
-              userID: userID,
-              projectLog: userProjects[projectName].log
-            })
+            userProjects[projectName].log.push(
+              {
+                projectName: projectName,
+                taskName: taskName,
+                taskTime: taskTime,
+                date: date
+              }
+            );
+            userProjects[projectName].projectTime += taskTime;
+            console.log('Clock - updated userprojects', userProjects);
+            handleSetState({
+              userProjects: userProjects
+            });
+            return "OK";
           } else {
-            console.log("Reached clock error")
-            Alert.alert("Error",
-              "There was a problem saving your activity",
-              [{ text: "OK" }]);
-              navigation.navigate('Home')
+            console.log("there was a problem saving your activity in DB")
           }
+        })
+        .then(async res => {
+          await _storeDataLocal();
+        })
+        .then(res => {
+          console.log("redirecting to taskScreen with -",projectName, userProjects[projectName].projectTime )
+          navigation.navigate('Tasks', {
+            projectName: projectName,
+            userID: userID,
+            projectLog: userProjects[projectName].log,
+            projectTime: userProjects[projectName].projectTime
+          })
         })
     }
   }
 
   render() {
     let fmtMSS = (s) => (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
-
+    let { projectName, taskName } = this.props
     let {
-      projectName,
-      taskName,
       clockIsRunning,
       clockHasStarted,
       sessionTime,

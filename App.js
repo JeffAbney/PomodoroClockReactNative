@@ -78,18 +78,23 @@ export default class App extends React.Component {
         userID: userID,
       })
     })
-      .then(res => {
-        return res.json()
-      })
+      .then(res =>
+        res.json()
+      )
       .then(res => {
         this.setState({
           userProjects: res.projects,
         })
-        console.log("Setting projects to:", res.projects)
+        console.log("Setting projects in state")
+        return res;
       })
-      .then(res => {
-        this._storeDataLocal();
-      })
+      .then( res => {
+         this._storeDataLocal();
+      }
+      )
+      .then(res => 
+         res
+      )
   }
 
 
@@ -223,7 +228,7 @@ export default class App extends React.Component {
       );
     }
   }
-  //store could use this.state to set local instead of taking argument
+
   _storeDataLocal = async () => {
     let { photoUrl, username, userID, userEmail, userProjects } = this.state;
     let appState = JSON.stringify({
@@ -236,12 +241,14 @@ export default class App extends React.Component {
     })
 
     try {
-      console.log("Trying to save in _storeDataLocal", appState);
-      await AsyncStorage.setItem("appState", appState, function (error) {
+      console.log("Trying to save state in _storeDataLocal");
+     await AsyncStorage.setItem("appState", appState, function (error) {
         if (error) {
           console.log("Storage error", error);
+          return "ERROR";
         } else {
-          console.log("Stored locally", appState)
+          console.log("State Stored locally");
+          return "OK";
         }
       })
     } catch (e) {
@@ -256,7 +263,7 @@ export default class App extends React.Component {
       const value = await AsyncStorage.getItem('appState');
       if (value !== null) {
         appState = JSON.parse(value);
-        console.log("Got state", appState);
+        console.log("Got state");
         // We have data!!       
         let { username, userID, userProjects, userEmail } = appState;
         this.setState({
