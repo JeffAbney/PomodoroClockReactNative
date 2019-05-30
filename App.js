@@ -193,7 +193,6 @@ export default class App extends React.Component {
       clockStartedOver: this.clockStartedOver,
       getProjects: this.getProjects,
       isLoggedIn: isLoggedIn,
-      navigateToTaskName: this.navigateToTaskName,
       onLogOut: this.logOut,
       sessionTime: sessionTime,
       signInDiddit: this.signInDiddit,

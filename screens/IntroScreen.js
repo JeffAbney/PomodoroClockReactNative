@@ -64,8 +64,6 @@ export default class IntroScreen extends Component {
     }
   }
 
-
-
   render() {
 
     return (

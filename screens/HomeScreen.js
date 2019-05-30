@@ -30,7 +30,6 @@ export default class HomeScreen extends Component {
 
   render() {
     const { navigation } = this.props;
-    let { isLoggedIn, username } = this.props.screenProps;
     let projectName = this.props.navigation.getParam('projectName', undefined);
     let taskName = this.props.navigation.getParam('taskName', undefined);
 
