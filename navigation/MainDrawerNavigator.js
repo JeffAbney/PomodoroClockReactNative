@@ -13,13 +13,14 @@ import AddProjectScreen from "../screens/AddProjectScreen";
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
   Intro: IntroScreen,
-  SubmitActivity: SubmitActivityScreen,
+
 });
 
 const TaskLogStack = createStackNavigator({
   Projects: ProjectsScreen,
   Tasks: TasksScreen,
-  AddProject: AddProjectScreen
+  AddProject: AddProjectScreen,
+  SubmitActivity: SubmitActivityScreen,
 });
 
 const MainDrawerNavigator = createDrawerNavigator({
