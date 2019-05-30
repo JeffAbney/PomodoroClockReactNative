@@ -36,16 +36,16 @@ export class Clock extends Component {
   onSubmitTask() {
     const { navigation, projectName, taskName, setLoadState } = this.props;
     const { userID, sessionTime, handleSetState, userProjects, _storeDataLocal } = this.props.screenProps;
-    let taskTime = sessionTime < 30 ? 0 : Math.round(sessionTime / 60);
+    let taskTime = sessionTime < 30 ? 1 : Math.round(sessionTime / 60);
     
-    setLoadState(true);
-
+  
     if (projectName === undefined) {
       this.props.navigation.navigate('SubmitActivity', {
         loggedIn: true,
         taskTime: taskTime,
       })
     } else {
+      setLoadState(true);
       let date = new Date();
       fetch('http://localhost:3000/log', {
         method: 'POST',
@@ -86,6 +86,7 @@ export class Clock extends Component {
         .then(async res => {
           await _storeDataLocal();
         })
+        .then(res => setLoadState(false))
         .then(res => {
           navigation.navigate('Tasks', {
             projectName: projectName,
@@ -94,7 +95,7 @@ export class Clock extends Component {
             projectTime: userProjects[projectName].projectTime
           })
         })
-        .then(res => setLoadState(false))
+        
     } 
   }
 

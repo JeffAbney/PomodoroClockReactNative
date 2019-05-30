@@ -33,15 +33,23 @@ export default class SubmitActivityScreen extends Component {
 
       this.state = {
         projectName: projNamesArr()[0],
-        taskName: ""
+        taskName: "",
+        loading: false,
       }
 
       this._onChangeprojectName = this._onChangeprojectName.bind(this);
       this._onChangetaskName = this._onChangetaskName.bind(this);
       this.onSubmitTask = this.onSubmitTask.bind(this);
       this.displayProjectList = this.displayProjectList.bind(this);
+      this.setLoadState = this.setLoadState.bind(this);
     }
 
+    setLoadState(bool) {
+      console.log("Toggling Load State to", bool)
+      this.setState({
+        loading: bool
+      })
+    }
 
     _onChangeprojectName(itemValue) {
       this.setState({ projectName: itemValue })
@@ -52,10 +60,12 @@ export default class SubmitActivityScreen extends Component {
     }
 
     onSubmitTask() {
+      this.setLoadState(true);
       const { navigation } = this.props;
       const { projectName, taskName } = this.state
       const { userID, sessionTime, handleSetState, _storeDataLocal, userProjects } = this.props.screenProps;
-      let taskTime = sessionTime < 30 ? 0 : Math.round(sessionTime / 60);
+      let taskTime = sessionTime < 30 ? 1 : Math.round(sessionTime / 60);
+
       console.log("YOU PRESSED SUBMIT!", projectName);
 
       if (projectName === undefined) {
@@ -104,8 +114,8 @@ export default class SubmitActivityScreen extends Component {
           .then(async res => {
             await _storeDataLocal();
           })
+          .then( res => this.setLoadState(false))
           .then(res => {
-            console.log("redirecting to taskScreen with -", projectName, userProjects[projectName].projectTime)
             navigation.navigate('Tasks', {
               projectName: projectName,
               userID: userID,
@@ -149,6 +159,7 @@ export default class SubmitActivityScreen extends Component {
           <TouchableHighlight style={styles.button} onPress={this.onSubmitTask}>
             <Text style={styles.buttonText}>Submit Task</Text>
           </TouchableHighlight>
+          {this.state.loading === true ? <View style={styles.loadingOverlay}></View > : <View></View>}
         </View>
       )
 
