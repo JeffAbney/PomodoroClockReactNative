@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, TouchableHighlight, Text, View, TextInput } from 'react-native';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, StackActions, NavigationActions } from 'react-navigation';
 import DrawerMenu from '../components/DrawerMenu';
 import PieChart from '../components/PieChart';
 import styles from '../constants/Styles'
@@ -35,14 +35,24 @@ class TasksScreen extends React.Component {
   }
 
   addTask() {
-    let projectName = this.props.navigation.getParam('project', 'Planning');
+    let projectName = this.props.navigation.getParam('projectName', 'Planning');
     let taskName = this.state.newTaskName;
-    this.props.navigation.navigate("Home", { projectName: projectName, taskName: taskName });
+    const { handleSetState } = this.props.screenProps;
+    handleSetState({sessionTime: 0});
+    const resetAction =
+      StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: 'Projects' })],
+      });
+    this.props.navigation.dispatch(resetAction);
+
+    this.props.navigation.navigate(
+      "Home",
+      { projectName: projectName, taskName: taskName });
   }
 
   logDisplay() {
     let log = this.props.navigation.getParam('projectLog', []);
-    console.log("TS - screenprops", this.props.screenprops)
     return log.map((task, index) => {
       return (
         <View style={styles.activityCard} key={index}>
@@ -58,7 +68,8 @@ class TasksScreen extends React.Component {
 
   getChartData() {
     let log = this.props.navigation.getParam('projectLog', []);
-    let projectTime = this.props.navigation.getParam('projectTime', 0);
+    let projectTime = this.props.navigation.getParam('projectTime', 1);
+
     let getTasksWithTimes = function () {
       let taskNames = [];
       log.map((task) => {
@@ -132,7 +143,7 @@ class TasksScreen extends React.Component {
             <Text>List</Text>
           </TouchableHighlight>
         </View>
-        
+
         {this.state.pieDisplay ?
           <PieChart
             projectTime={projectTime}
