@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 import styles from '../constants/Styles';
 
-
-
 export class Clock extends Component {
   constructor(props) {
     super(props);
@@ -18,6 +16,7 @@ export class Clock extends Component {
     this._onPressPause = this._onPressPause.bind(this);
     this._onPressReset = this._onPressReset.bind(this);
     this.onSubmitTask = this.onSubmitTask.bind(this);
+    this.signInGoogle = this.signInGoogle.bind(this);
   }
 
   _onPressStart() {
@@ -32,71 +31,122 @@ export class Clock extends Component {
     this.props.screenProps.resetTimer();
   }
 
+  signInGoogle = async () => {
+    const { setLoadState } = this.props;
+    let { taskTime } = this.props.screenProps
+    setLoadState(true);
+    let androidClientId =
+      '524273864505-drdo8v3rdegsfi9jtqo469llhssg2euv.apps.googleusercontent.com'
+
+    try {
+      const result = await Expo.Google.logInAsync({
+        androidClientId: androidClientId,
+        scopes: ["profile", "email"]
+      })
+      if (result.type === "success") {
+        console.log("Google reply", result);
+        let { givenName, photoUrl, id, email } = result.user;
+        let userData = {
+          isLoggedIn: true,
+          username: givenName,
+          photoUrl: photoUrl,
+          userID: id,
+          email: email,
+        }
+        setLoadState(false);
+        this.props.screenProps.handleSetState(userData);
+        this.props.screenProps.signInDiddit(userData);
+      } else {
+        console.log("cancelled")
+      }
+    } catch (e) {
+      console.log("error", e)
+    }
+  }
 
   onSubmitTask() {
     const { navigation, projectName, taskName, setLoadState } = this.props;
-    const { userID, sessionTime, handleSetState, userProjects, _storeDataLocal } = this.props.screenProps;
+    const {
+      userID,
+      sessionTime,
+      handleSetState,
+      userProjects,
+      _storeDataLocal,
+      isLoggedIn,
+    } = this.props.screenProps;
     let taskTime = sessionTime < 30 ? 1 : Math.round(sessionTime / 60);
-    
-  
-    if (projectName === undefined) {
-      this.props.navigation.navigate('SubmitActivity', {
-        loggedIn: true,
-        taskTime: taskTime,
-      })
+
+    if (!isLoggedIn) {
+      Alert.alert('Not logged in',
+        'Please sign in to save your progress.',
+        [
+          {
+            text: 'No thanks.',
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: () => this.signInGoogle() },
+        ],
+        { cancelable: false },
+      );
     } else {
-      setLoadState(true);
-      let date = new Date();
-      fetch('http://localhost:3000/log', {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userID: userID,
-          projectName: projectName,
-          taskName: taskName,
+      if (projectName === undefined) {
+        navigation.navigate('SubmitActivity', {
+          loggedIn: true,
           taskTime: taskTime,
-          date: date
         })
-      })
-        .then(res =>
-          res.text()
-        )
-        .then((res) => {
-          if (res === "OK") {
-            userProjects[projectName].log.push(
-              {
-                projectName: projectName,
-                taskName: taskName,
-                taskTime: taskTime,
-                date: date
-              }
-            );
-            userProjects[projectName].projectTime += taskTime;
-            console.log('Clock - updated userprojects', userProjects);
-            handleSetState({
-              userProjects: userProjects
-            });
-            return "OK";
-          } else {
-            console.log("there was a problem saving your activity in DB")
-          }
-        })
-        .then(async res => {
-          await _storeDataLocal();
-        })
-        .then(res => setLoadState(false))
-        .then(res => {
-          navigation.navigate('Tasks', {
-            projectName: projectName,
+      } else {
+        setLoadState(true);
+        let date = new Date();
+        fetch('http://localhost:3000/log', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             userID: userID,
-            projectLog: userProjects[projectName].log,
-            projectTime: userProjects[projectName].projectTime
+            projectName: projectName,
+            taskName: taskName,
+            taskTime: taskTime,
+            date: date
           })
         })
-        
-    } 
+          .then(res =>
+            res.text()
+          )
+          .then((res) => {
+            if (res === "OK") {
+              userProjects[projectName].log.push(
+                {
+                  projectName: projectName,
+                  taskName: taskName,
+                  taskTime: taskTime,
+                  date: date
+                }
+              );
+              userProjects[projectName].projectTime += taskTime;
+              console.log('Clock - updated userprojects', userProjects);
+              handleSetState({
+                userProjects: userProjects
+              });
+              return "OK";
+            } else {
+              console.log("there was a problem saving your activity in DB")
+            }
+          })
+          .then(async res => {
+            await _storeDataLocal();
+          })
+          .then(res => setLoadState(false))
+          .then(res => {
+            navigation.navigate('Tasks', {
+              projectName: projectName,
+              userID: userID,
+              projectLog: userProjects[projectName].log,
+              projectTime: userProjects[projectName].projectTime
+            })
+          })
+      }
+    }
   }
 
   render() {
@@ -134,7 +184,6 @@ export class Clock extends Component {
               style={[styles.button, styles.flex]}>
               <Text style={styles.buttonText}>RESET</Text>
             </TouchableHighlight>}
-
         </View>
       </View>
     )
