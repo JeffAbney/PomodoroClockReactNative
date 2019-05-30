@@ -3,7 +3,8 @@ import {
   Text,
   View,
   Image,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableOpacity
 } from 'react-native';
 import WelcomeViewPager from '../components/WelcomeViewpager';
 import styles from '../constants/Styles';
@@ -13,14 +14,27 @@ export default class IntroScreen extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      loading: false,
+    }
+
     this.signInGoogle = this.signInGoogle.bind(this);
+    this.setLoadState = this.setLoadState.bind(this);
   }
 
   static navigationOptions = {
     header: null
   };
 
+  setLoadState(bool) {
+    console.log("Toggling Load State to", bool)
+    this.setState({
+      loading: bool
+    })
+  }
+
   signInGoogle = async () => {
+    this.setLoadState(true);
     let androidClientId =
       '524273864505-drdo8v3rdegsfi9jtqo469llhssg2euv.apps.googleusercontent.com'
 
@@ -41,6 +55,7 @@ export default class IntroScreen extends Component {
         }
         this.props.screenProps.handleSetState(userData);
         this.props.screenProps.signInDiddit(userData);
+        this.setLoadState(false);
       } else {
         console.log("cancelled")
       }
@@ -62,7 +77,7 @@ export default class IntroScreen extends Component {
         <View style={styles.introContentContainer}>
           <WelcomeViewPager styles={styles} />
           <View style={[styles.introButtonContainer, styles.container]}>
-            <TouchableHighlight
+            <TouchableOpacity
               onPress={() => this.signInGoogle()}
               style={[styles.logInButton,
               styles.button,
@@ -71,7 +86,7 @@ export default class IntroScreen extends Component {
               ]}
             >
               <Text style={styles.buttonText}>Log In With Google</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <TouchableHighlight
               onPress={() => this.props.navigation.navigate('Home')}
               style={[styles.logInButton,
@@ -87,8 +102,7 @@ export default class IntroScreen extends Component {
             </TouchableHighlight>
           </View>
         </View>
-
-
+        {this.state.loading === true ? <View style={styles.loadingOverlay}></View > : <View></View>}
       </View >
     )
   }

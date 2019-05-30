@@ -34,9 +34,11 @@ export class Clock extends Component {
 
 
   onSubmitTask() {
-    const { navigation, projectName, taskName } = this.props;
+    const { navigation, projectName, taskName, setLoadState } = this.props;
     const { userID, sessionTime, handleSetState, userProjects, _storeDataLocal } = this.props.screenProps;
     let taskTime = sessionTime < 30 ? 0 : Math.round(sessionTime / 60);
+    
+    setLoadState(true);
 
     if (projectName === undefined) {
       this.props.navigation.navigate('SubmitActivity', {
@@ -85,7 +87,6 @@ export class Clock extends Component {
           await _storeDataLocal();
         })
         .then(res => {
-          console.log("redirecting to taskScreen with -",projectName, userProjects[projectName].projectTime )
           navigation.navigate('Tasks', {
             projectName: projectName,
             userID: userID,
@@ -93,7 +94,8 @@ export class Clock extends Component {
             projectTime: userProjects[projectName].projectTime
           })
         })
-    }
+        .then(res => setLoadState(false))
+    } 
   }
 
   render() {

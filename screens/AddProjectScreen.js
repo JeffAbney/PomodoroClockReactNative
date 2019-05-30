@@ -17,7 +17,8 @@ export default class AddProjectScreen extends Component {
     this.state = {
       projectName: '',
       taskName: '',
-      projectColor: 'red'
+      projectColor: 'red',
+      loading: false,
     }
 
 
@@ -26,10 +27,18 @@ export default class AddProjectScreen extends Component {
     this.handleTaskChange = this.handleTaskChange.bind(this);
     this.handleChooseColor = this.handleChooseColor.bind(this);
     this.addProject = this.addProject.bind(this);
+    this.setLoadState = this.setLoadState.bind(this);
   }
   static navigationOptions = {
     header: null
   };
+
+  setLoadState(bool) {
+    console.log("Toggling Load State to", bool)
+    this.setState({
+      loading: bool
+    })
+  }
 
   handleProjectChange(text) {
     console.log("Changing Project", text)
@@ -57,7 +66,7 @@ export default class AddProjectScreen extends Component {
     let userID = this.props.navigation.getParam('userID', undefined);
     const { navigation } = this.props;
     const { projectName, projectColor, taskName } = this.state;
-
+    this.setLoadState(true);
     if (userID === undefined) {
       Alert.alert("Please Log In to create your project!")
     } else {
@@ -73,12 +82,10 @@ export default class AddProjectScreen extends Component {
           date: new Date()
         })
       })
-        .then(res => {
-          return res.text()
-        })
+        .then(res => res.text() )
         // Refresh state to reflect new project and store locally
-        .then(res => {
-          console.log("Refreshing userProjects State")
+        .then( (res) => {
+          console.log("Refreshing userProjects State");
           this.props.screenProps.getProjects();
           return res;
         })
@@ -91,12 +98,19 @@ export default class AddProjectScreen extends Component {
                 projectColor: projectColor
               })
           } else {
+            console.log('Add project error', res)
             Alert.alert("Error",
               "There was a problem adding your project",
               [{ text: "OK" }]);
-            navigation.navigate('Home')
+            navigation.navigate("Home",
+            {
+              projectName: projectName,
+              taskName: taskName,
+              projectColor: projectColor
+            })
           }
         })
+        .then (res => this.setLoadState(false))
     }
   }
 
@@ -142,6 +156,7 @@ export default class AddProjectScreen extends Component {
           }>
           <Text style={styles.buttonText}>GO!</Text>
         </TouchableHighlight>
+        { this.state.loading === true ? <View style={styles.loadingOverlay}></View > : <View></View>}
       </View>
     )
   }
