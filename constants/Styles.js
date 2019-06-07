@@ -63,8 +63,9 @@ export default styles = StyleSheet.create({
         color: mainTextColor,
         fontFamily: 'Lato',
     },
-    activityCard: {
+    projectCard: {
         flex: 1,
+        flexDirection: 'row',
         marginTop: 1,
         paddingTop: 5,
         backgroundColor: submitBackgroundColor,
@@ -74,6 +75,13 @@ export default styles = StyleSheet.create({
         elevation: 2,
         color: mainTextColor,
         fontFamily: 'Lato',
+    },
+    trashButton: {
+        height: 35,
+        width: 35,
+        backgroundColor: 'white',
+        marginLeft: 15,
+        marginRight: 15,
     },
     paddingTop: {
         paddingTop: 15,

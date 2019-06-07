@@ -89,6 +89,40 @@ app.post('/newProject', (req, res) => {
   })
 })
 
+//Handle remove project
+
+app.post('/removeProject', (req, res) => {
+  let userID = req.body.userID;
+  let projectName = req.body.projectName;
+  let projectKey = `projects.${projectName}`
+  console.log("user", userID);
+  console.log("project", projectName);
+
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("connection is working, will try to remove project");
+    collection.updateOne({ userID: userID },
+      {
+        $unset: {
+          [projectKey]: '',
+        }
+      },
+      (error, doc) => {
+        if (error) return console.log(error);
+        if (doc == null) {
+          console.log("Can't find user to remove project.")
+          res.sendStatus(404);
+        } else {
+          console.log("Removed project", doc.result);
+          res.sendStatus(200);
+        }
+      }
+    )
+  })
+})
+
 //Handle Log activity
 
 app.post('/log', (req, res) => {
