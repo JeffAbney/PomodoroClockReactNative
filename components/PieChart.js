@@ -28,7 +28,10 @@ const colors = [
   "orange",
   "purple",
   "brown",
-  "black"
+  "black",
+  "grey",
+  "navy",
+  "white",
 ];
 
 export default class PieChart extends React.Component {
