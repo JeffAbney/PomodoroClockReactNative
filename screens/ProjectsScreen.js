@@ -44,14 +44,28 @@ class ProjectsScreen extends React.Component {
             key={`project ${index}`}
             onPress={() => this.navigateToTaskName(proj)}
           >
-            <View style={[styles.projectCard, styles.align, { backgroundColor: `${userProjects[proj].color}` }]}>
+            <View
+              style={[
+                styles.projectCard,
+                styles.align,
+                { backgroundColor: `${userProjects[proj].color}` }
+              ]}>
               <View style={styles.flex}>
-              <Text>{proj}</Text>
-              <Text>Total Time: {userProjects[proj].projectTime ? `${userProjects[proj].projectTime} minutes` : 'Not started'}</Text>
-              <Text>Started on {new Date(userProjects[proj].creationDate).toLocaleDateString("en-US")}</Text>
+                <Text>{proj}</Text>
+                <Text>
+                  Total Time:
+                {userProjects[proj].projectTime ?
+                    `${userProjects[proj].projectTime} minutes` :
+                    'Not started'}</Text>
+                <Text>
+                  Started on
+                {new Date(userProjects[proj].creationDate).toLocaleDateString("en-US")}
+                </Text>
               </View>
               <View styles={styles.flex}>
-                <TouchableHighlight style={[styles.trashButton, styles.center, styles.align]} onPress={() => this.removeProjectAlert(proj)}>
+                <TouchableHighlight
+                  style={[styles.trashButton, styles.center, styles.align]}
+                  onPress={() => this.removeProjectAlert(proj)}>
                   <Image source={require('../assets/images/Group.png')} />
                 </TouchableHighlight>
               </View>
@@ -108,9 +122,9 @@ class ProjectsScreen extends React.Component {
           projectName: projectName,
         })
       })
-        .then(res => res.text() )
+        .then(res => res.text())
         // Refresh state to reflect new project log and store locally
-        .then( (res) => {
+        .then((res) => {
           console.log("Refreshing userProjects State");
           this.props.screenProps.getProjects();
           return res;
@@ -125,7 +139,7 @@ class ProjectsScreen extends React.Component {
               [{ text: "OK" }]);
           }
         })
-        .then (res => this.setLoadState(false))
+        .then(res => this.setLoadState(false))
     }
   }
 
@@ -143,19 +157,24 @@ class ProjectsScreen extends React.Component {
             <Text>Add a new project</Text>
           </TouchableHighlight>
           {this.projectDisplay()}
-          { this.state.loading === true ? <View style={styles.loadingOverlay}></View > : <View></View>}
+          {this.state.loading === true ?
+            <View style={styles.loadingOverlay}></View > :
+            <View></View>
+          }
         </ScrollView>
       )
     } else {
       return (
         <View style={styles.container}>
           <DrawerMenu navigation={navigation} styles={styles} />
-          <Text style={styles.welcomeText}>Please Log In to view Activity Log</Text>
+          <Text style={styles.welcomeText}>
+            Please Log In to view Activity Log
+          </Text>
         </View>
       )
     }
   }
-  
+
 }
 
 export default withNavigation(ProjectsScreen);
