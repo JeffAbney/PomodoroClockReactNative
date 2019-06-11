@@ -1,9 +1,23 @@
 import React from 'react';
-import { ScrollView, TouchableHighlight, Text, View, TextInput } from 'react-native';
+import { ScrollView, TouchableHighlight, Text, View, TextInput, Image, Alert } from 'react-native';
 import { withNavigation, StackActions, NavigationActions } from 'react-navigation';
 import DrawerMenu from '../components/DrawerMenu';
 import PieChart from '../components/PieChart';
 import styles from '../constants/Styles'
+
+const colors = [
+  "blue",
+  "green",
+  "yellow",
+  "red",
+  "orange",
+  "purple",
+  "brown",
+  "black",
+  "grey",
+  "navy",
+  "white",
+];
 
 class TasksScreen extends React.Component {
 
@@ -18,14 +32,24 @@ class TasksScreen extends React.Component {
     this.state = {
       pieDisplay: true,
       newTaskName: undefined,
+      loading: false,
     };
 
     this.handleUserInput = this.handleUserInput.bind(this);
     this.addTask = this.addTask.bind(this);
+    this.removeTask = this.removeTask.bind(this);
     this.logDisplay = this.logDisplay.bind(this);
     this.getChartData = this.getChartData.bind(this);
     this.setPie = this.setPie.bind(this);
     this.setList = this.setList.bind(this);
+    this.setLoadState = this.setLoadState.bind(this);
+  }
+
+  setLoadState(bool) {
+    console.log("Toggling Load State to", bool)
+    this.setState({
+      loading: bool
+    })
   }
 
   handleUserInput(text) {
@@ -38,7 +62,7 @@ class TasksScreen extends React.Component {
     let projectName = this.props.navigation.getParam('projectName', 'Planning');
     let taskName = this.state.newTaskName;
     const { handleSetState } = this.props.screenProps;
-    handleSetState({sessionTime: 0});
+    handleSetState({ sessionTime: 0 });
     const resetAction =
       StackActions.reset({
         index: 0,
@@ -51,15 +75,85 @@ class TasksScreen extends React.Component {
       { projectName: projectName, taskName: taskName });
   }
 
+  removeTaskAlert(projectName, taskDate, taskTime) {
+    Alert.alert(
+      'Remove Task',
+      'Are you sure you want to remove this task?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        { text: 'OK', onPress: () => this.removeTask(projectName, taskDate, taskTime) },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  removeTask(projectName, taskDate, taskTime) {
+    let userID = this.props.screenProps.userID;
+    console.log("TaskTime", taskTime)
+    this.setLoadState(true);
+    if (userID === undefined) {
+      Alert.alert("Please Log In to remove your project!")
+    } else {
+      fetch('http://localhost:3000/removeTask', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userID: userID,
+          projectName: projectName,
+          taskDate: taskDate,
+          taskTime: taskTime,
+        })
+      })
+        .then(res => res.text())
+        // Refresh state to reflect new project log and store locally
+        .then((res) => {
+          console.log("Refreshing userProjects State");
+          this.props.screenProps.getProjects();
+          return res;
+        })
+        .then(res => {
+          if (res === "OK") {
+            Alert.alert("Task was removed!")
+          } else {
+            console.log('Error removing project', res)
+            Alert.alert("Error",
+              "There was a problem removing your task",
+              [{ text: "OK" }]);
+          }
+        })
+        .then(res => this.setLoadState(false))
+    }
+  }
+  
+
   logDisplay() {
     let log = this.props.navigation.getParam('projectLog', []);
     return log.map((task, index) => {
       return (
-        <View style={styles.activityCard} key={index}>
-          <Text>{task.projectName}</Text>
-          <Text>{task.taskName}</Text>
-          <Text>{task.taskTime} minute(s)</Text>
-          <Text>{new Date(task.date).toLocaleDateString("en-US")}</Text>
+        <View style={[
+          styles.projectCard,
+          styles.align,
+          { backgroundColor: colors[index] }
+        ]}
+          key={index}>
+          <View style={styles.flex}>
+            <Text>{task.projectName}</Text>
+            <Text>{task.taskName}</Text>
+            <Text>{task.taskTime} minute(s)</Text>
+            <Text>{new Date(task.date).toLocaleDateString("en-US")}</Text>
+          </View>
+          <View styles={styles.flex}>
+                <TouchableHighlight
+                  style={[styles.trashButton, styles.center, styles.align]}
+                  onPress={() => this.removeTaskAlert(task.projectName, task.date, task.taskTime)}>
+                  <Image source={require('../assets/images/Group.png')} />
+                </TouchableHighlight>
+              </View>
         </View>
       )
     })
@@ -155,6 +249,10 @@ class TasksScreen extends React.Component {
             height={200} />
           :
           this.logDisplay()}
+          {this.state.loading === true ?
+            <View style={styles.loadingOverlay}></View > :
+            <View></View>
+          }
       </ScrollView>
     );
   }

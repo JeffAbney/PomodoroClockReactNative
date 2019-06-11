@@ -166,6 +166,45 @@ app.post('/log', (req, res) => {
   })
 })
 
+//Handle Remove Task
+
+app.post('/removeTask', (req, res) => {
+  let userID = req.body.userID;
+  let projectName = req.body.projectName;
+  let taskDate = req.body.taskDate;
+  let taskTime = req.body.taskTime;
+  let taskKey = `projects.${projectName}.log`;
+  let projectKeyTime = `projects.${projectName}.projectTime`;
+  console.log("taskTime", taskTime);
+
+  MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
+    if (error) return process.exit(1);
+    var db = client.db('Pomodoro');
+    var collection = db.collection('Users');
+    console.log("connection is working, will try to remove project");
+    collection.updateOne({ userID: userID },
+      {
+        $pull: {
+          [taskKey]: {date: taskDate},
+        },
+        $inc: {
+          [projectKeyTime]: (taskTime * -1)
+        }
+      },
+      (error, doc) => {
+        if (error) return console.log(error);
+        if (doc == null) {
+          console.log("Can't find user to remove project.")
+          res.sendStatus(404);
+        } else {
+          console.log("Removed task", doc.result);
+          res.sendStatus(200);
+        }
+      }
+    )
+  })
+})
+
 //Handle Get Actvitiy Log
 
 app.post("/showLog", (req, res, next) => {
