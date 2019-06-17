@@ -46,7 +46,7 @@ export default class WelcomeViewpager extends Component {
   render() {
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.center, styles.align]}>
         <ViewPagerAndroid
           style={[styles.viewPager]}
           initialPage={0}

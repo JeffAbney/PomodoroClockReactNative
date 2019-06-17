@@ -14,6 +14,7 @@ const {
 
 import * as scale from 'd3-scale';
 import * as shape from 'd3-shape';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const d3 = {
   scale,
@@ -21,17 +22,15 @@ const d3 = {
 };
 
 const colors = [
-  "blue",
-  "green",
-  "yellow",
-  "red",
-  "orange",
-  "purple",
-  "brown",
-  "black",
-  "grey",
-  "navy",
-  "white",
+  '#0dffc9', 
+  '#4089df', 
+  '#004fad', 
+  '#9bb87e', 
+  '#9ee25b', 
+  '#4d9505', 
+  '#786880', 
+  '#783793', 
+  '#7e00b3'
 ];
 
 export default class PieChart extends React.Component {
@@ -50,7 +49,7 @@ export default class PieChart extends React.Component {
 
   _label(item) { return item.taskName; }
 
-  _color(index) { return colors[index]; }
+  _color(index) { return colors[index % 9]; }
 
   _createPieChart(index) {
 
@@ -111,7 +110,7 @@ export default class PieChart extends React.Component {
               }
             </Group>
           </Surface>
-          <View
+          <ScrollView
             style={{
               position: 'absolute',
               top: margin,
@@ -131,7 +130,7 @@ export default class PieChart extends React.Component {
                         style={[
                           styles.label,
                           {
-                            color: this._color(index),
+                            color: this._color(index % 9),
                             fontWeight: fontWeight
                           },
                         ]}>
@@ -146,7 +145,7 @@ export default class PieChart extends React.Component {
               })
             }
             <Text>Total Time: {this.props.projectTime} Minutes</Text>
-          </View>
+          </ScrollView>
         </View>
       );
     }

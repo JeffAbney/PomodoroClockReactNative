@@ -17,4 +17,5 @@ export default {
   userInputColor: '#000f99',
   submitBackgroundColor: '#4454e5',
   buttonOutlineColor: '#5b5b5e',
+  accentText: '#f8e71c',
 };

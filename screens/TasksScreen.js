@@ -1,22 +1,21 @@
 import React from 'react';
-import { ScrollView, TouchableHighlight, Text, View, TextInput, Image, Alert } from 'react-native';
+import { ScrollView, TouchableHighlight, Text, View, TextInput, Image, Alert, findNodeHandle } from 'react-native';
 import { withNavigation, StackActions, NavigationActions } from 'react-navigation';
+import TextInputState from 'react-native/lib/TextInputState';
 import DrawerMenu from '../components/DrawerMenu';
 import PieChart from '../components/PieChart';
 import styles from '../constants/Styles'
 
 const colors = [
-  "blue",
-  "green",
-  "yellow",
-  "red",
-  "orange",
-  "purple",
-  "brown",
-  "black",
-  "grey",
-  "navy",
-  "white",
+  '#0dffc9', 
+  '#4089df', 
+  '#004fad', 
+  '#9bb87e', 
+  '#9ee25b', 
+  '#4d9505', 
+  '#786880', 
+  '#783793', 
+  '#7e00b3'
 ];
 
 class TasksScreen extends React.Component {
@@ -33,6 +32,8 @@ class TasksScreen extends React.Component {
       pieDisplay: true,
       newTaskName: undefined,
       loading: false,
+      addingTask: false,
+      focusUserInput: false,
     };
 
     this.handleUserInput = this.handleUserInput.bind(this);
@@ -43,6 +44,15 @@ class TasksScreen extends React.Component {
     this.setPie = this.setPie.bind(this);
     this.setList = this.setList.bind(this);
     this.setLoadState = this.setLoadState.bind(this);
+    this.handlePressAddIcon = this.handlePressAddIcon.bind(this);
+  }
+
+  focusTextInput(node) {
+    try {
+      TextInputState.focusTextInput(findNodeHandle(node))
+    } catch (e) {
+      console.log("Couldn't focus text input: ", e.message)
+    }
   }
 
   setLoadState(bool) {
@@ -55,6 +65,13 @@ class TasksScreen extends React.Component {
   handleUserInput(text) {
     this.setState({
       newTaskName: text
+    })
+  }
+
+  handlePressAddIcon() {
+    this.setState({
+      addingTask: true,
+      focusDescriptionInput: true
     })
   }
 
@@ -129,32 +146,34 @@ class TasksScreen extends React.Component {
         .then(res => this.setLoadState(false))
     }
   }
-  
+
 
   logDisplay() {
     let log = this.props.navigation.getParam('projectLog', []);
+    let projectColor = this.props.navigation.getParam('projectColor', 'green');
+
     return log.map((task, index) => {
+      var hours = Math.floor(task.taskTime / 60);
+      var minutes = task.taskTime % 60;
       return (
         <View style={[
           styles.projectCard,
           styles.align,
-          { backgroundColor: colors[index] }
+          { backgroundColor: colors[index % 8] }
         ]}
           key={index}>
-          <View style={styles.flex}>
-            <Text>{task.projectName}</Text>
-            <Text>{task.taskName}</Text>
-            <Text>{task.taskTime} minute(s)</Text>
-            <Text>{new Date(task.date).toLocaleDateString("en-US")}</Text>
+          <View style={[styles.flex, styles.rowContainer, {justifyContent: "space-between"}]}>
+            <Text style={styles.projectCardText}>{task.taskName}</Text>
+            <Text style={styles.projectCardText}>{hours}:{minutes < 10 ? `0${minutes}` : minutes}</Text>
           </View>
           <View styles={styles.flex}>
-                <TouchableHighlight
-                  style={[styles.trashButton, styles.center, styles.align]}
-                  onPress={() => this.removeTaskAlert(task.projectName, task.date, task.taskTime)}>
-                  <Image source={require('../assets/images/Group.png')} />
-                </TouchableHighlight>
-              </View>
-        </View>
+            <TouchableHighlight
+              style={styles.center}
+              onPress={() => this.removeTaskAlert(task.projectName, task.date, task.taskTime)}>
+              <Image style={styles.trashButton} source={require('../assets/images/deleteIcon.png')} />
+            </TouchableHighlight>
+          </View>
+        </View >
       )
     })
   }
@@ -211,49 +230,62 @@ class TasksScreen extends React.Component {
   render() {
     const { navigation } = this.props;
     let projectTime = this.props.navigation.getParam('projectTime', 0);
+    let projectName = this.props.navigation.getParam('projectName', 'Planning');
 
     return (
-      <ScrollView style={[styles.container, styles.paddingTop]}>
+      <View style={styles.container}>
         <DrawerMenu navigation={navigation} styles={styles} />
-        <View
-          style={[styles.rowContainer, styles.marginTop]}>
-          <TextInput
-            style={styles.userInput}
-            placeholder="Start a new task"
-            placeholderTextColor='#88c8b1'
-            onChangeText={(text) => this.handleUserInput(text)}
-          />
-          <TouchableHighlight
-            style={[styles.button, styles.addButton]}
-            onPress={this.addTask}>
-            <Text style={styles.buttonText}> Add </Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.rowContainer}>
-          <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setPie}>
-            <Text>Pie</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={[styles.button, styles.flex]} onPress={this.setList}>
-            <Text>List</Text>
-          </TouchableHighlight>
-        </View>
-
-        {this.state.pieDisplay ?
-          <PieChart
-            projectTime={projectTime}
-            data={this.getChartData()}
-            pieWidth={150}
-            pieHeight={150}
-            onItemSelected={this._onPieItemSelected}
-            width={500}
-            height={200} />
-          :
-          this.logDisplay()}
-          {this.state.loading === true ?
-            <View style={styles.loadingOverlay}></View > :
-            <View></View>
-          }
-      </ScrollView>
+        <ScrollView style={[styles.container, styles.paddingTop]} >
+          <View style={styles.align}>
+            <Text style={styles.headingText}>{projectName}</Text>
+          </View>
+          <View
+            style={[styles.rowContainer, styles.center, styles.align, { marginTop: 15, marginBottom: 50, height: 24 }]}>
+            <TouchableHighlight
+              onPress={this.state.newTaskName ? this.addTask : () => this.focusTextInput(this.refs.userInput)}>
+              <Image style={styles.addIcon} source={require('../assets/images/add.png')} />
+            </TouchableHighlight>
+            <TextInput
+              style={[styles.userInput, styles.headingText, styles.center, { marginBottom: 0, height: 24, paddingBottom: 2, }]}
+              placeholder="Add Task"
+              placeholderTextColor='#88c8b1'
+              onChangeText={(text) => this.handleUserInput(text)}
+              ref='userInput'
+            />
+          </View>
+          <View>
+            <View style={[styles.rowContainer, styles.taskViewBar]}>
+              <View style={[styles.taskViewIconContainer, this.state.pieDisplay ? styles.taskViewActive : ""]}>
+              <TouchableHighlight onPress={this.setPie}>
+                <Image style={styles.pieIcon} source={require('../assets/images/pieIcon.png')} />
+              </TouchableHighlight>
+              </View>
+              <View style={[styles.taskViewIconContainer, this.state.pieDisplay ? "" : styles.taskViewActive]}>
+              <TouchableHighlight style={styles.align} onPress={this.setList}>
+                <Image style={styles.listIcon} source={require('../assets/images/listIcon.png')}/>
+              </TouchableHighlight>
+              </View>
+            </View>
+            {this.state.pieDisplay ?
+              <PieChart
+                projectTime={projectTime}
+                data={this.getChartData()}
+                pieWidth={150}
+                pieHeight={150}
+                onItemSelected={this._onPieItemSelected}
+                width={500}
+                height={200} />
+              :
+              <View style={styles.align}>
+                {this.logDisplay()}
+                </View>}
+            {this.state.loading === true ?
+              <View style={styles.loadingOverlay}></View > :
+              <View></View>
+            }
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 }

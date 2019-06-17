@@ -301,15 +301,13 @@ export default class App extends React.Component {
   _loadResourcesAsync = async () => {
     return Promise.all([
       Asset.loadAsync([
-        require('./assets/images/back.png'),
+        require('./assets/images/backButton.png'),
         require('./assets/images/next.png'),
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar
-        ...Icon.Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
-        // to remove this if you are not using it in your app
         'Lato': require('./assets/fonts/Lato-Regular.ttf'),
+        'Lato-Bold': require('./assets/fonts/Lato-Bold.ttf'),
       }),
       this._retrieveDataLocal(),
     ]);

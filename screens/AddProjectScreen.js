@@ -8,7 +8,7 @@ import {
   TextInput
 } from 'react-native';
 
-import DrawerMenu from '../components/DrawerMenu';
+import BackArrow from '../components/BackArrow.js';
 
 export default class AddProjectScreen extends Component {
   constructor(props) {
@@ -82,9 +82,9 @@ export default class AddProjectScreen extends Component {
           date: new Date()
         })
       })
-        .then(res => res.text() )
+        .then(res => res.text())
         // Refresh state to reflect new project and store locally
-        .then( (res) => {
+        .then((res) => {
           console.log("Refreshing userProjects State");
           this.props.screenProps.getProjects();
           return res;
@@ -103,19 +103,19 @@ export default class AddProjectScreen extends Component {
               "There was a problem adding your project",
               [{ text: "OK" }]);
             navigation.navigate("Home",
-            {
-              projectName: projectName,
-              taskName: taskName,
-              projectColor: projectColor
-            })
+              {
+                projectName: projectName,
+                taskName: taskName,
+                projectColor: projectColor
+              })
           }
         })
-        .then (res => this.setLoadState(false))
+        .then(res => this.setLoadState(false))
     }
   }
 
   generateColorDots() {
-    let colors = [['red', 'blue', 'green'], ['yellow', 'purple', 'brown'], ['black', 'orange', 'pink']];
+    let colors = [['#0dffc9', '#4089df', '#004fad'], ['#9bb87e', '#9ee25b', '#4d9505'], ['#786880', '#783793', '#7e00b3']];
 
     return colors.map((group, index) => {
       return (
@@ -139,24 +139,27 @@ export default class AddProjectScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <DrawerMenu navigation={navigation} styles={styles} />
-        <TextInput placeholder="New Project Name" onChangeText={this.handleProjectChange} />
-        <TextInput placeholder="First Task" onChangeText={this.handleTaskChange} />
-        <View style={styles.colorGridContainer}>
-          <Text>Choose a color for you project!</Text>
-          {this.generateColorDots()}
+        <BackArrow navigation={navigation} styles={styles} />
+        <View style={styles.userInputContainer}>
+          <TextInput style={styles.userInput} placeholder="New Project Name" placeholderTextColor='#88c8b1' onChangeText={this.handleProjectChange} />
+          <TextInput style={styles.userInput} placeholder="First Task" placeholderTextColor='#88c8b1' onChangeText={this.handleTaskChange} />
         </View>
-        <TouchableHighlight
-          style={styles.button}
-          onPress={() => {
-            console.log("Creating new project");
-            this.addProject()
-          }
+        <View style={styles.colorGridContainer}>
+          <Text style={styles.headingText}>Project Color</Text>
+          {this.generateColorDots()}
 
-          }>
-          <Text style={styles.buttonText}>GO!</Text>
-        </TouchableHighlight>
-        { this.state.loading === true ? <View style={styles.loadingOverlay}></View > : <View></View>}
+          <TouchableHighlight
+            style={[styles.button, { width: 180 }, {marginBottom: 40}]}
+            onPress={() => {
+              console.log("Creating new project");
+              this.addProject()
+            }
+
+            }>
+            <Text style={styles.buttonText}>GO!</Text>
+          </TouchableHighlight>
+        </View>
+        {this.state.loading === true ? <View style={styles.loadingOverlay}></View > : <View></View>}
       </View>
     )
   }

@@ -5,19 +5,19 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-export default class DrawerMenu extends Component {
+export default class BackArrow extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const { navigation, loggedIn, username } = this.props;
+    const { navigation } = this.props;
 
     return (
-      <TouchableWithoutFeedback onPress={navigation.openDrawer}>
+      <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
         <Image
-          style={styles.drawerIcon}
-          source={require('../assets/images/drawerMenuIcon.png')}
+          style={styles.backButtonIcon}
+          source={require('../assets/images/backButton.png')}
         />
       </TouchableWithoutFeedback>
     )

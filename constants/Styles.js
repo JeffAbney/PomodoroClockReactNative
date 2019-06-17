@@ -9,15 +9,29 @@ const {
     secondaryTextColor,
     userInputColor,
     submitBackgroundColor,
-    buttonOutlineColor
+    buttonOutlineColor,
+    accentText
 } = colors;
 
 export default styles = StyleSheet.create({
+    headingText: {
+        fontFamily: 'Lato-Bold',
+        fontSize: 21,
+        color: mainTextColor
+    },
+    secondaryText: {
+        fontFamily: 'Lato-Bold',
+        fontSize: 16,
+        color: mainTextColor
+    },
     container: {
         flex: 1,
         backgroundColor: backgroundColor,
     },
     scrollView: {
+        backgroundColor: backgroundColor,
+    },
+    mainBackgroundColor: {
         backgroundColor: backgroundColor,
     },
     center: {
@@ -27,15 +41,20 @@ export default styles = StyleSheet.create({
         alignItems: 'center'
     },
     userInput: {
-        flex: 1,
-        padding: 20,
-        marginBottom: 10,
-        backgroundColor: userInputColor,
+        height: 20,
+        marginBottom: 20,
+        paddingBottom: 5,
         fontFamily: 'Lato',
+        fontSize: 16,
         color: mainTextColor,
+        borderBottomColor: mainTextColor,
+        borderBottomWidth: 1,
     },
     userInputContainer: {
-        margin: 20
+        marginTop: 40,
+        marginBottom: 0,
+        marginLeft: 40,
+        marginRight: 40
     },
     settingsWelcomeText: {
         fontSize: 36,
@@ -64,22 +83,25 @@ export default styles = StyleSheet.create({
         fontFamily: 'Lato',
     },
     projectCard: {
-        flex: 1,
         flexDirection: 'row',
-        marginTop: 1,
-        paddingTop: 5,
+        marginTop: 8,
         backgroundColor: submitBackgroundColor,
         justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: buttonOutlineColor,
-        elevation: 2,
+        alignItems: 'center',
         color: mainTextColor,
-        fontFamily: 'Lato',
+        fontFamily: 'Lato-Bold',
+        width: 268,
+        height: 52,
+    },
+    projectCardText: {
+        fontFamily: 'Lato-Bold',
+        fontSize: 16,
+        color: backgroundColor,
+        paddingLeft: 15
     },
     trashButton: {
-        height: 35,
-        width: 35,
-        backgroundColor: 'white',
+        height: 22,
+        width: 17,
         marginLeft: 15,
         marginRight: 15,
     },
@@ -91,6 +113,9 @@ export default styles = StyleSheet.create({
     },
     margin: {
         margin: 35,
+    },
+    margin50: {
+        margin: 50,
     },
     flex: {
         flex: 1
@@ -105,10 +130,10 @@ export default styles = StyleSheet.create({
         flexDirection: 'row',
     },
     clock: {
-        fontSize: 60,
+        fontSize: 116,
         color: mainTextColor,
-        fontFamily: 'Lato',
-        marginBottom: 25
+        fontFamily: 'Lato-Bold',
+        margin: 50
     },
     timeAdjusterLabel: {
         fontSize: 24,
@@ -134,6 +159,9 @@ export default styles = StyleSheet.create({
         height: 50,
         padding: 20
     },
+    goButtonContainer: {
+        width: 200
+    },
     button: {
         padding: 10,
         marginTop: 5,
@@ -148,11 +176,18 @@ export default styles = StyleSheet.create({
     },
     buttonText: {
         color: backgroundColor,
-        fontFamily: 'Lato',
-        fontWeight: 'bold'
+        fontFamily: 'Lato-Bold',
+    },
+    buttonIcon: {
+        height: 48,
+        zIndex: 1000,
+        width: 100
     },
     addButton: {
         width: 60
+    },
+    goButton: {
+        width: 180
     },
     signInContainer: {
         justifyContent: 'flex-end',
@@ -168,10 +203,24 @@ export default styles = StyleSheet.create({
         fontFamily: 'Lato',
     },
     drawerIcon: {
+        marginTop: 5,
+        marginLeft: -12,
+        height: 85,
+        width: 85,
+    },
+    backButtonIcon: {
         marginTop: 30,
-        marginLeft: 15,
+        marginLeft: 5,
+        height: 75,
+        width: 75
+    },
+    pieIcon: {
+        height: 28,
+        width: 28
+    },
+    listIcon: {
+        width: 37,
         height: 18,
-        width: 19,
     },
     redirectText: {
         paddingTop: 10,
@@ -179,7 +228,13 @@ export default styles = StyleSheet.create({
         fontFamily: 'Lato',
     },
     logInButton: {
-        width: 300,
+        flexDirection: 'row',
+        width: 270,
+        marginBottom: 25
+    },
+    logInButtonText: {
+        backgroundColor: mainTextColor,
+        height: 48
     },
     clearButton: {
         backgroundColor: backgroundColor,
@@ -201,12 +256,13 @@ export default styles = StyleSheet.create({
     },
     introContentContainer: {
         flex: 2,
-        marginTop: 25,
+        marginTop: 5,
         backgroundColor: backgroundColor,
     },
     viewPager: {
         height: 100,
         justifyContent: 'center',
+        width: 200,
     },
     viewPageStyle: {
         alignItems: 'center',
@@ -232,7 +288,7 @@ export default styles = StyleSheet.create({
     },
     introButtonContainer: {
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         height: 50,
     },
     marginTop: {
@@ -240,13 +296,13 @@ export default styles = StyleSheet.create({
     },
     colorGridContainer: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
         alignItems: 'center'
     },
     colorDot: {
-        height: 55,
-        width: 55,
-        borderRadius: 55,
+        height: 45,
+        width: 45,
+        borderRadius: 45,
         margin: 20,
     },
     loadingOverlay: {
@@ -258,5 +314,80 @@ export default styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#F5FCFF88'
-    }
+    },
+    logInPromptText: {
+        color: accentText,
+        fontSize: 21,
+        justifyContent: 'space-evenly',
+        fontFamily: 'Lato-Bold',
+        textDecorationLine: 'underline'
+    },
+    longInPromptTextSecondary: {
+        color: accentText,
+        fontSize: 15,
+        justifyContent: 'space-evenly',
+        fontFamily: 'Lato-Bold'
+    },
+    addIcon: {
+        marginRight: 10,
+        height: 24,
+        width: 24
+    },
+    taskViewBar: {
+        paddingLeft: 50,
+        paddingRight: 150,
+        borderBottomColor: mainTextColor,
+        borderBottomWidth: 1,
+        marginBottom: 30
+    },
+    taskViewIconContainer: {
+        padding: 7,
+        width: 65,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    taskViewActive: {
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderTopColor: mainTextColor,
+        borderTopWidth: 1,
+        borderLeftColor: mainTextColor,
+        borderLeftWidth: 1,
+        borderRightColor: mainTextColor,
+        borderRightWidth: 1
+    },
+    taskViewInactive: {
+        borderBottomColor: mainTextColor,
+        borderBottomWidth: 1,
+        zIndex: 1000
+    },
+    taskDisplay: {
+        alignItems: 'center'
+    },
+    aboutSectionText: {
+        fontFamily: 'Lato-Bold',
+        fontSize: 13,
+        color: mainTextColor,
+        textAlign: 'center',
+        marginBottom: 20,
+        lineHeight: 20
+    },
+    socialIcon: {
+        height: 45,
+        width: 45,
+        marginLeft: 20,
+        marginRight: 20
+    },
+    shareText: {
+        fontSize: 20,
+        lineHeight: 25,
+        marginBottom: 15,
+        marginTop: 20,
+        textAlign: 'center'
+    },
+    checkBox: {
+        marginRight: 10,
+        height: 16,
+        width: 16
+    },
 })

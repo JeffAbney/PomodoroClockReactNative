@@ -41,6 +41,7 @@ class ProjectsScreen extends React.Component {
       if (userProjects.hasOwnProperty(proj)) {
         projArr.push(
           <TouchableHighlight
+          style={styles.align}
             key={`project ${index}`}
             onPress={() => this.navigateToTaskName(proj)}
           >
@@ -48,25 +49,17 @@ class ProjectsScreen extends React.Component {
               style={[
                 styles.projectCard,
                 styles.align,
+                styles.center,
                 { backgroundColor: `${userProjects[proj].color}` }
               ]}>
               <View style={styles.flex}>
-                <Text>{proj}</Text>
-                <Text>
-                  Total Time:
-                {userProjects[proj].projectTime ?
-                    `${userProjects[proj].projectTime} minutes` :
-                    'Not started'}</Text>
-                <Text>
-                  Started on
-                {new Date(userProjects[proj].creationDate).toLocaleDateString("en-US")}
-                </Text>
+                <Text style={styles.projectCardText}>{proj}</Text>
               </View>
               <View styles={styles.flex}>
                 <TouchableHighlight
-                  style={[styles.trashButton, styles.center, styles.align]}
+                  style={[, styles.center, styles.align]}
                   onPress={() => this.removeProjectAlert(proj)}>
-                  <Image source={require('../assets/images/Group.png')} />
+                  <Image style={styles.trashButton} source={require('../assets/images/deleteIcon.png')} />
                 </TouchableHighlight>
               </View>
             </View>
@@ -86,7 +79,8 @@ class ProjectsScreen extends React.Component {
       {
         projectName: proj,
         projectLog: userProjects[proj].log,
-        projectTime: userProjects[proj].projectTime
+        projectTime: userProjects[proj].projectTime,
+        projectColor: userProjects[proj].projectColor
       }
     );
   }
@@ -154,7 +148,10 @@ class ProjectsScreen extends React.Component {
             onPress={() => {
               navigation.navigate("AddProject", { userID: userID })
             }}>
-            <Text>Add a new project</Text>
+            <View style={[styles.rowContainer, styles.center, styles.margin50]}>
+              <Image style={styles.addIcon} source={require('../assets/images/add.png')} />
+              <Text style={styles.headingText}>Add Project</Text>
+            </View>
           </TouchableHighlight>
           {this.projectDisplay()}
           {this.state.loading === true ?
