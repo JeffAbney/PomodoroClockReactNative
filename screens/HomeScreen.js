@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import SignIn from '../components/SignIn';
 import DrawerMenu from '../components/DrawerMenu';
 import styles from '../constants/Styles';
 import { View } from 'react-native';
@@ -35,12 +34,11 @@ export default class HomeScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <SignIn styles={styles} screenProps={this.props.screenProps} navigation={navigation} />
         <View style={styles.container}>
-          <View style={[styles.rowContainer, styles.spaceBetween]}>
+          <View style={styles.rowContainer}>
             <DrawerMenu navigation={navigation} styles={styles} />
           </View>
-          <View style={styles.flex}>
+          <View style={[styles.flex, { marginTop: 30 }]}>
             <Clock
               screenProps={this.props.screenProps}
               navigation={navigation}
