@@ -105,6 +105,10 @@ export default styles = StyleSheet.create({
         marginLeft: 15,
         marginRight: 15,
     },
+    absolutePosition: {
+        position: 'absolute',
+        left: 1,
+    },
     paddingTop: {
         paddingTop: 15,
     },
@@ -133,7 +137,9 @@ export default styles = StyleSheet.create({
         fontSize: 116,
         color: mainTextColor,
         fontFamily: 'Lato-Bold',
-        margin: 50
+        margin: 50,
+        marginBottom: 90,
+        marginTop: 70
     },
     timeAdjusterLabel: {
         fontSize: 24,
@@ -233,8 +239,10 @@ export default styles = StyleSheet.create({
         marginBottom: 25
     },
     logInButtonText: {
-        backgroundColor: mainTextColor,
-        height: 48
+        height: 48,
+        marginRight: -10,
+        textAlign: 'center',
+        textAlignVertical: 'center'
     },
     clearButton: {
         backgroundColor: backgroundColor,
@@ -414,6 +422,7 @@ export default styles = StyleSheet.create({
         width: 45,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'green'
     },
     closeButtonContainer: {
         alignItems: 'flex-start',

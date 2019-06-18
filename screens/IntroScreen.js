@@ -79,16 +79,21 @@ export default class IntroScreen extends Component {
               onPress={() => this.signInGoogle()}
               style={[
                 styles.button,
-                styles.logInButton
+                styles.logInButton,
               ]}
             >
-              <View styles={[styles.mainBackgroundColor, styles.buttonIcon]}>
-                <Image
+              <View style={[styles.absolutePosition, styles.mainBackgroundColor, {height: 46, width: 46, padding: 10, borderBottomLeftRadius: 7, borderTopLeftRadius: 7}]}>
+              <Image
                   source={require('../assets/images/GoogleIcon.png')}
-                  style={styles.mainBackgroundColor}
+                  style={[styles.mainBackgroundColor, {height: 26, width: 26}]}
                 />
               </View>
-              <Text style={[styles.buttonText, styles.flex, styles.center]}>Log In</Text>
+              <Text style={[
+                styles.buttonText, 
+                styles.flex, 
+                styles.center, 
+                styles.logInButtonText
+                ]}>Log In</Text>
             </TouchableOpacity>
             <TouchableHighlight
               onPress={() => this.props.navigation.navigate('Home')}
