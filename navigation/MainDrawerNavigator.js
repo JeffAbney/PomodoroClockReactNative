@@ -9,6 +9,7 @@ import SubmitActivityScreen from '../screens/SubmitActivityScreen';
 import ProjectsScreen from '../screens/ProjectsScreen';
 import IntroScreen from "../screens/IntroScreen";
 import AddProjectScreen from "../screens/AddProjectScreen";
+import CustomDrawerNavigator from './CustomDrawerNavigator.js'
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -31,8 +32,13 @@ const MainDrawerNavigator = createDrawerNavigator({
   },
   About: {
     screen: AboutScreen
-  }
-});
+  },
+
+},
+  {
+    contentComponent: CustomDrawerNavigator,
+    drawerWidth: 300
+  });
 
 const MainApp = createAppContainer(MainDrawerNavigator);
 export default MainApp;

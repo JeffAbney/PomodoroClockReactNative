@@ -7,7 +7,7 @@ import styles from '../constants/Styles';
 class ProjectsScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'My Projects',
+    title: 'Projects',
     header: null
   };
 

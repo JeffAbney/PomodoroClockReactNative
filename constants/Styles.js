@@ -390,4 +390,35 @@ export default styles = StyleSheet.create({
         height: 16,
         width: 16
     },
+    customDrawerNavigator: {
+        flex: 1,
+        backgroundColor: mainTextColor,
+        paddingTop: 30
+    },
+    navSectionStyle: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center'
+    },
+    navItemText: {
+        fontSize: 36,
+        fontFamily: 'Lato-Bold',
+        color: backgroundColor,
+        lineHeight: 56,
+        letterSpacing: -1,
+    },
+    drawerItemIconContainer: {
+        marginLeft: 25,
+        marginRight: 25,
+        height: 45,
+        width: 45,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    closeButtonContainer: {
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        marginLeft: -10,
+        marginTop: -10
+    }
 })
