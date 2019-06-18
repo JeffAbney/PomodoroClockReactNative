@@ -19,7 +19,7 @@ export default class ShareScreen extends Component {
     drawerLabel: 'Share',
   };
 
-  onPressSocial() {
+  onPressShare() {
     Share.share({
       ...Platform.select({
         ios: {
@@ -63,28 +63,12 @@ export default class ShareScreen extends Component {
           help us out by sharing it.
           </Text>
         </View>
-        <View style={[styles.container, styles.align]}>
-          <View style={[styles.rowContainer, styles.align, {marginBottom: 10, justifyContent: 'flex-start'}]}>
-            <TouchableOpacity onPress={() => this.onPressSocial()}>
-              <Image style={styles.socialIcon} source={require('../assets/images/fb.png')} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onPressSocial()}>
-              <Image style={styles.socialIcon} source={require('../assets/images/twitter.png')}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onPressSocial()}>
-              <Image style={styles.socialIcon} source={require('../assets/images/instagram.png')}/>
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.rowContainer, styles.align]}>
-            <TouchableOpacity onPress={() => this.onPressSocial()}>
-              <Image style={styles.socialIcon} source={require('../assets/images/linkedin.png')}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onPressSocial()}>
-              <Image style={styles.socialIcon} source={require('../assets/images/pinterest.png')}/>
-            </TouchableOpacity>
-          </View>
-          <Text style={[styles.headingText, styles.shareText, {marginTop: 60}]}>Thanks!</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={[styles.button, {width: 100}]} onPress={this.onPressShare}>
+            <Text style={styles.buttonText}>Share!</Text>
+          </TouchableOpacity>
         </View>
+          
       </View>
     )
   }
