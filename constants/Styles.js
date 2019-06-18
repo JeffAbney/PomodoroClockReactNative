@@ -422,7 +422,6 @@ export default styles = StyleSheet.create({
         width: 45,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'green'
     },
     closeButtonContainer: {
         alignItems: 'flex-start',
