@@ -84,7 +84,7 @@ export default class IntroScreen extends Component {
             >
               <View style={[styles.absolutePosition, styles.mainBackgroundColor, {height: 46, width: 46, padding: 10, borderBottomLeftRadius: 7, borderTopLeftRadius: 7}]}>
               <Image
-                  source={require('../assets/images/GoogleIcon.png')}
+                  source={require('../assets/images/google.png')}
                   style={[styles.mainBackgroundColor, {height: 26, width: 26}]}
                 />
               </View>
