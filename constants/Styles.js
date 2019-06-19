@@ -56,31 +56,12 @@ export default styles = StyleSheet.create({
         marginLeft: 40,
         marginRight: 40
     },
-    settingsWelcomeText: {
-        fontSize: 36,
-        color: mainTextColor,
-        fontFamily: 'Lato',
-    },
-    settingsText: {
-        fontSize: 24,
-        padding: 20,
-        color: mainTextColor,
-        fontFamily: 'Lato',
-    },
-    settingsPicker: {
-        width: 90,
-        height: 50,
-        color: mainTextColor,
-    },
-    settingsPickerItem: {
-        color: mainTextColor,
-        backgroundColor: backgroundColor,
-    },
     welcomeText: {
         paddingLeft: 15,
         paddingRight: 10,
         color: mainTextColor,
         fontFamily: 'Lato',
+        textAlign: 'center'
     },
     projectCard: {
         flexDirection: 'row',
@@ -269,8 +250,8 @@ export default styles = StyleSheet.create({
     },
     viewPager: {
         height: 100,
+        width: 400,
         justifyContent: 'center',
-        width: 200,
     },
     viewPageStyle: {
         alignItems: 'center',
@@ -428,5 +409,13 @@ export default styles = StyleSheet.create({
         justifyContent: 'center',
         marginLeft: -10,
         marginTop: -10
-    }
+    },
+    picker: {
+        height: 50,
+        width: 300,
+        color: mainTextColor
+    },
+    pickerItem: {
+        color: mainTextColor
+    },
 })

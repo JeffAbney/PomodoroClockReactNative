@@ -7,14 +7,14 @@ import PieChart from '../components/PieChart';
 import styles from '../constants/Styles'
 
 const colors = [
-  '#0dffc9', 
-  '#4089df', 
-  '#004fad', 
-  '#9bb87e', 
-  '#9ee25b', 
-  '#4d9505', 
-  '#786880', 
-  '#783793', 
+  '#0dffc9',
+  '#4089df',
+  '#004fad',
+  '#9bb87e',
+  '#9ee25b',
+  '#4d9505',
+  '#786880',
+  '#783793',
   '#7e00b3'
 ];
 
@@ -162,7 +162,7 @@ class TasksScreen extends React.Component {
           { backgroundColor: colors[index % 8] }
         ]}
           key={index}>
-          <View style={[styles.flex, styles.rowContainer, {justifyContent: "space-between"}]}>
+          <View style={[styles.flex, styles.rowContainer, { justifyContent: "space-between" }]}>
             <Text style={styles.projectCardText}>{task.taskName}</Text>
             <Text style={styles.projectCardText}>{hours}:{minutes < 10 ? `0${minutes}` : minutes}</Text>
           </View>
@@ -235,7 +235,7 @@ class TasksScreen extends React.Component {
     return (
       <View style={styles.container}>
         <DrawerMenu navigation={navigation} styles={styles} />
-        <ScrollView style={[styles.container, styles.paddingTop]} >
+        <View style={[styles.container, styles.paddingTop]} >
           <View style={styles.align}>
             <Text style={styles.headingText}>{projectName}</Text>
           </View>
@@ -256,14 +256,14 @@ class TasksScreen extends React.Component {
           <View>
             <View style={[styles.rowContainer, styles.taskViewBar]}>
               <View style={[styles.taskViewIconContainer, this.state.pieDisplay ? styles.taskViewActive : ""]}>
-              <TouchableHighlight onPress={this.setPie}>
-                <Image style={styles.pieIcon} source={require('../assets/images/pieIcon.png')} />
-              </TouchableHighlight>
+                <TouchableHighlight onPress={this.setPie}>
+                  <Image style={styles.pieIcon} source={require('../assets/images/pieIcon.png')} />
+                </TouchableHighlight>
               </View>
               <View style={[styles.taskViewIconContainer, this.state.pieDisplay ? "" : styles.taskViewActive]}>
-              <TouchableHighlight style={styles.align} onPress={this.setList}>
-                <Image style={styles.listIcon} source={require('../assets/images/listIcon.png')}/>
-              </TouchableHighlight>
+                <TouchableHighlight style={styles.align} onPress={this.setList}>
+                  <Image style={styles.listIcon} source={require('../assets/images/listIcon.png')} />
+                </TouchableHighlight>
               </View>
             </View>
             {this.state.pieDisplay ?
@@ -276,15 +276,15 @@ class TasksScreen extends React.Component {
                 width={500}
                 height={200} />
               :
-              <View style={styles.align}>
+              <ScrollView contentContainerStyle={[styles.align, { paddingBottom: 200 }]}>
                 {this.logDisplay()}
-                </View>}
+              </ScrollView>}
             {this.state.loading === true ?
               <View style={styles.loadingOverlay}></View > :
               <View></View>
             }
           </View>
-        </ScrollView>
+        </View>
       </View>
     );
   }

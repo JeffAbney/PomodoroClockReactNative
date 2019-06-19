@@ -52,15 +52,22 @@ export default class WelcomeViewpager extends Component {
           initialPage={0}
           onPageSelected={(i) => this.handlePageSelected(i.nativeEvent.position)}>
           <View style={styles.viewPageStyle} key="1">
-            <Text style={styles.welcomeText}>diddit is a productivity and time tracking app.</Text>
+            <Text style={styles.welcomeText}>
+              diddit is a productivity{"\n"}
+              and time tracking app.
+            </Text>
           </View>
           <View style={styles.viewPageStyle} key="2">
-            <Text style={styles.welcomeText}>Choose your work session and break lengths.</Text>
-            <Text style={styles.welcomeText}>Hit start and get to work!</Text>
+            <Text style={styles.welcomeText}>
+              Create a project and task,{"\n"}
+              hit start and get to work!
+            </Text>
           </View>
           <View style={styles.viewPageStyle} key="3">
-            <Text style={styles.welcomeText}>When you finish your first session, you will be prompted
-         to save your session in order to track how much time you spend on different tasks.</Text>
+            <Text style={styles.welcomeText}>
+             Or get working right away and{"\n"}
+             save your project and task when you're done.
+             </Text>
           </View>
         </ViewPagerAndroid>
         <View style={styles.paginationContainer}>

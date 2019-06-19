@@ -23,6 +23,9 @@ class SideMenu extends Component {
   }
 
   render() {
+    let { isLoggedIn } = this.props.screenProps;
+    let { navigation } = this.props;
+
     return (
       <View style={styles.customDrawerNavigator}>
         <TouchableOpacity style={styles.closeButtonContainer} onPress={() => this.props.navigation.closeDrawer()}>
@@ -63,11 +66,21 @@ class SideMenu extends Component {
           </View>
           <View style={styles.navSectionStyle}>
             <View style={styles.drawerItemIconContainer}>
-              <Image style={{ height: 32, width: 42 }} source={require('../assets/images/log_out.png')} />
+              <Image
+                style={
+                  isLoggedIn ? 
+                  { height: 32, width: 42 } :
+                  { height: 30, width: 30 }
+                }
+                source={
+                  isLoggedIn ?
+                    require('../assets/images/log_out.png') :
+                    require('../assets/images/google.png')}
+              />
             </View>
-            <Text style={styles.navItemText} onPress={() => this.signOut()}>
-              Log Out
-              </Text>
+            <Text style={styles.navItemText} onPress={() => isLoggedIn ? this.signOut() : navigation.navigate('Intro')}>
+              {isLoggedIn ? 'Log Out' : 'Log In'}
+            </Text>
           </View>
         </ScrollView>
       </View>

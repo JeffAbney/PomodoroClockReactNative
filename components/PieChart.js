@@ -114,7 +114,8 @@ export default class PieChart extends React.Component {
             style={{
               position: 'absolute',
               top: margin,
-              left: 2 * margin + this.props.pieWidth
+              left: 2 * margin + this.props.pieWidth,
+              height: this.props.height
             }}>
             {
               this.props.data.map((item, index) => {
