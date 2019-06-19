@@ -200,6 +200,7 @@ export default class App extends React.Component {
       _storeDataLocal: this._storeDataLocal,
       pauseTimer: this.pauseTimer,
       resetTimer: this.resetTimer,
+      resetClockState: this.resetClockState,
       username: username,
       userID: userID,
       userProjects: userProjects,

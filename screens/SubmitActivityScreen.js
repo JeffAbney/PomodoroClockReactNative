@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions, NavigationActions } from 'react-navigation';
-
-
+import BackArrow from '../components/BackArrow.js';
 
 export default class SubmitActivityScreen extends Component {
   static navigationOptions = {
@@ -64,7 +63,7 @@ export default class SubmitActivityScreen extends Component {
     this.setLoadState(true);
     const { navigation } = this.props;
     const { projectName, taskName } = this.state
-    const { userID, sessionTime, handleSetState, _storeDataLocal, userProjects } = this.props.screenProps;
+    const { userID, sessionTime, handleSetState, _storeDataLocal, userProjects, resetClockState } = this.props.screenProps;
     let taskTime = sessionTime < 30 ? 1 : Math.round(sessionTime / 60);
 
     console.log("YOU PRESSED SUBMIT!", projectName);
@@ -129,6 +128,7 @@ export default class SubmitActivityScreen extends Component {
         })
         .then(res => this.setLoadState(false))
         .then(res => {
+          resetClockState();
           navigation.navigate('Tasks', {
             projectName: projectName,
             userID: userID,
@@ -146,7 +146,7 @@ export default class SubmitActivityScreen extends Component {
     projArr = [];
     for (const proj in userProjects) {
       if (userProjects.hasOwnProperty(proj)) {
-        projArr.push(<Picker.Item key={proj} label={proj} value={proj} />)
+        projArr.push(<Picker.Item style={styles.pickerItem} key={proj} label={proj} value={proj} />)
       }
     }
     return projArr;
@@ -154,24 +154,32 @@ export default class SubmitActivityScreen extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
+
     return (
-      <View style={[styles.container, styles.center]}>
-        <Text style={{ marginTop: 50 }}>Project Name</Text>
-        <Picker
-          selectedValue={this.state.projectName}
-          style={{ height: 50, width: 300 }}
-          onValueChange={this._onChangeprojectName}
-        >
-          {this.displayProjectList()}
-        </Picker>
-        <Text>Task Name</Text>
-        <TextInput
-          style={styles.userInput}
-          onChangeText={this._onChangetaskName}
-        />
-        <TouchableHighlight style={styles.button} onPress={this.onSubmitTask}>
-          <Text style={styles.buttonText}>Submit Task</Text>
-        </TouchableHighlight>
+      <View style={styles.container}>
+        <BackArrow navigation={navigation} styles={styles} />
+        <View style={styles.userInputContainer}>
+          <Text style={[styles.secondaryText, { marginTop: 50 }]}>Project Name</Text>
+          <Picker
+            selectedValue={this.state.projectName}
+            style={[styles.picker, { marginBottom: 50 }]}
+            onValueChange={this._onChangeprojectName}
+          >
+            {this.displayProjectList()}
+          </Picker>
+          <TextInput
+            placeholder='Task Name'
+            placeholderTextColor='#88c8b1'
+            style={styles.userInput}
+            onChangeText={this._onChangetaskName}
+          />
+        </ View>
+        <View style={styles.buttonContainer}>
+          <TouchableHighlight style={[styles.button, { width: 180 }]} onPress={this.onSubmitTask}>
+            <Text style={styles.buttonText}>Submit Task</Text>
+          </TouchableHighlight>
+        </View>
         {this.state.loading === true ? <View style={styles.loadingOverlay}></View > : <View></View>}
       </View>
     )

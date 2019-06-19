@@ -78,9 +78,11 @@ export class Clock extends Component {
       userProjects,
       _storeDataLocal,
       isLoggedIn,
+      resetClockState,
     } = this.props.screenProps;
     let taskTime = sessionTime < 30 ? 1 : Math.round(sessionTime / 60);
 
+    this._onPressPause();
     if (!isLoggedIn) {
       Alert.alert('Not logged in',
         'Please sign in to save your progress.',
@@ -148,7 +150,9 @@ export class Clock extends Component {
             this.setState({
               taskComplete: false
             });
-            setLoadState(false)})
+            resetClockState();
+            setLoadState(false)
+          })
           .then(res => {
             navigation.navigate('Tasks', {
               projectName: projectName,
@@ -169,8 +173,8 @@ export class Clock extends Component {
       return (
         <View style={[styles.rowContainer, styles.align]}>
           <TouchableHighlight onPress={() => this.onSubmitTask()}>
-            <Image 
-              style={styles.checkBox} 
+            <Image
+              style={styles.checkBox}
               source={taskComplete ? require('../assets/images/checkbox_done.png') : require('../assets/images/checkbox.png')} />
           </TouchableHighlight>
           <Text
@@ -213,7 +217,7 @@ export class Clock extends Component {
 
   goToLogIn() {
     let { navigation } = this.props;
-    navigation.navigate('Into');
+    navigation.navigate('Intro');
   }
 
   render() {
