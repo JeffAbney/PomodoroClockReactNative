@@ -54,7 +54,7 @@ export default class ShareScreen extends Component {
       <View style={styles.container}>
         <DrawerMenu navigation={navigation} styles={styles} />
         <View style={[styles.logoContainer, { flex: 0, marginBottom: 30 }]}>
-          <Image style={styles.logoBig} source={require('../assets/images/logoBig.png')} />
+          <Image style={styles.logoBig} source={require('../assets/images/Logo_diddit.png')} />
         </View>
         <View style={[styles.align, {height: 150}]}>
           <Text style={[styles.headingText, styles.shareText]}>

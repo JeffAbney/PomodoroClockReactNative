@@ -68,9 +68,10 @@ export default class IntroScreen extends Component {
 
     return (
       <View style={[styles.container, styles.center]}>
-        <View style={styles.logoContainer}>
-          <Image styles={styles.logoBig}
-            source={require('../assets/images/logoBig.png')} />
+        <View style={[styles.logoContainer]}>
+          <Image 
+            style={styles.logoBig} 
+            source={require('../assets/images/Logo_diddit.png')} />
         </View>
         <View style={styles.introContentContainer}>
           <WelcomeViewPager styles={styles} />

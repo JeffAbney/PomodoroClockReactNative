@@ -234,7 +234,7 @@ export default styles = StyleSheet.create({
         color: mainTextColor
     },
     logoBig: {
-        width: 178,
+        width: 180,
         height: 60,
     },
     logoContainer: {
