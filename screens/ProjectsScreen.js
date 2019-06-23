@@ -106,7 +106,7 @@ class ProjectsScreen extends React.Component {
     if (userID === undefined) {
       Alert.alert("Please Log In to remove your project!")
     } else {
-      fetch('http://localhost:3000/removeProject', {
+      fetch('https://diddit-server.herokuapp.com/removeProject', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

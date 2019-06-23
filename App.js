@@ -43,7 +43,7 @@ export default class App extends React.Component {
 
   signInDiddit(userData) {
     console.log("Loggin in");
-    fetch('http://localhost:3000', {
+    fetch('https://diddit-server.herokuapp.com/', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -66,10 +66,11 @@ export default class App extends React.Component {
       })
   }
 
+
   getProjects() {
     console.log("Getting Log");
     let userID = this.state.userID
-    fetch('http://localhost:3000/showLog', {
+    fetch('https://diddit-server.herokuapp.com/showLog', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

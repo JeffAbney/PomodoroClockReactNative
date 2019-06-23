@@ -107,7 +107,7 @@ export class Clock extends Component {
         });
         setLoadState(true);
         let date = new Date();
-        fetch('http://localhost:3000/log', {
+        fetch('https://diddit-server.herokuapp.com/log', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",

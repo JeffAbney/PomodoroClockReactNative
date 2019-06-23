@@ -70,7 +70,7 @@ export default class AddProjectScreen extends Component {
     if (userID === undefined) {
       Alert.alert("Please Log In to create your project!")
     } else {
-      fetch('http://localhost:3000/newProject', {
+      fetch('https://diddit-server.herokuapp.com/newProject', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
