@@ -6,9 +6,9 @@ import {
   TouchableHighlight,
   TouchableOpacity
 } from 'react-native';
+import { Google } from 'expo';
 import WelcomeViewPager from '../components/WelcomeViewpager';
 import styles from '../constants/Styles';
-
 
 export default class IntroScreen extends Component {
   constructor(props) {
@@ -23,7 +23,8 @@ export default class IntroScreen extends Component {
   }
 
   static navigationOptions = {
-    header: null
+    header: null,
+    drawerLabel: 'About',
   };
 
   setLoadState(bool) {
@@ -35,18 +36,18 @@ export default class IntroScreen extends Component {
 
   signInGoogle = async () => {
     this.setLoadState(true);
-    let androidClientId =
-      '524273864505-drdo8v3rdegsfi9jtqo469llhssg2euv.apps.googleusercontent.com'
-
-    try {
-      const result = await Expo.Google.logInAsync({
-        androidClientId: androidClientId,
-        scopes: ["profile", "email"]
-      })
-      if (result.type === "success") {
-        console.log("Google reply", result);
-        let { givenName, photoUrl, id, email } = result.user;
+    const { type, accessToken, user } = await Google.logInAsync({
+     // iosClientId: `<YOUR_IOS_CLIENT_ID_FOR_EXPO>`,
+      androidClientId: `524273864505-uht4d97k4jmemue6d0khcu9n5qiq3gv0.apps.googleusercontent.com`,
+     // iosStandaloneAppClientId: `<YOUR_IOS_CLIENT_ID>`,
+      androidStandaloneAppClientId: `524273864505-uht4d97k4jmemue6d0khcu9n5qiq3gv0.apps.googleusercontent.com`,
+    });
+    
+    if (type === 'success') {
+      console.log("Google reply", user);
+        let { givenName, photoUrl, id, email } = user;
         let userData = {
+          accessToken: accessToken,
           isLoggedIn: true,
           username: givenName,
           photoUrl: photoUrl,
@@ -55,13 +56,10 @@ export default class IntroScreen extends Component {
         }
         this.props.screenProps.handleSetState(userData);
         this.props.screenProps.signInDiddit(userData);
-        this.setLoadState(false);
       } else {
-        console.log("cancelled")
-      }
-    } catch (e) {
-      console.log("error", e)
-    }
+        console.log("cancelled");
+        this.setLoadState(false);
+    } 
   }
 
   render() {
