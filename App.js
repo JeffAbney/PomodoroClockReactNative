@@ -1,14 +1,16 @@
 import React from 'react';
 import { Platform, StatusBar, View, Alert, AsyncStorage } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
+import { AppLoading, Asset, Font, Icon, Google } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import styles from './constants/Styles';
 import AppNavigatorLogged from './navigation/AppNavigatorLogged';
+
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      accessToken: "",
       photoUrl: "",
       isLoadingComplete: false,
       isLoggedIn: false,
@@ -100,7 +102,7 @@ export default class App extends React.Component {
 
 
 
-  logOut() {
+  logOut =  async () => {
     this._clearDataLocal();
     this.setState({
       isLoggedIn: false,
@@ -111,6 +113,19 @@ export default class App extends React.Component {
       clockHasStarted: false,
       userProjects: {},
     });
+    const config = {
+    //  expoClientId: `<YOUR_WEB_CLIENT_ID>`,
+    //   iosClientId: `<YOUR_IOS_CLIENT_ID>`,
+      androidClientId: `524273864505-uht4d97k4jmemue6d0khcu9n5qiq3gv0.apps.googleusercontent.com`,
+    //  iosStandaloneAppClientId: `<YOUR_IOS_CLIENT_ID>`,
+      androidStandaloneAppClientId: `524273864505-uht4d97k4jmemue6d0khcu9n5qiq3gv0.apps.googleusercontent.com`,
+    };
+    const { type, accessToken } = await Google.logInAsync(config);
+    if (type === 'success') {
+      /* Log-Out */
+      await Google.logOutAsync({ accessToken, ...config });
+      /* `accessToken` is now invalid and cannot be used to get data from the Google API with HTTP requests */
+    }
   }
 
 
@@ -177,6 +192,7 @@ export default class App extends React.Component {
 
   render() {
     let {
+      accessToken,
       clockHasStarted,
       clockIsRunning,
       isLoggedIn,
@@ -189,6 +205,8 @@ export default class App extends React.Component {
 
     let screenProps = {
 
+      accessToken: accessToken,
+      _clearDataLocal: this._clearDataLocal,
       clockHasStarted: clockHasStarted,
       clockIsRunning: clockIsRunning,
       clockStartedOver: this.clockStartedOver,
