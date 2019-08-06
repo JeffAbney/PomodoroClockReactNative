@@ -3,14 +3,14 @@
     "name": "diddit",
     "slug": "diddit",
     "privacy": "public",
-    "sdkVersion": "32.0.0",
+    "sdkVersion": "33.0.0",
     "platforms": [
       "ios",
       "android"
     ],
     "android": {
       "package": "com.jeffabney.diddit",
-      "versionCode": 7,
+      "versionCode": 8,
       "config": {
         "googleSignIn": {
           "certificateHash": "DE:92:7D:C7:A2:FA:A8:B1:FA:A1:83:A2:DA:85:8C:D6:69:E9:52:A3"
@@ -18,7 +18,7 @@
       },
       "permissions": []
     },
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {

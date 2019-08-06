@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Google } from 'expo';
 import styles from '../constants/Styles';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { ScrollView, Text, View, Image, TouchableOpacity } from 'react-native';

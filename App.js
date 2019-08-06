@@ -1,6 +1,8 @@
 import React from 'react';
 import { Platform, StatusBar, View, Alert, AsyncStorage } from 'react-native';
-import { AppLoading, Asset, Font, Icon, Google } from 'expo';
+import { AppLoading, Google } from 'expo';
+import { Asset } from 'expo-asset';
+import * as Font from 'expo-font';
 import AppNavigator from './navigation/AppNavigator';
 import styles from './constants/Styles';
 import AppNavigatorLogged from './navigation/AppNavigatorLogged';
