@@ -9,6 +9,7 @@ import {
 import { Google } from 'expo';
 import WelcomeViewPager from '../components/WelcomeViewpager';
 import styles from '../constants/Styles';
+import * as AppAuth from 'expo-app-auth';
 
 export default class IntroScreen extends Component {
   constructor(props) {
@@ -37,6 +38,8 @@ export default class IntroScreen extends Component {
   signInGoogle = async () => {
     this.setLoadState(true);
     const { type, accessToken, user } = await Google.logInAsync({
+      redirectUrl: `${AppAuth.OAuthRedirect}:/oauth2redirect/google`,
+      behavior: 'web',
      // iosClientId: `<YOUR_IOS_CLIENT_ID_FOR_EXPO>`,
       androidClientId: `524273864505-uht4d97k4jmemue6d0khcu9n5qiq3gv0.apps.googleusercontent.com`,
      // iosStandaloneAppClientId: `<YOUR_IOS_CLIENT_ID>`,
