@@ -50,7 +50,6 @@ class SideMenu extends Component {
     });
 
     this.props.navigation.dispatch(resetAction);
-    /* `accessToken` is now invalid and cannot be used to get data from the Google API with HTTP requests */
   }
 
   render() {
@@ -93,6 +92,14 @@ class SideMenu extends Component {
             </View>
             <Text style={styles.navItemText} onPress={this.navigateToScreen('Share')}>
               Share
+              </Text>
+          </View>
+          <View style={styles.navSectionStyle}>
+            <View style={styles.drawerItemIconContainer}>
+              <Image style={{ height: 30, width: 27 }} source={require('../assets/images/about.png')} />
+            </View>
+            <Text style={styles.navItemText} onPress={this.navigateToScreen('Privacy')}>
+              Privacy Policy
               </Text>
           </View>
           <View style={styles.navSectionStyle}>

@@ -9,7 +9,8 @@ import SubmitActivityScreen from '../screens/SubmitActivityScreen';
 import ProjectsScreen from '../screens/ProjectsScreen';
 import IntroScreen from "../screens/IntroScreen";
 import AddProjectScreen from "../screens/AddProjectScreen";
-import CustomDrawerNavigator from './CustomDrawerNavigator.js'
+import CustomDrawerNavigator from './CustomDrawerNavigator.js';
+import PrivacyScreen from '../screens/PrivacyScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -33,6 +34,9 @@ const MainDrawerNavigator = createDrawerNavigator({
   About: {
     screen: AboutScreen
   },
+  Privacy: {
+    screen: PrivacyScreen
+  }
 
 },
   {
