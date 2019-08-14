@@ -96,7 +96,7 @@ class SideMenu extends Component {
           </View>
           <View style={styles.navSectionStyle}>
             <View style={styles.drawerItemIconContainer}>
-              <Image style={{ height: 30, width: 27 }} source={require('../assets/images/about.png')} />
+              <Image style={{ height: 28, width: 29 }} source={require('../assets/images/about.png')} />
             </View>
             <Text style={styles.navItemText} onPress={this.navigateToScreen('Privacy')}>
               Privacy Policy
