@@ -22,7 +22,7 @@
     "expo": "^33.0.0",
     "express": "^4.16.4",
     "mongodb": "^3.2.2",
-    "mongoose": "^5.4.21",
+    "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
     "react": "16.8.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
